@@ -1,4 +1,4 @@
-"""Run training synthetic docker models"""
+"""Getting all the clinical notes"""
 import argparse
 import getpass
 import os
@@ -18,10 +18,7 @@ def remove_docker_container(container_name):
 
 
 def main(args):
-    """Run docker model"""
-    if args.status == "INVALID":
-        raise Exception("Docker image is invalid")
-
+    """Get clinical notes"""
     client = docker.from_env()
 
     print(getpass.getuser())
@@ -53,14 +50,6 @@ def main(args):
     )
 
     remove_docker_container(container.name)
-
-    # output_folder = os.listdir(output_dir)
-
-    # CWL has a limit of the array of files it can accept in a folder
-    # therefore creating a tarball is sometimes necessary
-    # tar(output_dir, 'outputs.tar.gz')
-
-
 
 
 if __name__ == '__main__':
