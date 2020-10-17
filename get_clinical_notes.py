@@ -33,7 +33,8 @@ def main(args):
     print(getpass.getuser())
 
     # Add docker.config file
-    docker_image = "nlpsandbox/cli:edge"
+    # docker_image = "nlpsandbox/cli:edge"
+    docker_image = "test:edge"
 
     # These are the volumes that you want to mount onto your docker container
     output_dir = os.getcwd()
@@ -52,12 +53,13 @@ def main(args):
 
     # If the container doesn't exist, make sure to run the docker image
     name = get_random_string(8)
-    client.containers.run(
+    logs = client.containers.run(
         docker_image,
         f"community get-clinical-notes --output /output/{args.output}",
         name=name,
         auto_remove=True
     )
+    print(logs)
     remove_docker_container(name)
 
 
