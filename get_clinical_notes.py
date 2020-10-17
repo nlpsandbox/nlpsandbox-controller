@@ -2,8 +2,17 @@
 import argparse
 import getpass
 import os
+import random
+import string
 
 import docker
+
+
+def get_random_string(length):
+    """Get random string"""
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    return result_str
 
 
 def remove_docker_container(container_name):
@@ -42,14 +51,13 @@ def main(args):
                         'mode': mounted_volumes[vol].split(":")[1]}
 
     # If the container doesn't exist, make sure to run the docker image
-
+    name = get_random_string(8)
     container = client.containers.run(
         docker_image,
-        "community get-clinical-notes --output /output/notes.json",
-        volumes=volumes, mem_limit='6g', stderr=True
+        f"community get-clinical-notes --output /output/{args.output}",
+        name=name
     )
-
-    remove_docker_container(container.name)
+    remove_docker_container(name)
 
 
 if __name__ == '__main__':
