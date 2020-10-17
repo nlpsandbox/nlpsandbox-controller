@@ -22,8 +22,8 @@ def main(args):
     print(getpass.getuser())
 
     # Add docker.config file
-    # docker_image = "nlpsandbox/cli:edge"
-    docker_image = "test:latest"
+    docker_image = "nlpsandbox/cli:edge"
+    # docker_image = "test:latest"
 
     # These are the volumes that you want to mount onto your docker container
     output_dir = os.getcwd()
