@@ -52,10 +52,11 @@ def main(args):
 
     # If the container doesn't exist, make sure to run the docker image
     name = get_random_string(8)
-    container = client.containers.run(
+    client.containers.run(
         docker_image,
         f"community get-clinical-notes --output /output/{args.output}",
-        name=name
+        name=name,
+        auto_remove=True
     )
     remove_docker_container(name)
 
