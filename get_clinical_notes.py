@@ -15,17 +15,6 @@ def get_random_string(length):
     return result_str
 
 
-def remove_docker_container(container_name):
-    """Remove docker container"""
-    client = docker.from_env()
-    try:
-        cont = client.containers.get(container_name)
-        cont.stop()
-        cont.remove()
-    except Exception:
-        print("Unable to remove container")
-
-
 def main(args):
     """Get clinical notes"""
     client = docker.from_env()
@@ -53,14 +42,12 @@ def main(args):
 
     # If the container doesn't exist, make sure to run the docker image
     name = get_random_string(8)
-    logs = client.containers.run(
+    client.containers.run(
         docker_image,
         f"community get-clinical-notes --output /output/{args.output}",
-        name=name,
+        name=name, volumes=volumes,
         auto_remove=True
     )
-    print(logs)
-    remove_docker_container(name)
 
 
 if __name__ == '__main__':
