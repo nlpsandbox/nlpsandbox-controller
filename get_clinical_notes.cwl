@@ -31,4 +31,4 @@ outputs:
   notes:
     type: File
     outputBinding:
-      glob: notes.json
+      glob: $(inputs.output)
