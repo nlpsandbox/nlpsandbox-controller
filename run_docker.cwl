@@ -20,11 +20,11 @@ inputs:
   - id: parentid
     type: string
   - id: status
-    type: string
+    type: boolean
   - id: synapse_config
     type: File
-  - id: input_dir
-    type: string
+  - id: data_notes
+    type: File
   - id: docker_script
     type: File
 
@@ -36,13 +36,11 @@ arguments:
     prefix: -p
   - valueFrom: $(inputs.docker_digest)
     prefix: -d
-  - valueFrom: $(inputs.status)
-    prefix: --status
   - valueFrom: $(inputs.parentid)
     prefix: --parentid
   - valueFrom: $(inputs.synapse_config.path)
     prefix: -c
-  - valueFrom: $(inputs.input_dir)
+  - valueFrom: $(inputs.data_notes)
     prefix: -i
 
 requirements:

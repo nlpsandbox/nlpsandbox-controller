@@ -146,6 +146,20 @@ steps:
         source: "#docker_validation_email/finished"
     out: [finished]
 
+  get_clinical_notes:
+    run: get_clinical_notes.cwl
+    in:
+      - id: docker_script
+        default:
+          class: File
+          location: "get_clinical_notes.py"
+      - id: data_endpoint
+        valueFrom: "http://10.23.55.45:8080/api/v1"
+      - id: output:
+        valueFrom: "prediction.json"
+    out:
+      - id: notes
+
   run_docker:
     run: run_docker.cwl
     in:
@@ -160,14 +174,13 @@ steps:
       - id: docker_authentication
         source: "#get_docker_config/docker_authentication"
       - id: status
-        source: "#validate_docker/status"
+        source: "#check_docker_status/finished"
       - id: parentid
         source: "#submitterUploadSynId"
       - id: synapse_config
         source: "#synapseConfig"
-      - id: input_dir
-        # TODO: update
-        valueFrom: "/tmp"
+      - id: data_notes
+        source: "#get_clinical_notes/notes"
       - id: docker_script
         default:
           class: File
