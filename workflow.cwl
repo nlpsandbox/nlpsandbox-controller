@@ -156,7 +156,7 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output:
-        valueFrom: "prediction.json"
+        valueFrom: "notes.json"
     out:
       - id: notes
 
