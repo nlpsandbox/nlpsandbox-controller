@@ -90,7 +90,7 @@ def main(syn, args):
                                           name=args.submissionid,
                                           # network_disabled=True,
                                           mem_limit='6g', stderr=True,
-                                          port={'8081': '8081'})
+                                          ports={'8081': '8080'})
         # except docker.errors.APIError as err:
         #     remove_docker_container(args.submissionid)
         #     errors = str(err) + "\n"
@@ -99,7 +99,7 @@ def main(syn, args):
 
     # Run clinical notes on submitted API server
     response = requests.post("http://10.23.55.45:8081/api/v1/dates",
-                             json=[data_notes_dict])
+                             json=data_notes_dict['items'])
     results = response.json()
     with open("predictions.json", "w") as pred_f:
         json.dump(results, pred_f)
