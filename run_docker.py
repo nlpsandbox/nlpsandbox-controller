@@ -71,7 +71,6 @@ def main(syn, args):
     # Look for if the container exists already, if so, reconnect
     print("checking for containers")
     container = None
-    errors = None
     for cont in client.containers.list(all=True):
         if args.submissionid in cont.name:
             # Must remove container if the container wasn't killed properly
@@ -84,16 +83,14 @@ def main(syn, args):
         # Run as detached, logs will stream below
         print("starting service")
         # docker run -d -p 8081:8080 nlpsandbox/date-annotator-example:latest 
-        # try:
         container = client.containers.run(docker_image,
                                           detach=True, # volumes=volumes,
                                           name=args.submissionid,
                                           # network_disabled=True,
                                           mem_limit='6g', stderr=True,
                                           ports={'8081': '8080'})
-        # except docker.errors.APIError as err:
-        #     remove_docker_container(args.submissionid)
-        #     errors = str(err) + "\n"
+        time.sleep(60)
+
     with open(data_notes, 'r') as notes_f:
         data_notes_dict = json.load(notes_f)
 
