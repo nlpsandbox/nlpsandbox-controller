@@ -1,15 +1,12 @@
 """Run training synthetic docker models"""
-from __future__ import print_function
 import argparse
-from functools import partial
 import getpass
+import json
 import os
-import signal
-import subprocess
-import sys
 import time
 
 import docker
+import requests
 import synapseclient
 
 
@@ -57,29 +54,6 @@ def remove_docker_image(image_name):
         print("Unable to remove image")
 
 
-def tar(directory, tar_filename):
-    """Tar all files in a directory and remove the files
-
-    Args:
-        directory: Directory path to files to tar
-        tar_filename:  tar file path
-    """
-    tar_command = ['tar', '-C', directory, '--remove-files', '.', '-cvzf',
-                   tar_filename]
-    subprocess.check_call(tar_command)
-
-
-def untar(directory, tar_filename):
-    """Untar a tar file into a directory
-
-    Args:
-        directory: Path to directory to untar files
-        tar_filename:  tar file path
-    """
-    untar_command = ['tar', '-C', directory, '-xvf', tar_filename]
-    subprocess.check_call(untar_command)
-
-
 def main(syn, args):
     """Run docker model"""
     if args.status == "INVALID":
@@ -95,21 +69,7 @@ def main(syn, args):
     # These are the volumes that you want to mount onto your docker container
     #output_dir = os.path.join(os.getcwd(), "output")
     output_dir = os.getcwd()
-    input_dir = args.input_dir
-
-    print("mounting volumes")
-    # These are the locations on the docker that you want your mounted
-    # volumes to be + permissions in docker (ro, rw)
-    # It has to be in this format '/output:rw'
-    mounted_volumes = {output_dir: '/output:rw',
-                       input_dir: '/data:ro'}
-    # All mounted volumes here in a list
-    all_volumes = [output_dir, input_dir]
-    # Mount volumes
-    volumes = {}
-    for vol in all_volumes:
-        volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
-                        'mode': mounted_volumes[vol].split(":")[1]}
+    data_notes = args.data_notes
 
     # Look for if the container exists already, if so, reconnect
     print("checking for containers")
@@ -126,15 +86,26 @@ def main(syn, args):
     if container is None:
         # Run as detached, logs will stream below
         print("running container")
-        try:
-            container = client.containers.run(docker_image,
-                                              detach=True, volumes=volumes,
-                                              name=args.submissionid,
-                                              network_disabled=True,
-                                              mem_limit='6g', stderr=True)
-        except docker.errors.APIError as err:
-            remove_docker_container(args.submissionid)
-            errors = str(err) + "\n"
+        # docker run -d -p 8081:8080 nlpsandbox/date-annotator-example:latest 
+        # try:
+        container = client.containers.run(docker_image,
+                                          detach=True, # volumes=volumes,
+                                          name=args.submissionid,
+                                          # network_disabled=True,
+                                          mem_limit='6g', stderr=True,
+                                          port={'8081': '8081'})
+        # except docker.errors.APIError as err:
+        #     remove_docker_container(args.submissionid)
+        #     errors = str(err) + "\n"
+    with open(data_notes, 'r') as notes_f:
+        data_notes_dict = json.load(notes_f)
+
+    # Run clinical notes on submitted API server
+    response = requests.post("http://10.23.55.45:8081/api/v1/dates",
+                             json=[data_notes_dict])
+    results = response.json()
+    with open("predictions.json", "w") as pred_f:
+        json.dump(results, pred_f)
 
     print("creating logfile")
     # Create the logfile
@@ -164,39 +135,13 @@ def main(syn, args):
         create_log_file(log_filename, log_text=errors)
         store_log_file(syn, log_filename, args.parentid)
 
-    print("finished training")
+    print("finished")
     # Try to remove the image
     remove_docker_image(docker_image)
 
     output_folder = os.listdir(output_dir)
-    if not output_folder:
-        raise Exception("No 'predictions.csv' file written to /output, "
-                        "please check inference docker")
-    elif "predictions.csv" not in output_folder:
-        raise Exception("No 'predictions.csv' file written to /output, "
-                        "please check inference docker")
-    # CWL has a limit of the array of files it can accept in a folder
-    # therefore creating a tarball is sometimes necessary
-    # tar(output_dir, 'outputs.tar.gz')
-
-
-def quitting(signo, _frame, submissionid=None, docker_image=None,
-             parentid=None, syn=None):
-    """When quit signal, stop docker container and delete image"""
-    print("Interrupted by %d, shutting down" % signo)
-    # Make sure to store logs and remove containers
-    try:
-        cont = client.containers.get(submissionid)
-        log_text = cont.logs()
-        log_filename = submissionid + "_training_log.txt"
-        create_log_file(log_filename, log_text=log_text)
-        store_log_file(syn, log_filename, args.parentid)
-        cont.stop()
-        cont.remove()
-    except Exception:
-        pass
-    remove_docker_image(docker_image)
-    sys.exit(0)
+    if "predictions.json" not in output_folder:
+        raise Exception("Your API did not produce any results")
 
 
 if __name__ == '__main__':
@@ -215,16 +160,7 @@ if __name__ == '__main__':
                         help="Parent Id of submitter directory")
     parser.add_argument("--status", required=True, help="Docker image status")
     args = parser.parse_args()
-    client = docker.from_env()
     syn = synapseclient.Synapse(configPath=args.synapse_config)
     syn.login()
-
-    docker_image = args.docker_repository + "@" + args.docker_digest
-
-    quit_sub = partial(quitting, submissionid=args.submissionid,
-                       docker_image=docker_image, parentid=args.parentid,
-                       syn=syn)
-    for sig in ('TERM', 'HUP', 'INT'):
-        signal.signal(getattr(signal, 'SIG'+sig), quit_sub)
 
     main(syn, args)
