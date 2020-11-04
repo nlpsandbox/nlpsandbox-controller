@@ -67,6 +67,19 @@ def main(syn, args):
     #output_dir = os.path.join(os.getcwd(), "output")
     output_dir = os.getcwd()
     data_notes = args.data_notes
+    print("mounting volumes")
+    # These are the locations on the docker that you want your mounted
+    # volumes to be + permissions in docker (ro, rw)
+    # It has to be in this format '/output:rw'
+    mounted_volumes = {output_dir: '/output:rw'}
+
+    # All mounted volumes here in a list
+    all_volumes = [output_dir]
+    # Mount volumes
+    volumes = {}
+    for vol in all_volumes:
+        volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
+                        'mode': mounted_volumes[vol].split(":")[1]}
 
     # Look for if the container exists already, if so, reconnect
     print("checking for containers")
@@ -84,9 +97,9 @@ def main(syn, args):
         print("starting service")
         # docker run -d -p 8081:8080 nlpsandbox/date-annotator-example:latest 
         container = client.containers.run(docker_image,
-                                          detach=True, # volumes=volumes,
+                                          detach=True, volumes=volumes,
                                           name=args.submissionid,
-                                          # network_disabled=True,
+                                          network_disabled=True,
                                           mem_limit='6g', stderr=True,
                                           ports={'8081': '8080'})
         time.sleep(60)
@@ -94,12 +107,19 @@ def main(syn, args):
     with open(data_notes, 'r') as notes_f:
         data_notes_dict = json.load(notes_f)
 
-    # Run clinical notes on submitted API server
-    response = requests.post("http://10.23.55.45:8081/api/v1/dates",
-                             json=data_notes_dict['items'])
-    results = response.json()
-    with open("predictions.json", "w") as pred_f:
-        json.dump(results, pred_f)
+    exec_cmd = ["curl", "-o", "/output/predictions.json", "-X", "POST",
+                "http://0.0.0.0:8080/api/v1/dates", "-H",
+                "accept: application/json",
+                "-H", "Content-Type: application/json", "-d",
+                json.dumps(data_notes_dict['items'])]
+    container.exec_run(exec_cmd)
+
+    # # Run clinical notes on submitted API server
+    # response = requests.post("http://10.23.55.45:8081/api/v1/dates",
+    #                          json=data_notes_dict['items'])
+    # results = response.json()
+    # with open("predictions.json", "w") as pred_f:
+    #     json.dump(results, pred_f)
 
     # print("creating logfile")
     # # Create the logfile
