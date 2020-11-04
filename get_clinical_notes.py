@@ -44,7 +44,7 @@ def main(args):
     name = get_random_string(8)
     client.containers.run(
         docker_image,
-        f"community get-clinical-notes --output /output/{args.output}",
+        f"community get-clinical-notes --output /output/{args.output} --data_node_host {args.data_endpoint}",
         name=name, volumes=volumes,
         auto_remove=True
     )
