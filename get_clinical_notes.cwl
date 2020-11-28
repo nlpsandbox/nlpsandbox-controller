@@ -11,6 +11,8 @@ inputs:
     type: string?
   - id: output
     type: string
+  - id: datasetid
+    type: string
   - id: docker_script
     type: File
 
@@ -20,6 +22,8 @@ arguments:
     prefix: -o
   - valueFrom: $(inputs.data_endpoint)
     prefix: -e
+  - valueFrom: $(inputs.datasetid)
+    prefix: -d
 
 requirements:
   - class: InitialWorkDirRequirement
