@@ -122,6 +122,7 @@ def main(syn, args):
         'location': "textPhysicalAddressAnnotations"
     }
 
+    all_annotations = []
     for note in data_notes_dict:
         noteid = note.pop("id")
         exec_cmd = [
@@ -138,9 +139,11 @@ def main(syn, args):
                               auto_remove=True)
 
         with open("annotations.json", "r") as note_f:
-            annotations = json.loads(note_f)
-        print(annotations)
-        raise ValueError("stop")
+            annotations = json.load(note_f)
+        # TODO: update this to use note_name
+        annotations['annotationSource'] = {"resourceSource": noteid}
+        all_annotations.append(annotations)
+
     # all_annotations = []
     # for note in data_notes_dict:
     #     # Run clinical notes on submitted API server
