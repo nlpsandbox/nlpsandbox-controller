@@ -99,7 +99,6 @@ def main(syn, args):
         # containers on the same network
         # docker network create --internal submission
         # docker run --network submission -d nlpsandbox/date-annotator-example:latest
-        # TODO: need to track ports that are open
         container = client.containers.run(docker_image,
                                           detach=True, volumes=volumes,
                                           name=args.submissionid,
