@@ -60,9 +60,6 @@ def main(syn, args):
 
     print(getpass.getuser())
 
-    # Add docker.config file
-    docker_image = args.docker_repository + "@" + args.docker_digest
-
     # These are the volumes that you want to mount onto your docker container
     #output_dir = os.path.join(os.getcwd(), "output")
     output_dir = os.getcwd()
@@ -170,7 +167,7 @@ def main(syn, args):
     print("finished")
     # Try to remove the image
     remove_docker_container(args.submissionid)
-    remove_docker_image(docker_image)
+    remove_docker_image(container.image)
 
     output_folder = os.listdir(output_dir)
     if "predictions.json" not in output_folder:
