@@ -38,6 +38,7 @@ def main(args):
     container_ip = container.attrs['NetworkSettings'][
         'Networks'
     ]['submission']['IPAddress']
+
     # TODO: This will have to map to evaluation queue
     api_url_map = {
         'date': "textDateAnnotations",
@@ -61,6 +62,7 @@ def main(args):
             invalid_reasons.append(
                 "API service endpoint returns incorrect schema"
             )
+        break
 
     example_note = {
         "note": {
