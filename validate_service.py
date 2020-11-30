@@ -29,6 +29,7 @@ def remove_docker_image(image_name):
 def main(args):
     """Run docker model"""
     client = docker.from_env()
+    invalid_reasons = []
 
     print("Get submission container")
     # Get container
@@ -44,13 +45,23 @@ def main(args):
         'location': "textPhysicalAddressAnnotations"
     }
 
-    exec_cmd = ["curl", "-s", "-L", "-X", "GET", f"http://{container_ip}:8080"]
-    runtime = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
+    exec_cmd = ["curl", "-s", "-L", "-X", "GET",
+                f"http://{container_ip}:8080"]
+    service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                                     name=f"{args.submissionid}_curl",
                                     network="submission", stderr=True,
                                     auto_remove=True)
-    print(runtime)
     # TODO: validate runtime
+    service_info = json.loads(service.decode("utf-8"))
+    expected_service_keys = ['author', 'authorEmail', 'description',
+                             'license', 'name', 'repository', 'url',
+                             'version']
+    for key in expected_service_keys:
+        if key not in service_info.keys():
+            invalid_reasons.append(
+                "API service endpoint returns incorrect schema"
+            )
+
     example_note = {
         "note": {
             "noteType": "loinc:LP29684-5",
@@ -75,8 +86,10 @@ def main(args):
     # TODO: Validate post response
 
     print("finished")
-    invalid_reasons = ""
-    prediction_file_status = ""
+    if invalid_reasons:
+        prediction_file_status = "VALIDATED"
+    else:
+        prediction_file_status = "INVALID"
 
     result = {'submission_errors': "\n".join(invalid_reasons),
               'submission_status': prediction_file_status}
