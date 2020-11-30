@@ -150,24 +150,39 @@ steps:
         valueFrom: "awesome-dataset"
     out:
       - id: notes
-
-  run_docker:
-    run: run_docker.cwl
+  start_service:
+    run: start_service.cwl
     in:
+      - id: submissionid
+        source: "#submissionId"
       - id: docker_repository
         source: "#get_docker_submission/docker_repository"
       - id: docker_digest
         source: "#get_docker_submission/docker_digest"
-      - id: submissionid
-        source: "#submissionId"
       - id: docker_registry
         source: "#get_docker_config/docker_registry"
       - id: docker_authentication
         source: "#get_docker_config/docker_authentication"
       - id: status
         source: "#check_docker_status/finished"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: docker_script
+        default:
+          class: File
+          location: "start_service.py"
+    out:
+      - id: finished
+
+  annotate_note:
+    run: annotate_note.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
       - id: parentid
         source: "#submitterUploadSynId"
+      - id: status
+        source: "#check_docker_status/finished"
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
@@ -175,7 +190,7 @@ steps:
       - id: docker_script
         default:
           class: File
-          location: "run_docker.py"
+          location: "annotate_note.py"
     out:
       - id: predictions
 
@@ -183,7 +198,7 @@ steps:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/upload_to_synapse.cwl
     in:
       - id: infile
-        source: "#run_docker/predictions"
+        source: "#annotate_note/predictions"
       - id: parentid
         source: "#adminUploadSynId"
       - id: used_entity

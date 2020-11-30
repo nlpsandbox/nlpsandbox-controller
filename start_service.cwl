@@ -45,7 +45,7 @@ requirements:
   - class: InlineJavascriptRequirement
 
 outputs:
-  predictions:
-    type: File
+  finished:
+    type: boolean
     outputBinding:
-      glob: predictions.json
+      outputEval: $( true )
