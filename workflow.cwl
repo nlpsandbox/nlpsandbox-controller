@@ -150,6 +150,7 @@ steps:
         valueFrom: "awesome-dataset"
     out:
       - id: notes
+
   start_service:
     run: start_service.cwl
     in:
@@ -174,6 +175,22 @@ steps:
     out:
       - id: finished
 
+  validate_service:
+    run: validate_service.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: status
+        source: "#start_service/finished"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: docker_script
+        default:
+          class: File
+          location: "validate_service.py"
+    out:
+      - id: finished
+
   annotate_note:
     run: annotate_note.cwl
     in:
@@ -182,7 +199,7 @@ steps:
       - id: parentid
         source: "#submitterUploadSynId"
       - id: status
-        source: "#check_docker_status/finished"
+        source: "#start_service/finished"
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
