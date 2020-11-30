@@ -19,8 +19,6 @@ inputs:
     type: string
   - id: status
     type: boolean?
-  - id: synapse_config
-    type: File
   - id: docker_script
     type: File
 
@@ -32,8 +30,6 @@ arguments:
     prefix: -p
   - valueFrom: $(inputs.docker_digest)
     prefix: -d
-  - valueFrom: $(inputs.synapse_config.path)
-    prefix: -c
 
 requirements:
   - class: InitialWorkDirRequirement

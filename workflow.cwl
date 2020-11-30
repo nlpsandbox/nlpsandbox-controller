@@ -166,8 +166,6 @@ steps:
         source: "#get_docker_config/docker_authentication"
       - id: status
         source: "#check_docker_status/finished"
-      - id: synapse_config
-        source: "#synapseConfig"
       - id: docker_script
         default:
           class: File
