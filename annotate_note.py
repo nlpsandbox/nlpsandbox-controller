@@ -61,7 +61,6 @@ def main(syn, args):
     print(getpass.getuser())
 
     # These are the volumes that you want to mount onto your docker container
-    #output_dir = os.path.join(os.getcwd(), "output")
     output_dir = os.getcwd()
     data_notes = args.data_notes
     print("mounting volumes")
@@ -78,9 +77,7 @@ def main(syn, args):
         volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
                         'mode': mounted_volumes[vol].split(":")[1]}
 
-    # Look for if the container exists already, if so, reconnect
     print("Get submission container")
-    # Get container
     container = client.containers.get(args.submissionid)
 
     # docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name
@@ -118,20 +115,6 @@ def main(syn, args):
         # TODO: update this to use note_name
         annotations['annotationSource'] = {"resourceSource": noteid}
         all_annotations.append(annotations)
-
-    # all_annotations = []
-    # for note in data_notes_dict:
-    #     # Run clinical notes on submitted API server
-    #     noteid = note.pop("id")
-    #     response = requests.post(
-    #         f"http://0.0.0.0:8081/api/v1/{api_url_map['date']}",
-    #         # f"http://10.23.55.45:8081/api/v1/{api_url_map['date']}",
-    #         json={"note": note}
-    #     )
-    #     results = response.json()
-    #     # TODO: update this to use note_name
-    #     results['annotationSource'] = {"resourceSource": noteid}
-    #     all_annotations.append(results)
 
     with open("predictions.json", "w") as pred_f:
         json.dump(all_annotations, pred_f)
