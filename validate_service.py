@@ -34,6 +34,8 @@ def main(args):
     print("Get submission container")
     # Get container
     container = client.containers.get(str(args.submissionid))
+    # This obtains the ip of each docker container only accesible to other
+    # docker containers on the same network
     # docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name
     container_ip = container.attrs['NetworkSettings'][
         'Networks'
@@ -46,24 +48,30 @@ def main(args):
         'location': "textPhysicalAddressAnnotations"
     }
 
+    # validate that the root URL redirects to the service API endpoint
     exec_cmd = ["curl", "-s", "-L", "-X", "GET",
                 f"http://{container_ip}:8080"]
-    service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
-                                    name=f"{args.submissionid}_curl",
-                                    network="submission", stderr=True,
-                                    auto_remove=True)
-    # TODO: validate runtime
-    service_info = json.loads(service.decode("utf-8"))
-    expected_service_keys = ['author', 'authorEmail', 'description',
-                             'license', 'name', 'repository', 'url',
-                             'version']
-    for key in expected_service_keys:
-        if key not in service_info.keys():
-            invalid_reasons.append(
-                "API service endpoint returns incorrect schema"
-            )
-        break
-
+    try:
+        service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
+                                        name=f"{args.submissionid}_curl",
+                                        network="submission", stderr=True,
+                                        auto_remove=True)
+        service_info = json.loads(service.decode("utf-8"))
+        expected_service_keys = ['author', 'authorEmail', 'description',
+                                 'license', 'name', 'repository', 'url',
+                                 'version']
+        for key in expected_service_keys:
+            if key not in service_info.keys():
+                invalid_reasons.append(
+                    "API service endpoint returns incorrect schema"
+                )
+            break
+    except Exception:
+        invalid_reasons.append(
+            "API /service endpoint not implemented. "
+            "Root URL must also redirect to service endpoint"
+        )
+    # validate that the note can be annotated by particular annotator
     example_note = {
         "note": {
             "noteType": "loinc:LP29684-5",
@@ -78,29 +86,31 @@ def main(args):
         "-H", "Content-Type: application/json", "-d",
         json.dumps(example_note)
     ]
-    example_post = client.containers.run(
-        "curlimages/curl:7.73.0", exec_cmd,
-        name=f"{args.submissionid}_curl",
-        network="submission", stderr=True,
-        auto_remove=True
-    )
-    print(example_post)
-    # TODO: Validate post response
+    try:
+        example_post = client.containers.run(
+            "curlimages/curl:7.73.0", exec_cmd,
+            name=f"{args.submissionid}_curl",
+            network="submission", stderr=True,
+            auto_remove=True
+        )
+    except Exception:
+        invalid_reasons.append(
+            f"API /{api_url_map['date']} endpoint not implemented. "
+        )
 
     print("finished")
     if invalid_reasons:
         prediction_file_status = "VALIDATED"
     else:
         prediction_file_status = "INVALID"
+        # Try to remove the image if the service is invalid
+        remove_docker_container(args.submissionid)
+        remove_docker_image(container.image)
 
     result = {'submission_errors': "\n".join(invalid_reasons),
               'submission_status': prediction_file_status}
     with open(args.results, 'w') as file_o:
         file_o.write(json.dumps(result))
-
-    # Try to remove the image
-    # remove_docker_container(args.submissionid)
-    # remove_docker_image(container.image)
 
 
 if __name__ == '__main__':
