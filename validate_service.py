@@ -37,13 +37,43 @@ def main(args):
     container_ip = container.attrs['NetworkSettings'][
         'Networks'
     ]['submission']['IPAddress']
+    # TODO: This will have to map to evaluation queue
+    api_url_map = {
+        'date': "textDateAnnotations",
+        'person': "textPersonNameAnnotations",
+        'location': "textPhysicalAddressAnnotations"
+    }
 
-    exec_cmd = ["curl", "-L", "-X", "GET", f"http://{container_ip}:8080"]
+    exec_cmd = ["curl", "-s", "-L", "-X", "GET", f"http://{container_ip}:8080"]
     runtime = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                                     name=f"{args.submissionid}_curl",
                                     network="submission", stderr=True,
                                     auto_remove=True)
     print(runtime)
+    # TODO: validate runtime
+    example_note = {
+        "note": {
+            "noteType": "loinc:LP29684-5",
+            "patientId": "507f1f77bcf86cd799439011",
+            "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott."
+        }
+    }
+    exec_cmd = [
+        "curl", "-s", "-X", "POST",
+        f"http://{container_ip}:8080/api/v1/{api_url_map['date']}", "-H",
+        "accept: application/json",
+        "-H", "Content-Type: application/json", "-d",
+        json.dumps(example_note)
+    ]
+    example_post = client.containers.run(
+        "curlimages/curl:7.73.0", exec_cmd,
+        name=f"{args.submissionid}_curl",
+        network="submission", stderr=True,
+        auto_remove=True
+    )
+    print(example_post)
+    # TODO: Validate post response
+
     print("finished")
     invalid_reasons = ""
     prediction_file_status = ""

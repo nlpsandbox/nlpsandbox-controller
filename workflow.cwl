@@ -199,7 +199,7 @@ steps:
       - id: parentid
         source: "#submitterUploadSynId"
       - id: status
-        source: "#start_service/finished"
+        source: "#validate_service/finished"
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
