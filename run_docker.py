@@ -95,50 +95,67 @@ def main(syn, args):
     if container is None:
         # Run as detached, logs will stream below
         print("starting service")
-        # docker run -d -p 8081:8080 nlpsandbox/date-annotator-example:latest 
-        # TODO: need to track ports that are open
+        # Created bridge docker network that is only accessible to other
+        # containers on the same network
+        # docker network create --internal submission
+        # docker run --network submission -d nlpsandbox/date-annotator-example:latest
         container = client.containers.run(docker_image,
                                           detach=True, volumes=volumes,
                                           name=args.submissionid,
                                           # network_disabled=True,
-                                          mem_limit='6g', stderr=True,
-                                          ports={'8080': '8081'})
+                                          network="submission",
+                                          mem_limit='6g', stderr=True)
+                                          #ports={'8080': '8081'})
         time.sleep(60)
+    # docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name
+    container_ip = container.attrs['NetworkSettings'][
+        'Networks'
+    ]['submission']['IPAddress']
 
     with open(data_notes, 'r') as notes_f:
         data_notes_dict = json.load(notes_f)
-    # This will have to map to evaluation queue
+    # TODO: This will have to map to evaluation queue
     api_url_map = {
         'date': "textDateAnnotations",
         'person': "textPersonNameAnnotations",
         'location': "textPhysicalAddressAnnotations"
     }
-    # prediction_dict = {}
-    # for note in data_notes_dict:
-    #     noteid = note.pop("id")
-    #     print(note)
-    #     exec_cmd = ["curl", "-o", "/output/annotations.json", "-X", "POST",
-    #                 f"http://0.0.0.0:8080/api/v1/{api_url_map['date']}", "-H",
-    #                 "accept: application/json",
-    #                 "-H", "Content-Type: application/json", "-d",
-    #                 json.dumps({"note": note})]
-    #     print(container.exec_run(exec_cmd))
-    #     with open("annotations.json", "r") as note_f:
-    #         annotations = json.loads(note_f)
-    #     print(annotations)
+
     all_annotations = []
     for note in data_notes_dict:
-        # Run clinical notes on submitted API server
         noteid = note.pop("id")
-        response = requests.post(
-            f"http://0.0.0.0:8081/api/v1/{api_url_map['date']}",
-            # f"http://10.23.55.45:8081/api/v1/{api_url_map['date']}",
-            json={"note": note}
-        )
-        results = response.json()
+        exec_cmd = [
+            "curl", "-o", "/output/annotations.json", "-X", "POST",
+            f"http://{container_ip}:8080/api/v1/{api_url_map['date']}", "-H",
+            "accept: application/json",
+            "-H", "Content-Type: application/json", "-d",
+            json.dumps({"note": note})
+        ]
+        client.containers.run("curlimages/curl:7.73.0", exec_cmd,
+                              volumes=volumes,
+                              name=f"{args.submissionid}_curl",
+                              network="submission", stderr=True,
+                              auto_remove=True)
+
+        with open("annotations.json", "r") as note_f:
+            annotations = json.load(note_f)
         # TODO: update this to use note_name
-        results['annotationSource'] = {"resourceSource": noteid}
-        all_annotations.append(results)
+        annotations['annotationSource'] = {"resourceSource": noteid}
+        all_annotations.append(annotations)
+
+    # all_annotations = []
+    # for note in data_notes_dict:
+    #     # Run clinical notes on submitted API server
+    #     noteid = note.pop("id")
+    #     response = requests.post(
+    #         f"http://0.0.0.0:8081/api/v1/{api_url_map['date']}",
+    #         # f"http://10.23.55.45:8081/api/v1/{api_url_map['date']}",
+    #         json={"note": note}
+    #     )
+    #     results = response.json()
+    #     # TODO: update this to use note_name
+    #     results['annotationSource'] = {"resourceSource": noteid}
+    #     all_annotations.append(results)
 
     with open("predictions.json", "w") as pred_f:
         json.dump(all_annotations, pred_f)
