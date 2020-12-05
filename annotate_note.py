@@ -3,10 +3,9 @@ import argparse
 import getpass
 import json
 import os
-import time
+import random
 
 import docker
-import requests
 import synapseclient
 
 
@@ -60,11 +59,7 @@ def main(syn, args):
 
     print(getpass.getuser())
 
-    # Add docker.config file
-    docker_image = args.docker_repository + "@" + args.docker_digest
-
     # These are the volumes that you want to mount onto your docker container
-    #output_dir = os.path.join(os.getcwd(), "output")
     output_dir = os.getcwd()
     data_notes = args.data_notes
     print("mounting volumes")
@@ -81,32 +76,10 @@ def main(syn, args):
         volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
                         'mode': mounted_volumes[vol].split(":")[1]}
 
-    # Look for if the container exists already, if so, reconnect
-    print("checking for containers")
-    container = None
-    for cont in client.containers.list(all=True):
-        if args.submissionid in cont.name:
-            # Must remove container if the container wasn't killed properly
-            if cont.status == "exited":
-                cont.remove()
-            else:
-                container = cont
-    # If the container doesn't exist, make sure to run the docker image
-    if container is None:
-        # Run as detached, logs will stream below
-        print("starting service")
-        # Created bridge docker network that is only accessible to other
-        # containers on the same network
-        # docker network create --internal submission
-        # docker run --network submission -d nlpsandbox/date-annotator-example:latest
-        container = client.containers.run(docker_image,
-                                          detach=True, volumes=volumes,
-                                          name=args.submissionid,
-                                          # network_disabled=True,
-                                          network="submission",
-                                          mem_limit='6g', stderr=True)
-                                          #ports={'8080': '8081'})
-        time.sleep(60)
+    print("Get submission container")
+    submissionid = args.submissionid
+    container = client.containers.get(submissionid)
+
     # docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name
     container_ip = container.attrs['NetworkSettings'][
         'Networks'
@@ -133,7 +106,7 @@ def main(syn, args):
         ]
         client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                               volumes=volumes,
-                              name=f"{args.submissionid}_curl",
+                              name=f"{args.submissionid}_curl_{random.randint(10, 1000)}",
                               network="submission", stderr=True,
                               auto_remove=True)
 
@@ -142,20 +115,6 @@ def main(syn, args):
         # TODO: update this to use note_name
         annotations['annotationSource'] = {"resourceSource": noteid}
         all_annotations.append(annotations)
-
-    # all_annotations = []
-    # for note in data_notes_dict:
-    #     # Run clinical notes on submitted API server
-    #     noteid = note.pop("id")
-    #     response = requests.post(
-    #         f"http://0.0.0.0:8081/api/v1/{api_url_map['date']}",
-    #         # f"http://10.23.55.45:8081/api/v1/{api_url_map['date']}",
-    #         json={"note": note}
-    #     )
-    #     results = response.json()
-    #     # TODO: update this to use note_name
-    #     results['annotationSource'] = {"resourceSource": noteid}
-    #     all_annotations.append(results)
 
     with open("predictions.json", "w") as pred_f:
         json.dump(all_annotations, pred_f)
@@ -191,7 +150,7 @@ def main(syn, args):
     print("finished")
     # Try to remove the image
     remove_docker_container(args.submissionid)
-    remove_docker_image(docker_image)
+    remove_docker_image(container.image)
 
     output_folder = os.listdir(output_dir)
     if "predictions.json" not in output_folder:
@@ -201,17 +160,11 @@ def main(syn, args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--submissionid", required=True,
-                        help="Submission Id")
-    parser.add_argument("-p", "--docker_repository", required=True,
-                        help="Docker Repository")
-    parser.add_argument("-d", "--docker_digest", required=True,
-                        help="Docker Digest")
+                        help="Submission Id", type=str)
     parser.add_argument("-i", "--data_notes", required=True,
                         help="Clinical data notes")
     parser.add_argument("-c", "--synapse_config", required=True,
                         help="credentials file")
-    parser.add_argument("--parentid", required=True,
-                        help="Parent Id of submitter directory")
     args = parser.parse_args()
     syn = synapseclient.Synapse(configPath=args.synapse_config)
     syn.login()

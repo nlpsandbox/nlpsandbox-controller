@@ -146,28 +146,72 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "notes.json"
-      - id: datasetid
-        valueFrom: "awesome-dataset"
+      - id: dataset_id
+        valueFrom: "2014-i2b2-20201203"
+      - id: fhir_store_id
+        valueFrom: "evaluation"
     out:
       - id: notes
 
-  run_docker:
-    run: run_docker.cwl
+  start_service:
+    run: start_service.cwl
     in:
+      - id: submissionid
+        source: "#submissionId"
       - id: docker_repository
         source: "#get_docker_submission/docker_repository"
       - id: docker_digest
         source: "#get_docker_submission/docker_digest"
-      - id: submissionid
-        source: "#submissionId"
       - id: docker_registry
         source: "#get_docker_config/docker_registry"
       - id: docker_authentication
         source: "#get_docker_config/docker_authentication"
       - id: status
         source: "#check_docker_status/finished"
+      - id: docker_script
+        default:
+          class: File
+          location: "start_service.py"
+    out:
+      - id: finished
+
+  validate_service:
+    run: validate_service.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: status
+        source: "#start_service/finished"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: docker_script
+        default:
+          class: File
+          location: "validate_service.py"
+    out:
+      - id: finished
+      - id: results
+      - id: status
+      - id: invalid_reasons
+# Add annotation and emailing
+  check_status_validate_service:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/check_status.cwl
+    in:
+      - id: status
+        source: "#validate_service/status"
+      - id: previous_annotation_finished
+        source: "#validate_service/finished"
+    out: [finished]
+
+  annotate_note:
+    run: annotate_note.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
       - id: parentid
         source: "#submitterUploadSynId"
+      - id: status
+        source: "#check_status_validate_service/finished"
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
@@ -175,7 +219,7 @@ steps:
       - id: docker_script
         default:
           class: File
-          location: "run_docker.py"
+          location: "annotate_note.py"
     out:
       - id: predictions
 
@@ -183,7 +227,7 @@ steps:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/upload_to_synapse.cwl
     in:
       - id: infile
-        source: "#run_docker/predictions"
+        source: "#annotate_note/predictions"
       - id: parentid
         source: "#adminUploadSynId"
       - id: used_entity

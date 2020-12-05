@@ -42,8 +42,9 @@ def main(args):
 
     # If the container doesn't exist, make sure to run the docker image
     name = get_random_string(8)
-    run_cmd = ["community", "get-clinical-notes", "--output",
-               f"/output/{args.output}", "--datasetid", args.datasetid]
+    run_cmd = ["community", "get-notes", "--output",
+               f"/output/{args.output}", "--dataset_id", args.dataset_id,
+               "--fhir_store_id", args.fhir_store_id]
     if args.data_endpoint is not None:
         run_cmd.extend(["--data_node_host", args.data_endpoint])
     client.containers.run(
@@ -54,7 +55,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--datasetid", required=True)
+    parser.add_argument("-d", "--dataset_id", required=True)
+    parser.add_argument("-f", "--fhir_store_id", required=True)
     parser.add_argument("-o", "--output", required=True)
     parser.add_argument("-e", "--data_endpoint")
     args = parser.parse_args()

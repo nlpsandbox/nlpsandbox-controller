@@ -11,7 +11,9 @@ inputs:
     type: string?
   - id: output
     type: string
-  - id: datasetid
+  - id: dataset_id
+    type: string
+  - id: fhir_store_id
     type: string
   - id: docker_script
     type: File
@@ -22,8 +24,10 @@ arguments:
     prefix: -o
   - valueFrom: $(inputs.data_endpoint)
     prefix: -e
-  - valueFrom: $(inputs.datasetid)
+  - valueFrom: $(inputs.dataset_id)
     prefix: -d
+  - valueFrom: $(inputs.fhir_store_id)
+    prefix: -f
 
 requirements:
   - class: InitialWorkDirRequirement
