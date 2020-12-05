@@ -113,7 +113,11 @@ def main(syn, args):
         with open("annotations.json", "r") as note_f:
             annotations = json.load(note_f)
         # TODO: update this to use note_name
-        annotations['annotationSource'] = {"resourceSource": noteid}
+        annotations['annotationSource'] = {
+            "resourceSource": {
+                "name": note['note_name']
+            }
+        }
         all_annotations.append(annotations)
 
     with open("predictions.json", "w") as pred_f:
