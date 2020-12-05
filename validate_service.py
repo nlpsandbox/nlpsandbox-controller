@@ -50,17 +50,13 @@ def main(args):
     }
 
     # validate that the root URL redirects to the service API endpoint
-    print(container_ip)
-
     exec_cmd = ["curl", "-s", "-L", "-X", "GET",
                 f"http://{container_ip}:8080"]
     try:
-        print(container_ip)
         service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                                         name=f"{args.submissionid}_curl_1",
                                         network="submission", stderr=True,
                                         auto_remove=True)
-        print(service)
         service_info = json.loads(service.decode("utf-8"))
         expected_service_keys = ['author', 'authorEmail', 'description',
                                  'license', 'name', 'repository', 'url',
@@ -104,15 +100,14 @@ def main(args):
         )
 
     print("finished")
-    if invalid_reasons:
+    # If there are no invalid reasons -> Validated
+    if not invalid_reasons:
         prediction_file_status = "VALIDATED"
     else:
         prediction_file_status = "INVALID"
-        print(invalid_reasons)
         # Try to remove the image if the service is invalid
-        # TODO: Remove container and stuff
-        # remove_docker_container(args.submissionid)
-        # remove_docker_image(container.image)
+        remove_docker_container(args.submissionid)
+        remove_docker_image(container.image)
 
     result = {'submission_errors': "\n".join(invalid_reasons),
               'submission_status': prediction_file_status}

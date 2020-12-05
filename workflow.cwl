@@ -190,6 +190,18 @@ steps:
           location: "validate_service.py"
     out:
       - id: finished
+      - id: results
+      - id: status
+      - id: invalid_reasons
+# Add annotation and emailing
+  check_status_validate_service:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/check_status.cwl
+    in:
+      - id: status
+        source: "#validate_service/status"
+      - id: previous_annotation_finished
+        source: "#validate_service/finished"
+    out: [finished]
 
   annotate_note:
     run: annotate_note.cwl
@@ -199,7 +211,7 @@ steps:
       - id: parentid
         source: "#submitterUploadSynId"
       - id: status
-        source: "#validate_service/finished"
+        source: "#check_status_validate_service/finished"
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
