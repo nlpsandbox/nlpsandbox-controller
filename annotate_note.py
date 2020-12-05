@@ -3,10 +3,9 @@ import argparse
 import getpass
 import json
 import os
-import time
+import random
 
 import docker
-import requests
 import synapseclient
 
 
@@ -78,7 +77,8 @@ def main(syn, args):
                         'mode': mounted_volumes[vol].split(":")[1]}
 
     print("Get submission container")
-    container = client.containers.get(args.submissionid)
+    submissionid = args.submissionid
+    container = client.containers.get(submissionid)
 
     # docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name
     container_ip = container.attrs['NetworkSettings'][
@@ -106,7 +106,7 @@ def main(syn, args):
         ]
         client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                               volumes=volumes,
-                              name=f"{args.submissionid}_curl",
+                              name=f"{args.submissionid}_curl_{random.randint(10, 1000)}",
                               network="submission", stderr=True,
                               auto_remove=True)
 
@@ -160,7 +160,7 @@ def main(syn, args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--submissionid", required=True,
-                        help="Submission Id")
+                        help="Submission Id", type=str)
     parser.add_argument("-i", "--data_notes", required=True,
                         help="Clinical data notes")
     parser.add_argument("-c", "--synapse_config", required=True,

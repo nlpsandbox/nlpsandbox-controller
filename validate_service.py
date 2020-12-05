@@ -33,7 +33,8 @@ def main(args):
 
     print("Get submission container")
     # Get container
-    container = client.containers.get(str(args.submissionid))
+    submissionid = args.submissionid
+    container = client.containers.get(submissionid)
     # This obtains the ip of each docker container only accesible to other
     # docker containers on the same network
     # docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container_name
@@ -49,13 +50,17 @@ def main(args):
     }
 
     # validate that the root URL redirects to the service API endpoint
+    print(container_ip)
+
     exec_cmd = ["curl", "-s", "-L", "-X", "GET",
                 f"http://{container_ip}:8080"]
     try:
+        print(container_ip)
         service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
-                                        name=f"{args.submissionid}_curl",
+                                        name=f"{args.submissionid}_curl_1",
                                         network="submission", stderr=True,
                                         auto_remove=True)
+        print(service)
         service_info = json.loads(service.decode("utf-8"))
         expected_service_keys = ['author', 'authorEmail', 'description',
                                  'license', 'name', 'repository', 'url',
@@ -89,7 +94,7 @@ def main(args):
     try:
         example_post = client.containers.run(
             "curlimages/curl:7.73.0", exec_cmd,
-            name=f"{args.submissionid}_curl",
+            name=f"{args.submissionid}_curl_2",
             network="submission", stderr=True,
             auto_remove=True
         )
@@ -103,9 +108,11 @@ def main(args):
         prediction_file_status = "VALIDATED"
     else:
         prediction_file_status = "INVALID"
+        print(invalid_reasons)
         # Try to remove the image if the service is invalid
-        remove_docker_container(args.submissionid)
-        remove_docker_image(container.image)
+        # TODO: Remove container and stuff
+        # remove_docker_container(args.submissionid)
+        # remove_docker_image(container.image)
 
     result = {'submission_errors': "\n".join(invalid_reasons),
               'submission_status': prediction_file_status}
@@ -116,7 +123,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--submissionid", required=True,
-                        help="Submission Id")
+                        help="Submission Id", type=str)
     parser.add_argument("-c", "--synapse_config", required=True,
                         help="credentials file")
     parser.add_argument("-r", "--results", required=True,

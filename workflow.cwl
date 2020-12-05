@@ -146,8 +146,10 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "notes.json"
-      - id: datasetid
-        valueFrom: "awesome-dataset"
+      - id: dataset_id
+        valueFrom: "2014-i2b2-20201203"
+      - id: fhir_store_id
+        valueFrom: "evaluation"
     out:
       - id: notes
 
