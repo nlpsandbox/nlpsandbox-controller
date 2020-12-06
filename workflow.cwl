@@ -246,6 +246,19 @@ steps:
       - id: uploaded_file_version
       - id: results
 
+  get_annotation_store:
+    run: get_annotation_store.cwl
+    in:
+      - id: data_endpoint
+        valueFrom: "http://10.23.55.45:8080/api/v1"
+      - id: dataset_id
+        valueFrom: "submissions"
+      - id: annotation_store_id
+        source: "#submissionId"
+      - id: create_if_missing
+        default: true
+    out: [finished]
+
   store_annotations:
     run: store_annotations.cwl
     in:
@@ -257,6 +270,8 @@ steps:
         source: "#submissionId"
       - id: annotation_json
         source: "#annotate_note/predictions"
+      - id: previous_step
+        source: "#get_annotation_store/finished"
     out: []
 
   annotate_docker_upload_results:

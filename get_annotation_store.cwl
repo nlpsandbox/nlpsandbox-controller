@@ -4,11 +4,14 @@
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [community, store-annotations]
+baseCommand: [community,  get-annotation-store]
 
 hints:
   DockerRequirement:
     dockerPull: nlpsandbox/cli:edge
+
+requirements:
+  - class: InlineJavascriptRequirement
 
 inputs:
   - id: data_endpoint
@@ -23,11 +26,13 @@ inputs:
     type: int  # This is only int because submission id is int
     inputBinding:
       prefix: --annotation_store_id
-  - id: annotation_json
-    type: File
-    inputBinding:
-      prefix: --annotation_json
-  - id: previous_step
+  - id: create_if_missing
     type: boolean?
+    inputBinding:
+      prefix: --create_if_missing
 
-outputs: []
+outputs:
+  finished:
+    type: boolean
+    outputBinding:
+      outputEval: $( true )
