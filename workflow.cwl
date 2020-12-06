@@ -136,12 +136,8 @@ steps:
     out: [finished]
 
   get_clinical_notes:
-    run: get_clinical_notes.cwl
+    run: get_notes.cwl
     in:
-      - id: docker_script
-        default:
-          class: File
-          location: "get_clinical_notes.py"
       - id: data_endpoint
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
