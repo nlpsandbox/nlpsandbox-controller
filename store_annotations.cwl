@@ -20,12 +20,14 @@ inputs:
     inputBinding:
       prefix: --dataset_id
   - id: annotation_store_id
-    type: int
+    type: int  # This is only int because submission id is int
     inputBinding:
       prefix: --annotation_store_id
   - id: annotation_json
     type: File
     inputBinding:
       prefix: --annotation_json
+  - id: previous_step
+    type: boolean?
 
 outputs: []
