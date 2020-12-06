@@ -287,6 +287,24 @@ steps:
         source: "#annotate_docker_validation_with_output/finished"
     out: [finished]
 
+  download_goldstandard:
+    run: list_annotations.cwl
+    in:
+      - id: data_endpoint
+        valueFrom: "http://10.23.55.45:8080/api/v1"
+      - id: output
+        valueFrom: "goldstandard.json"
+      #- id: dataset_id
+      #  valueFrom: "2014-i2b2-20201203"
+      #- id: annotation_store_id
+      #  valueFrom: "goldstandard"
+      - id: dataset_id
+        valueFrom: "submissions"
+      - id: annotation_store_id
+        valueFrom: "9709141"
+    out:
+      - id: annotations
+
 #   validation:
 #     run: validate.cwl
 #     in:
