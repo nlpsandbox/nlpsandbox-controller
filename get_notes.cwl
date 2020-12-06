@@ -1,6 +1,6 @@
 #!/usr/bin/env cwl-runner
 #
-# Run Docker Submission
+# Get clinical notes
 #
 cwlVersion: v1.0
 class: CommandLineTool
