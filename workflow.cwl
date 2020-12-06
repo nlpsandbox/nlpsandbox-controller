@@ -287,6 +287,13 @@ steps:
         source: "#annotate_docker_validation_with_output/finished"
     out: [finished]
 
+  convert_submission_annotation:
+    run: convert_annotations.cwl
+    in:
+      - id: annotation_json
+        source: "#annotate_note/predictions"
+    out: [results]
+
 #   validation:
 #     run: validate.cwl
 #     in:
