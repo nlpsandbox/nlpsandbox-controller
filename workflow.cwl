@@ -146,10 +146,14 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "notes.json"
+      #- id: dataset_id
+      #  valueFrom: "2014-i2b2-20201203"
+      #- id: fhir_store_id
+      #  valueFrom: "evaluation"
       - id: dataset_id
-        valueFrom: "2014-i2b2-20201203"
+        valueFrom: "awesome-dataset"
       - id: fhir_store_id
-        valueFrom: "evaluation"
+        valueFrom: "awesome-fhir-store"
     out:
       - id: notes
 
@@ -193,6 +197,7 @@ steps:
       - id: results
       - id: status
       - id: invalid_reasons
+
 # Add annotation and emailing
   check_status_validate_service:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/check_status.cwl
@@ -240,6 +245,19 @@ steps:
       - id: uploaded_fileid
       - id: uploaded_file_version
       - id: results
+
+  store_annotations:
+    run: store_annotations.cwl
+    in:
+      - id: data_endpoint
+        valueFrom: "http://10.23.55.45:8080/api/v1"
+      - id: dataset_id
+        valueFrom: "submissions"
+      - id: annotation_store_id
+        source: "#submissionId"
+      - id: annotation_json
+        source: "#annotate_note/predictions"
+    out: []
 
   annotate_docker_upload_results:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/annotate_submission.cwl
