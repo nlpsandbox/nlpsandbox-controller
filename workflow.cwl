@@ -135,8 +135,8 @@ steps:
         source: "#docker_validation_email/finished"
     out: [finished]
 
-  get_clinical_notes:
-    run: get_notes.cwl
+  list_clinical_notes:
+    run: list_notes.cwl
     in:
       - id: data_endpoint
         valueFrom: "http://10.23.55.45:8080/api/v1"
@@ -216,7 +216,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
-        source: "#get_clinical_notes/notes"
+        source: "#list_clinical_notes/notes"
       - id: docker_script
         default:
           class: File
