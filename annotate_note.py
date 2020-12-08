@@ -126,7 +126,6 @@ def main(syn, args):
         }
         all_annotations.append(annotations)
 
-    print(all_annotations)
     with open("predictions.json", "w") as pred_f:
         json.dump(all_annotations, pred_f)
 
@@ -164,7 +163,6 @@ def main(syn, args):
     remove_docker_image(container.image)
 
     output_folder = os.listdir(output_dir)
-    print(output_folder)
     if "predictions.json" not in output_folder:
         raise Exception("Your API did not produce any results")
 
