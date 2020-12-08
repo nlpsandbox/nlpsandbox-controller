@@ -55,9 +55,8 @@ def main(args):
     try:
         service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                                         name=f"{args.submissionid}_curl_1",
-                                        network="submission", stderr=True,
-                                        auto_remove=True)
-        print(service)
+                                        network="submission", stderr=True)
+                                        # auto_remove=True)
         service_info = json.loads(service.decode("utf-8"))
         expected_service_keys = ['author', 'authorEmail', 'description',
                                  'license', 'name', 'repository', 'url',
@@ -68,6 +67,7 @@ def main(args):
                     "API service endpoint returns incorrect schema"
                 )
             break
+        service.remove()
     except Exception:
         invalid_reasons.append(
             "API /service endpoint not implemented. "
@@ -95,8 +95,7 @@ def main(args):
             network="submission", stderr=True
             # auto_remove=True
         )
-        print(example_post)
-
+        example_post.remove()
     except Exception:
         invalid_reasons.append(
             f"API /{api_url_map['date']} endpoint not implemented. "
