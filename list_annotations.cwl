@@ -1,10 +1,10 @@
 #!/usr/bin/env cwl-runner
 #
-# Get clinical notes
+# List annotation store annotations
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [community, list-notes]
+baseCommand: [community, list-annotations]
 
 hints:
   DockerRequirement:
@@ -22,17 +22,17 @@ inputs:
     type: string
     inputBinding:
       prefix: --dataset_id
-  - id: fhir_store_id
+  - id: annotation_store_id
     type: string
     inputBinding:
-      prefix: --fhir_store_id
+      prefix: --annotation_store_id
   - id: output
     type: string
     inputBinding:
       prefix: --output
 
 outputs:
-  notes:
+  annotations:
     type: File
     outputBinding:
       glob: $(inputs.output)

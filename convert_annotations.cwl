@@ -45,6 +45,7 @@ requirements:
 
           all_annotations = []
           for annotation in annotations:
+              print(annotation)
               noteid = annotation['annotationSource']['resourceSource']['name']
               for annots in annotation[post_path]:
                   annots['noteId'] = noteid
