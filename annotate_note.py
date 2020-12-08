@@ -107,8 +107,8 @@ def main(syn, args):
         client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                               volumes=volumes,
                               name=f"{args.submissionid}_curl_{random.randint(10, 1000)}",
-                              network="submission", stderr=True,
-                              auto_remove=True)
+                              network="submission", stderr=True)
+                              # auto_remove=True)
 
         with open("annotations.json", "r") as note_f:
             annotations = json.load(note_f)
