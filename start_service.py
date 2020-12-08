@@ -40,7 +40,7 @@ def main(args):
                                           mem_limit='6g', stderr=True)
                                           #ports={'8080': '8081'})
         # sleep for 60 seconds just in case it takes time to start the service
-        time.sleep(120)
+        time.sleep(60)
 
 
 if __name__ == '__main__':
