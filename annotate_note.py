@@ -101,7 +101,7 @@ def main(syn, args):
         noteid = note.pop("id")
         exec_cmd = [
             #"curl", "-o", "/output/annotations.json", "-X", "POST",
-            "curl", "s", "-X", "POST",
+            "curl", "-s", "-X", "POST",
             f"http://{container_ip}:8080/api/v1/{api_url_map['date']}", "-H",
             "accept: application/json",
             "-H", "Content-Type: application/json", "-d",
@@ -114,6 +114,7 @@ def main(syn, args):
             network="submission", stderr=True
             # auto_remove=True
         )
+        print(annotate_note)
         annotations = json.loads(annotate_note.decode("utf-8"))
 
         # with open("annotations.json", "r") as note_f:
