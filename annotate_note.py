@@ -107,15 +107,16 @@ def main(syn, args):
             "-H", "Content-Type: application/json", "-d",
             json.dumps({"note": note})
         ]
+        curl_name = f"{args.submissionid}_curl_{random.randint(10, 1000)}"
         annotate_note = client.containers.run(
             "curlimages/curl:7.73.0", exec_cmd,
             volumes=volumes,
-            name=f"{args.submissionid}_curl_{random.randint(10, 1000)}",
+            name=curl_name,
             network="submission", stderr=True
             # auto_remove=True
         )
-        print(annotate_note)
         annotations = json.loads(annotate_note.decode("utf-8"))
+        remove_docker_container(curl_name)
 
         # with open("annotations.json", "r") as note_f:
         #     annotations = json.load(note_f)
@@ -127,6 +128,7 @@ def main(syn, args):
         }
         all_annotations.append(annotations)
 
+    print(all_annotations)
     with open("predictions.json", "w") as pred_f:
         json.dump(all_annotations, pred_f)
 
@@ -164,6 +166,7 @@ def main(syn, args):
     remove_docker_image(container.image)
 
     output_folder = os.listdir(output_dir)
+    print(output_folder)
     if "predictions.json" not in output_folder:
         raise Exception("Your API did not produce any results")
 
