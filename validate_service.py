@@ -110,8 +110,8 @@ def main(args):
     else:
         prediction_file_status = "INVALID"
         # Try to remove the image if the service is invalid
-        # remove_docker_container(args.submissionid)
-        # remove_docker_image(container.image)
+        remove_docker_container(args.submissionid)
+        remove_docker_image(container.image)
 
     result = {'submission_errors': "\n".join(invalid_reasons),
               'submission_status': prediction_file_status}
