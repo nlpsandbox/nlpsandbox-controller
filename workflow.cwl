@@ -26,11 +26,11 @@ inputs:
     type: File
 
 # there are no output at the workflow engine level.  Everything is uploaded to Synapse
-# outputs: []
-outputs:
-  result:
-    type: File
-    outputSource: scoring/results
+outputs: []
+# outputs:
+#  result:
+#    type: File
+#    outputSource: scoring/results
 
 steps:
 
