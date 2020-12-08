@@ -91,7 +91,7 @@ def main(args):
         example_post = client.containers.run(
             "curlimages/curl:7.73.0", exec_cmd,
             name=f"{args.submissionid}_curl_2",
-            network="submission", stderr=True
+            network="submission", stderr=True,
             auto_remove=True
         )
     except Exception:
