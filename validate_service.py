@@ -100,6 +100,7 @@ def main(args):
         )
 
     print("finished")
+    print(invalid_reasons)
     # If there are no invalid reasons -> Validated
     if not invalid_reasons:
         prediction_file_status = "VALIDATED"
