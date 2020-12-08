@@ -72,8 +72,7 @@ def main(args):
             "API /service endpoint not implemented. "
             "Root URL must also redirect to service endpoint"
         )
-    service.stop()
-    service.remove()
+    remove_docker_container(f"{args.submissionid}_curl_1")
     # validate that the note can be annotated by particular annotator
     example_note = {
         "note": {
@@ -100,8 +99,7 @@ def main(args):
         invalid_reasons.append(
             f"API /{api_url_map['date']} endpoint not implemented. "
         )
-    example_post.stop()
-    example_post.remove()
+    remove_docker_container(f"{args.submissionid}_curl_2")
 
     print("finished")
     print(invalid_reasons)
