@@ -60,24 +60,22 @@ def main(syn, args):
     print(getpass.getuser())
 
     # These are the volumes that you want to mount onto your docker container
-    output_dir = os.path.join(os.getcwd(), "outdir")
-    os.mkdir(output_dir)
-    print(output_dir)
+    output_dir = os.getcwd()
     data_notes = args.data_notes
-    print("mounting volumes")
+
+    # print("mounting volumes")
     # These are the locations on the docker that you want your mounted
     # volumes to be + permissions in docker (ro, rw)
     # It has to be in this format '/output:rw'
-    mounted_volumes = {output_dir: '/output:rw'}
+    # mounted_volumes = {output_dir: '/output:rw'}
 
-    # All mounted volumes here in a list
-    all_volumes = [output_dir]
-    # Mount volumes
-    volumes = {}
-    for vol in all_volumes:
-        volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
-                        'mode': mounted_volumes[vol].split(":")[1]}
-    print(volumes)
+    # # All mounted volumes here in a list
+    # all_volumes = [output_dir]
+    # # Mount volumes
+    # volumes = {}
+    # for vol in all_volumes:
+    #     volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
+    #                     'mode': mounted_volumes[vol].split(":")[1]}
     print("Get submission container")
     submissionid = args.submissionid
     container = client.containers.get(submissionid)
@@ -110,7 +108,7 @@ def main(syn, args):
         curl_name = f"{args.submissionid}_curl_{random.randint(10, 1000)}"
         annotate_note = client.containers.run(
             "curlimages/curl:7.73.0", exec_cmd,
-            volumes=volumes,
+            # volumes=volumes,
             name=curl_name,
             network="submission", stderr=True
             # auto_remove=True
