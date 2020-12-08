@@ -60,7 +60,7 @@ def main(syn, args):
     print(getpass.getuser())
 
     # These are the volumes that you want to mount onto your docker container
-    output_dir = os.mkdir(os.getcwd(), "outdir")
+    output_dir = os.mkdir(os.path.join(os.getcwd(), "outdir"))
     data_notes = args.data_notes
     print("mounting volumes")
     # These are the locations on the docker that you want your mounted
