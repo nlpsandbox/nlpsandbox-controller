@@ -67,12 +67,13 @@ def main(args):
                     "API service endpoint returns incorrect schema"
                 )
             break
-        service.remove()
     except Exception:
         invalid_reasons.append(
             "API /service endpoint not implemented. "
             "Root URL must also redirect to service endpoint"
         )
+    service.stop()
+    service.remove()
     # validate that the note can be annotated by particular annotator
     example_note = {
         "note": {
@@ -95,11 +96,12 @@ def main(args):
             network="submission", stderr=True
             # auto_remove=True
         )
-        example_post.remove()
     except Exception:
         invalid_reasons.append(
             f"API /{api_url_map['date']} endpoint not implemented. "
         )
+    example_post.stop()
+    example_post.remove()
 
     print("finished")
     print(invalid_reasons)
