@@ -4,7 +4,7 @@
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [community, get-notes]
+baseCommand: [community, list-notes]
 
 hints:
   DockerRequirement:
