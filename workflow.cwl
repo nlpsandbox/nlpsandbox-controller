@@ -391,31 +391,39 @@ steps:
         valueFrom: "date"
     out:
       - id: results
-      
-  #score_email:
-  #  run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/score_email.cwl
-  #  in:
-  #    - id: submissionid
-  #      source: "#submissionId"
-  #    - id: synapse_config
-  #      source: "#synapseConfig"
-  #    - id: results
-  #      source: "#scoring/results"
-  #  out: []
 
-  #annotate_submission_with_output:
-  #  run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/annotate_submission.cwl
-  #  in:
-  #    - id: submissionid
-  #      source: "#submissionId"
-  #    - id: annotation_values
-  #      source: "#scoring/results"
-  #    - id: to_public
-  #      default: true
-  #    - id: force
-  #      default: true
-  #    - id: synapse_config
-  #      source: "#synapseConfig"
-  #    - id: previous_annotation_finished
-  #      source: "#annotate_docker_upload_results/finished"
-  #  out: [finished]
+  convert_score:
+    run: convert_score.cwl
+    in:
+      - id: score_json
+        source: "#scoring/results"
+    out:
+      - id: results
+      
+  score_email:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/score_email.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: results
+        source: "#convert_score/results"
+    out: []
+
+  annotate_submission_with_output:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/annotate_submission.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: annotation_values
+        source: "#convert_score/results"
+      - id: to_public
+        default: true
+      - id: force
+        default: true
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: previous_annotation_finished
+        source: "#annotate_docker_upload_results/finished"
+    out: [finished]
