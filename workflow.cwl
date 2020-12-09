@@ -27,6 +27,10 @@ inputs:
 
 # there are no output at the workflow engine level.  Everything is uploaded to Synapse
 outputs: []
+# outputs:
+#  result:
+#    type: File
+#    outputSource: scoring/results
 
 steps:
 
@@ -374,42 +378,52 @@ steps:
 #         source: "#validation_email/finished"
 #     out: [finished]
 
-#   scoring:
-#     run: score.cwl
-#     in:
-#       - id: inputfile
-#         source: "#run_docker/predictions"
-#       - id: goldstandard
-#         source: "#download_goldstandard/filepath"
-#       - id: check_validation_finished 
-#         source: "#check_status/finished"
-#     out:
-#       - id: results
-      
-#   score_email:
-#     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/score_email.cwl
-#     in:
-#       - id: submissionid
-#         source: "#submissionId"
-#       - id: synapse_config
-#         source: "#synapseConfig"
-#       - id: results
-#         source: "#scoring/results"
-#     out: []
+  scoring:
+    run: score.cwl
+    in:
+      - id: pred_filepath
+        source: "#convert_submission_annotation/results"
+      - id: gold_filepath
+        source: "#convert_goldstandard_annotation/results"
+      - id: output
+        valueFrom: "result.json"
+      - id: eval_type 
+        valueFrom: "date"
+    out:
+      - id: results
 
-#   annotate_submission_with_output:
-#     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/annotate_submission.cwl
-#     in:
-#       - id: submissionid
-#         source: "#submissionId"
-#       - id: annotation_values
-#         source: "#scoring/results"
-#       - id: to_public
-#         default: true
-#       - id: force
-#         default: true
-#       - id: synapse_config
-#         source: "#synapseConfig"
-#       - id: previous_annotation_finished
-#         source: "#annotate_validation_with_output/finished"
-#     out: [finished]
+  convert_score:
+    run: convert_score.cwl
+    in:
+      - id: score_json
+        source: "#scoring/results"
+    out:
+      - id: results
+      
+  score_email:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/score_email.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: results
+        source: "#convert_score/results"
+    out: []
+
+  annotate_submission_with_output:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/annotate_submission.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: annotation_values
+        source: "#convert_score/results"
+      - id: to_public
+        default: true
+      - id: force
+        default: true
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: previous_annotation_finished
+        source: "#annotate_docker_upload_results/finished"
+    out: [finished]
