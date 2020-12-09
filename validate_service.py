@@ -48,13 +48,15 @@ def main(args):
         'person': "textPersonNameAnnotations",
         'location': "textPhysicalAddressAnnotations"
     }
-
+    annotator_client = "test"
     # validate that the root URL redirects to the service API endpoint
-    exec_cmd = ["curl", "-s", "-L", "-X", "GET",
-                f"http://{container_ip}:8080"]
+    # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
+    #             f"http://{container_ip}:8080"]
+    exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host', 
+                f"http://{container_ip}:8080/api/v1"]
     try:
         # auto_remove doesn't work when being run with the orchestrator
-        service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
+        service = client.containers.run(annotator_client, exec_cmd,
                                         name=f"{args.submissionid}_curl_1",
                                         network="submission", stderr=True)
                                         # auto_remove=True)
