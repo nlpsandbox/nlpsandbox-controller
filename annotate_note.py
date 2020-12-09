@@ -62,20 +62,20 @@ def main(syn, args):
     # These are the volumes that you want to mount onto your docker container
     output_dir = os.getcwd()
     data_notes = args.data_notes
-    print("mounting volumes")
+
+    # print("mounting volumes")
     # These are the locations on the docker that you want your mounted
     # volumes to be + permissions in docker (ro, rw)
     # It has to be in this format '/output:rw'
-    mounted_volumes = {output_dir: '/output:rw'}
+    # mounted_volumes = {output_dir: '/output:rw'}
 
-    # All mounted volumes here in a list
-    all_volumes = [output_dir]
-    # Mount volumes
-    volumes = {}
-    for vol in all_volumes:
-        volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
-                        'mode': mounted_volumes[vol].split(":")[1]}
-
+    # # All mounted volumes here in a list
+    # all_volumes = [output_dir]
+    # # Mount volumes
+    # volumes = {}
+    # for vol in all_volumes:
+    #     volumes[vol] = {'bind': mounted_volumes[vol].split(":")[0],
+    #                     'mode': mounted_volumes[vol].split(":")[1]}
     print("Get submission container")
     submissionid = args.submissionid
     container = client.containers.get(submissionid)
@@ -98,21 +98,27 @@ def main(syn, args):
     for note in data_notes_dict:
         noteid = note.pop("id")
         exec_cmd = [
-            "curl", "-o", "/output/annotations.json", "-X", "POST",
+            #"curl", "-o", "/output/annotations.json", "-X", "POST",
+            "curl", "-s", "-X", "POST",
             f"http://{container_ip}:8080/api/v1/{api_url_map['date']}", "-H",
             "accept: application/json",
             "-H", "Content-Type: application/json", "-d",
             json.dumps({"note": note})
         ]
-        client.containers.run("curlimages/curl:7.73.0", exec_cmd,
-                              volumes=volumes,
-                              name=f"{args.submissionid}_curl_{random.randint(10, 1000)}",
-                              network="submission", stderr=True,
-                              auto_remove=True)
+        curl_name = f"{args.submissionid}_curl_{random.randint(10, 1000)}"
+        annotate_note = client.containers.run(
+            "curlimages/curl:7.73.0", exec_cmd,
+            # volumes=volumes,
+            name=curl_name,
+            network="submission", stderr=True
+            # auto_remove=True
+        )
+        annotations = json.loads(annotate_note.decode("utf-8"))
+        remove_docker_container(curl_name)
 
-        with open("annotations.json", "r") as note_f:
-            annotations = json.load(note_f)
-        # TODO: update this to use note_name
+        # with open("annotations.json", "r") as note_f:
+        #     annotations = json.load(note_f)
+
         annotations['annotationSource'] = {
             "resourceSource": {
                 "name": note['note_name']

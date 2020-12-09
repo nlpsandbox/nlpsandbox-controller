@@ -41,7 +41,7 @@ def main(args):
     container_ip = container.attrs['NetworkSettings'][
         'Networks'
     ]['submission']['IPAddress']
-
+    print(container_ip)
     # TODO: This will have to map to evaluation queue
     api_url_map = {
         'date': "textDateAnnotations",
@@ -53,10 +53,11 @@ def main(args):
     exec_cmd = ["curl", "-s", "-L", "-X", "GET",
                 f"http://{container_ip}:8080"]
     try:
+        # auto_remove doesn't work when being run with the orchestrator
         service = client.containers.run("curlimages/curl:7.73.0", exec_cmd,
                                         name=f"{args.submissionid}_curl_1",
-                                        network="submission", stderr=True,
-                                        auto_remove=True)
+                                        network="submission", stderr=True)
+                                        # auto_remove=True)
         service_info = json.loads(service.decode("utf-8"))
         expected_service_keys = ['author', 'authorEmail', 'description',
                                  'license', 'name', 'repository', 'url',
@@ -72,6 +73,7 @@ def main(args):
             "API /service endpoint not implemented. "
             "Root URL must also redirect to service endpoint"
         )
+    remove_docker_container(f"{args.submissionid}_curl_1")
     # validate that the note can be annotated by particular annotator
     example_note = {
         "note": {
@@ -91,15 +93,17 @@ def main(args):
         example_post = client.containers.run(
             "curlimages/curl:7.73.0", exec_cmd,
             name=f"{args.submissionid}_curl_2",
-            network="submission", stderr=True,
-            auto_remove=True
+            network="submission", stderr=True
+            # auto_remove=True
         )
     except Exception:
         invalid_reasons.append(
             f"API /{api_url_map['date']} endpoint not implemented. "
         )
+    remove_docker_container(f"{args.submissionid}_curl_2")
 
     print("finished")
+    print(invalid_reasons)
     # If there are no invalid reasons -> Validated
     if not invalid_reasons:
         prediction_file_status = "VALIDATED"
