@@ -8,7 +8,7 @@ baseCommand: python
 
 hints:
   DockerRequirement:
-    dockerPull: sagebionetworks/
+    dockerPull: python:3.7
 
 inputs:
 
