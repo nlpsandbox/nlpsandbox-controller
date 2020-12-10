@@ -47,14 +47,14 @@ requirements:
 
           all_annotations = []
           for annotation in annotations:
-              print(annotation)
+              # print(annotation)
               noteid = annotation['annotationSource']['resourceSource']['name']
               for annots in annotation[post_path]:
                   annots['noteId'] = os.path.basename(noteid)
                   all_annotations.append(annots)
 
           new_annotations = {annotation_key: all_annotations}
-          print(new_annotations)
+          # print(new_annotations)
           with open(args.results, "w") as results_f:
               json.dump(new_annotations, results_f)
 

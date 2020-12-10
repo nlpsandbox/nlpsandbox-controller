@@ -52,28 +52,32 @@ def main(args):
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
-    exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host', 
+    exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
+    exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host',
+                "http://10.23.55.45:9000/api/v1"]
     try:
         # auto_remove doesn't work when being run with the orchestrator
         service = client.containers.run(annotator_client, exec_cmd,
                                         name=f"{args.submissionid}_curl_1",
                                         network="submission", stderr=True)
                                         # auto_remove=True)
+        print(service)
         service_info = json.loads(service.decode("utf-8"))
-        expected_service_keys = ['author', 'authorEmail', 'description',
-                                 'license', 'name', 'repository', 'url',
-                                 'version']
-        for key in expected_service_keys:
-            if key not in service_info.keys():
-                invalid_reasons.append(
-                    "API service endpoint returns incorrect schema"
-                )
-            break
-    except Exception:
+        print(service_info)
+        # expected_service_keys = ['author', 'authorEmail', 'description',
+        #                          'license', 'name', 'repository', 'url',
+        #                          'version']
+        # for key in expected_service_keys:
+        #     if key not in service_info.keys():
+        #         invalid_reasons.append(
+        #             "API service endpoint returns incorrect schema"
+        #         )
+        #     break
+    except Exception as e:
         invalid_reasons.append(
-            "API /service endpoint not implemented. "
-            "Root URL must also redirect to service endpoint"
+            "API /service endpoint not implemented or implemented incorrectly. "
+            "Make sure correct service object is returned."
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
     # validate that the note can be annotated by particular annotator
@@ -84,6 +88,9 @@ def main(args):
             "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott."
         }
     }
+    
+    exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host',
+                f"http://{container_ip}:8080/api/v1"]
     exec_cmd = [
         "curl", "-s", "-X", "POST",
         f"http://{container_ip}:8080/api/v1/{api_url_map['date']}", "-H",
