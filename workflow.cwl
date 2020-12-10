@@ -411,7 +411,7 @@ steps:
       - id: output
         valueFrom: "result.json"
       - id: eval_type 
-        valueFrom: "date"
+        source: "#determine_annotator_type/annotator_type"
     out:
       - id: results
 
