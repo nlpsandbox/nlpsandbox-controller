@@ -39,9 +39,8 @@ steps:
     in:
       - id: entityid
         source: "#submitterUploadSynId"
-      # Must update the principal id here
       - id: principalid
-        valueFrom: "3379097"
+        valueFrom: "3413389"
       - id: permissions
         valueFrom: "download"
       - id: synapse_config
@@ -53,9 +52,8 @@ steps:
     in:
       - id: entityid
         source: "#adminUploadSynId"
-      # Must update the principal id here
       - id: principalid
-        valueFrom: "3379097"
+        valueFrom: "3413389"
       - id: permissions
         valueFrom: "download"
       - id: synapse_config

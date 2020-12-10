@@ -32,6 +32,8 @@ requirements:
           #!/usr/bin/env python
           import argparse
           import json
+          import os
+
           parser = argparse.ArgumentParser()
           parser.add_argument("-a", "--annotation_json", required=True, help="Annotation json file")
           parser.add_argument("-r", "--results", required=True, help="Results file")
@@ -45,10 +47,10 @@ requirements:
 
           all_annotations = []
           for annotation in annotations:
-              print(annotation)
+              # print(annotation)
               noteid = annotation['annotationSource']['resourceSource']['name']
               for annots in annotation[post_path]:
-                  annots['noteId'] = noteid
+                  annots['noteId'] = os.path.basename(noteid)
                   all_annotations.append(annots)
 
           new_annotations = {annotation_key: all_annotations}
