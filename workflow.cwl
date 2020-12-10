@@ -146,14 +146,14 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "notes.json"
-      - id: dataset_id
-        valueFrom: "2014-i2b2-20201203"
-      - id: fhir_store_id
-        valueFrom: "evaluation"
       #- id: dataset_id
-      #  valueFrom: "awesome-dataset"
+      #  valueFrom: "2014-i2b2-20201203"
       #- id: fhir_store_id
-      #  valueFrom: "awesome-fhir-store"
+      #  valueFrom: "evaluation"
+      - id: dataset_id
+        valueFrom: "awesome-dataset"
+      - id: fhir_store_id
+        valueFrom: "awesome-fhir-store"
     out:
       - id: notes
 
@@ -298,14 +298,14 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "goldstandard.json"
-      - id: dataset_id
-        valueFrom: "2014-i2b2-20201203"
-      - id: annotation_store_id
-        valueFrom: "goldstandard"
       #- id: dataset_id
-      #  valueFrom: "submissions"
+      #  valueFrom: "2014-i2b2-20201203"
       #- id: annotation_store_id
-      #  valueFrom: "9709141"
+      #  valueFrom: "goldstandard"
+      - id: dataset_id
+        valueFrom: "submissions"
+      - id: annotation_store_id
+        valueFrom: "9709141"
     out:
       - id: annotations
 
