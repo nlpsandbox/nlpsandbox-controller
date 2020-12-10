@@ -14,6 +14,8 @@ inputs:
 
   - id: score_json
     type: File
+  - id: annotator_type
+    type: string
 
 arguments:
   - valueFrom: convert_score.py
@@ -21,7 +23,8 @@ arguments:
     prefix: -s
   - valueFrom: results.json
     prefix: -r
-
+  - valueFrom: $(inputs.annotator_type)
+    prefix: -a
 
 requirements:
   - class: InlineJavascriptRequirement
@@ -36,12 +39,14 @@ requirements:
           parser = argparse.ArgumentParser()
           parser.add_argument("-s", "--score_json", required=True, help="Score json file")
           parser.add_argument("-r", "--results", required=True, help="Results file")
+          parser.add_argument("-a", "--annotator_type", required=True, help="Annotator type")
+
           args = parser.parse_args()
         
           with open(args.score_json, "r") as score_f:
               scores = json.load(score_f)
           
-          annotator_type = "date"
+          annotator_type = args.annotator_type"
           key = f"{annotator_type}_location"
           new_scores_dict = {"location_{metric}_{type}_{mode}".format(
                                  metric=location['metric'],

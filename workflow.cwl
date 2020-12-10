@@ -420,6 +420,8 @@ steps:
     in:
       - id: score_json
         source: "#scoring/results"
+      - id: annotator_type
+        source: "#determine_annotator_type/annotator_type"
     out:
       - id: results
       
