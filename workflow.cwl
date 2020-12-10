@@ -30,7 +30,7 @@ inputs:
     #  default: "2014-i2b2-20201203"
   - id: fhir_store_id
     type: string
-    default: "awesome-fhir_store"
+    default: "awesome-fhir-store"
     #  default: "evaluation"
 
 
@@ -249,6 +249,13 @@ steps:
       - id: uploaded_file_version
       - id: results
 
+  make_store_name:
+    run: make_annotation_store_name.cwl
+    in:
+      - id: submission_id
+        source: "#submissionId"
+    out: [annotation_store_id]
+
   get_annotation_store:
     run: get_annotation_store.cwl
     in:
@@ -257,10 +264,12 @@ steps:
       - id: dataset_id
         source: "#dataset_id"
       - id: annotation_store_id
-        source: "#submissionId"
+        source: "#make_store_name/annotation_store_id"
       - id: create_if_missing
         default: true
     out: [finished]
+
+
 
   store_annotations:
     run: store_annotations.cwl
@@ -270,7 +279,7 @@ steps:
       - id: dataset_id
         source: "#dataset_id"
       - id: annotation_store_id
-        source: "#submissionId"
+        source: "#make_store_name/annotation_store_id"
       - id: annotation_json
         source: "#annotate_note/predictions"
       - id: previous_step
@@ -301,10 +310,13 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "goldstandard.json"
+      #- id: dataset_id
+      #  source: "#dataset_id"
       #- id: annotation_store_id
+      #  source: "#make_store_name/annotation_store_id"
       #  valueFrom: "goldstandard"
       - id: dataset_id
-        source: "#dataset_id"
+        valueFrom: "submissions"
       - id: annotation_store_id
         valueFrom: "9709141"
     out:

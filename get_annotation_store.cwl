@@ -23,7 +23,7 @@ inputs:
     inputBinding:
       prefix: --dataset_id
   - id: annotation_store_id
-    type: int  # This is only int because submission id is int
+    type: string
     inputBinding:
       prefix: --annotation_store_id
   - id: create_if_missing
