@@ -24,6 +24,15 @@ inputs:
     type: string
   - id: synapseConfig
     type: File
+  - id: dataset_id
+    type: string
+    default: "awesome-dataset"
+    #  default: "2014-i2b2-20201203"
+  - id: fhir_store_id
+    type: string
+    default: "awesome-fhir-store"
+    #  default: "evaluation"
+
 
 # there are no output at the workflow engine level.  Everything is uploaded to Synapse
 outputs: []
@@ -39,7 +48,6 @@ steps:
     in:
       - id: entityid
         source: "#submitterUploadSynId"
-      # Must update the principal id here
       - id: principalid
         valueFrom: "3413389"
       - id: permissions
@@ -53,7 +61,6 @@ steps:
     in:
       - id: entityid
         source: "#adminUploadSynId"
-      # Must update the principal id here
       - id: principalid
         valueFrom: "3413389"
       - id: permissions
@@ -146,14 +153,10 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "notes.json"
-      #- id: dataset_id
-      #  valueFrom: "2014-i2b2-20201203"
-      #- id: fhir_store_id
-      #  valueFrom: "evaluation"
       - id: dataset_id
-        valueFrom: "awesome-dataset"
+        source: "#dataset_id"
       - id: fhir_store_id
-        valueFrom: "awesome-fhir-store"
+        source: "#fhir_store_id"
     out:
       - id: notes
 
@@ -246,15 +249,22 @@ steps:
       - id: uploaded_file_version
       - id: results
 
+  make_store_name:
+    run: make_annotation_store_name.cwl
+    in:
+      - id: submission_id
+        source: "#submissionId"
+    out: [annotation_store_id]
+
   get_annotation_store:
     run: get_annotation_store.cwl
     in:
       - id: data_endpoint
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: dataset_id
-        valueFrom: "submissions"
+        source: "#dataset_id"
       - id: annotation_store_id
-        source: "#submissionId"
+        source: "#make_store_name/annotation_store_id"
       - id: create_if_missing
         default: true
     out: [finished]
@@ -265,9 +275,9 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: dataset_id
-        valueFrom: "submissions"
+        source: "#dataset_id"
       - id: annotation_store_id
-        source: "#submissionId"
+        source: "#make_store_name/annotation_store_id"
       - id: annotation_json
         source: "#annotate_note/predictions"
       - id: previous_step
@@ -299,8 +309,9 @@ steps:
       - id: output
         valueFrom: "goldstandard.json"
       #- id: dataset_id
-      #  valueFrom: "2014-i2b2-20201203"
+      #  source: "#dataset_id"
       #- id: annotation_store_id
+      #  source: "#make_store_name/annotation_store_id"
       #  valueFrom: "goldstandard"
       - id: dataset_id
         valueFrom: "submissions"
