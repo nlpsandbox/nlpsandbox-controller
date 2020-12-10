@@ -269,8 +269,6 @@ steps:
         default: true
     out: [finished]
 
-
-
   store_annotations:
     run: store_annotations.cwl
     in:
