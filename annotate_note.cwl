@@ -19,6 +19,8 @@ inputs:
     type: File
   - id: docker_script
     type: File
+  - id: annotator_type
+    type: string
 
 arguments: 
   - valueFrom: $(inputs.docker_script.path)
@@ -28,6 +30,8 @@ arguments:
     prefix: -c
   - valueFrom: $(inputs.data_notes)
     prefix: -i
+  - valueFrom: $(inputs.annotator_type)
+    prefix: -a
 
 requirements:
   - class: InitialWorkDirRequirement

@@ -91,7 +91,7 @@ def main(syn, args):
     api_url_map = {
         'date': "textDateAnnotations",
         'person': "textPersonNameAnnotations",
-        'location': "textPhysicalAddressAnnotations"
+        'address': "textPhysicalAddressAnnotations"
     }
 
     all_annotations = []
@@ -100,7 +100,7 @@ def main(syn, args):
         exec_cmd = [
             #"curl", "-o", "/output/annotations.json", "-X", "POST",
             "curl", "-s", "-X", "POST",
-            f"http://{container_ip}:8080/api/v1/{api_url_map['date']}", "-H",
+            f"http://{container_ip}:8080/api/v1/{api_url_map[args.annotator_type]}", "-H",
             "accept: application/json",
             "-H", "Content-Type: application/json", "-d",
             json.dumps({"note": note})
@@ -175,6 +175,8 @@ if __name__ == '__main__':
                         help="Clinical data notes")
     parser.add_argument("-c", "--synapse_config", required=True,
                         help="credentials file")
+    parser.add_argument("-a", "--annotator_type", required=True,
+                        help="Annotation Type")
     args = parser.parse_args()
     syn = synapseclient.Synapse(configPath=args.synapse_config)
     syn.login()

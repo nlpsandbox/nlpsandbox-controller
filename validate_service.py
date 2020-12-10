@@ -46,7 +46,7 @@ def main(args):
     api_url_map = {
         'date': "textDateAnnotations",
         'person': "textPersonNameAnnotations",
-        'location': "textPhysicalAddressAnnotations"
+        'address': "textPhysicalAddressAnnotations"
     }
     annotator_client = "nlpsandbox/cli:edge"
     # validate that the root URL redirects to the service API endpoint
@@ -84,6 +84,7 @@ def main(args):
     with open("example_note.json", "w") as example_f:
         json.dump(example_note, example_f)
 
+    # TODO: need to support other annotators once implemented
     exec_cmd = ["evaluate", "text-date-annotate", '--date_annotator_host',
                 f"http://{container_ip}:8080/api/v1", '--note_json',
                 '/example_note.json']
@@ -139,5 +140,7 @@ if __name__ == '__main__':
                         help="credentials file")
     parser.add_argument("-r", "--results", required=True,
                         help="results file")
+    parser.add_argument("-a", "--annotator_type", required=True,
+                        help="Annotation Type")
     args = parser.parse_args()
     main(args)
