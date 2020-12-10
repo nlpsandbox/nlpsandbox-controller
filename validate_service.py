@@ -65,7 +65,7 @@ def main(args):
             service.decode("utf-8").replace("\n", "").replace("'", '"')
         )
         print(service_info)
-    except Exception as e:
+    except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
             "API /service endpoint not implemented or implemented incorrectly. "
@@ -106,7 +106,7 @@ def main(args):
             example_post.decode("utf-8").replace("\n", "").replace("'", '"')
         )
         print(example_dict)
-    except Exception:
+    except Exception as err:
         invalid_reasons.append(
             f"API /{api_url_map['date']} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
