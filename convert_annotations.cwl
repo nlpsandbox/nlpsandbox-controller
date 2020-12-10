@@ -54,7 +54,7 @@ requirements:
                   all_annotations.append(annots)
 
           new_annotations = {annotation_key: all_annotations}
-          print(new_annotations)
+          # print(new_annotations)
           with open(args.results, "w") as results_f:
               json.dump(new_annotations, results_f)
 
