@@ -24,6 +24,15 @@ inputs:
     type: string
   - id: synapseConfig
     type: File
+  - id: dataset_id
+    type: string
+    default: "awesome-dataset"
+    #  default: "2014-i2b2-20201203"
+  - id: fhir_store_id
+    type: string
+    default: "awesome-fhir_store"
+    #  default: "evaluation"
+
 
 # there are no output at the workflow engine level.  Everything is uploaded to Synapse
 outputs: []
@@ -144,14 +153,10 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "notes.json"
-      #- id: dataset_id
-      #  valueFrom: "2014-i2b2-20201203"
-      #- id: fhir_store_id
-      #  valueFrom: "evaluation"
       - id: dataset_id
-        valueFrom: "awesome-dataset"
+        source: "#dataset_id"
       - id: fhir_store_id
-        valueFrom: "awesome-fhir-store"
+        source: "#fhir_store_id"
     out:
       - id: notes
 
@@ -250,7 +255,7 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: dataset_id
-        valueFrom: "submissions"
+        source: "#dataset_id"
       - id: annotation_store_id
         source: "#submissionId"
       - id: create_if_missing
@@ -263,7 +268,7 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: dataset_id
-        valueFrom: "submissions"
+        source: "#dataset_id"
       - id: annotation_store_id
         source: "#submissionId"
       - id: annotation_json
@@ -296,12 +301,10 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "goldstandard.json"
-      #- id: dataset_id
-      #  valueFrom: "2014-i2b2-20201203"
       #- id: annotation_store_id
       #  valueFrom: "goldstandard"
       - id: dataset_id
-        valueFrom: "submissions"
+        source: "#dataset_id"
       - id: annotation_store_id
         valueFrom: "9709141"
     out:
