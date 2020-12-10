@@ -48,66 +48,69 @@ def main(args):
         'person': "textPersonNameAnnotations",
         'location': "textPhysicalAddressAnnotations"
     }
-    annotator_client = "test"
+    annotator_client = "nlpsandbox/cli:edge"
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
     exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
-    exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host',
-                "http://10.23.55.45:9000/api/v1"]
     try:
         # auto_remove doesn't work when being run with the orchestrator
         service = client.containers.run(annotator_client, exec_cmd,
                                         name=f"{args.submissionid}_curl_1",
                                         network="submission", stderr=True)
                                         # auto_remove=True)
-        print(service)
-        service_info = json.loads(service.decode("utf-8"))
+        # Remove \n, and change single quote to double quote
+        service_info = json.loads(
+            service.decode("utf-8").replace("\n", "").replace("'", '"')
+        )
         print(service_info)
-        # expected_service_keys = ['author', 'authorEmail', 'description',
-        #                          'license', 'name', 'repository', 'url',
-        #                          'version']
-        # for key in expected_service_keys:
-        #     if key not in service_info.keys():
-        #         invalid_reasons.append(
-        #             "API service endpoint returns incorrect schema"
-        #         )
-        #     break
     except Exception as e:
+        # TODO: Potentially add in more info
         invalid_reasons.append(
             "API /service endpoint not implemented or implemented incorrectly. "
             "Make sure correct service object is returned."
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
+
     # validate that the note can be annotated by particular annotator
-    example_note = {
-        "note": {
-            "noteType": "loinc:LP29684-5",
-            "patientId": "507f1f77bcf86cd799439011",
-            "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott."
+    example_note = [{
+        "id": "foo",
+        "noteType": "loinc:LP29684-5",
+        "patientId": "507f1f77bcf86cd799439011",
+        "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott.",
+        "note_name": "testing"
+    }]
+    with open("example_note.json", "w") as example_f:
+        json.dump(example_note, example_f)
+
+    exec_cmd = ["evaluate", "text-date-annotate", '--date_annotator_host',
+                f"http://{container_ip}:8080/api/v1", '--note_json',
+                '/example_note.json']
+
+    volumes = {
+        os.path.abspath("example_note.json"): {
+            'bind': '/example_note.json',
+            'mode': 'rw'
         }
     }
-    
-    exec_cmd = ["evaluate", "get-annotator-service", '--annotator_host',
-                f"http://{container_ip}:8080/api/v1"]
-    exec_cmd = [
-        "curl", "-s", "-X", "POST",
-        f"http://{container_ip}:8080/api/v1/{api_url_map['date']}", "-H",
-        "accept: application/json",
-        "-H", "Content-Type: application/json", "-d",
-        json.dumps(example_note)
-    ]
     try:
         example_post = client.containers.run(
-            "curlimages/curl:7.73.0", exec_cmd,
+            annotator_client, exec_cmd,
+            volumes=volumes,
             name=f"{args.submissionid}_curl_2",
-            network="submission", stderr=True
+            network="submission", stderr=True,
             # auto_remove=True
         )
+        example_dict = json.loads(
+            example_post.decode("utf-8").replace("\n", "").replace("'", '"')
+        )
+        print(example_dict)
     except Exception:
         invalid_reasons.append(
-            f"API /{api_url_map['date']} endpoint not implemented. "
+            f"API /{api_url_map['date']} endpoint not implemented "
+            "or implemented incorrectly.  Make sure correct Annotation "
+            "object is annotated."
         )
     remove_docker_container(f"{args.submissionid}_curl_2")
 
