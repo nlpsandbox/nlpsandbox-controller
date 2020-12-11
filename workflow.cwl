@@ -26,12 +26,12 @@ inputs:
     type: File
   - id: dataset_id
     type: string
-    default: "awesome-dataset"
-    #  default: "2014-i2b2-20201203"
+    #default: "awesome-dataset"
+    default: "2014-i2b2-20201203"
   - id: fhir_store_id
     type: string
-    default: "awesome-fhir-store"
-    #  default: "evaluation"
+    #default: "awesome-fhir-store"
+    default: "evaluation"
 
 
 # there are no output at the workflow engine level.  Everything is uploaded to Synapse
@@ -308,15 +308,15 @@ steps:
         valueFrom: "http://10.23.55.45:8080/api/v1"
       - id: output
         valueFrom: "goldstandard.json"
-      #- id: dataset_id
-      #  source: "#dataset_id"
-      #- id: annotation_store_id
-      #  source: "#make_store_name/annotation_store_id"
-      #  valueFrom: "goldstandard"
       - id: dataset_id
-        valueFrom: "submissions"
+        source: "#dataset_id"
       - id: annotation_store_id
-        valueFrom: "9709141"
+        valueFrom: "goldstandard"
+      #  source: "#make_store_name/annotation_store_id"
+      #- id: dataset_id
+      #  valueFrom: "submissions"
+      #- id: annotation_store_id
+      #  valueFrom: "9709141"
     out:
       - id: annotations
 
