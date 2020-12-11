@@ -15,6 +15,8 @@ inputs:
     type: boolean?
   - id: docker_script
     type: File
+  - id: annotator_type
+    type: string
 
 arguments: 
   - valueFrom: $(inputs.docker_script.path)
@@ -24,6 +26,8 @@ arguments:
     prefix: -c
   - valueFrom: results.json
     prefix: -r
+  - valueFrom: $(inputs.annotator_type)
+    prefix: -a
 
 requirements:
   - class: InitialWorkDirRequirement

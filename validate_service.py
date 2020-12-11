@@ -42,11 +42,10 @@ def main(args):
         'Networks'
     ]['submission']['IPAddress']
     print(container_ip)
-    # TODO: This will have to map to evaluation queue
     api_url_map = {
         'date': "textDateAnnotations",
         'person': "textPersonNameAnnotations",
-        'location': "textPhysicalAddressAnnotations"
+        'address': "textPhysicalAddressAnnotations"
     }
     annotator_client = "nlpsandbox/cli:edge"
     # validate that the root URL redirects to the service API endpoint
@@ -84,9 +83,11 @@ def main(args):
     with open("example_note.json", "w") as example_f:
         json.dump(example_note, example_f)
 
-    exec_cmd = ["evaluate", "text-date-annotate", '--date_annotator_host',
+    # TODO: need to support other annotators once implemented
+    exec_cmd = ["evaluate", "annotate-note", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1", '--note_json',
-                '/example_note.json']
+                '/example_note.json', '--annotator_type',
+                args.annotator_type]
 
     volumes = {
         os.path.abspath("example_note.json"): {
@@ -108,7 +109,7 @@ def main(args):
         print(example_dict)
     except Exception as err:
         invalid_reasons.append(
-            f"API /{api_url_map['date']} endpoint not implemented "
+            f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
             "object is annotated."
         )
@@ -139,5 +140,7 @@ if __name__ == '__main__':
                         help="credentials file")
     parser.add_argument("-r", "--results", required=True,
                         help="results file")
+    parser.add_argument("-a", "--annotator_type", required=True,
+                        help="Annotation Type")
     args = parser.parse_args()
     main(args)

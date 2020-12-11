@@ -83,6 +83,7 @@ steps:
       - id: entity_id
       - id: entity_type
       - id: results
+      - id: evaluation_id
 
   get_docker_config:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/get_docker_config.cwl
@@ -182,6 +183,13 @@ steps:
     out:
       - id: finished
 
+  determine_annotator_type:
+    run: determine_annotator_type.cwl
+    in:
+      - id: queue
+        source: "#get_docker_submission/evaluation_id"
+    out: [annotator_type]
+
   validate_service:
     run: validate_service.cwl
     in:
@@ -191,6 +199,8 @@ steps:
         source: "#start_service/finished"
       - id: synapse_config
         source: "#synapseConfig"
+      - id: annotator_type
+        source: "#determine_annotator_type/annotator_type"
       - id: docker_script
         default:
           class: File
@@ -224,6 +234,8 @@ steps:
         source: "#synapseConfig"
       - id: data_notes
         source: "#list_clinical_notes/notes"
+      - id: annotator_type
+        source: "#determine_annotator_type/annotator_type"
       - id: docker_script
         default:
           class: File
@@ -399,7 +411,7 @@ steps:
       - id: output
         valueFrom: "result.json"
       - id: eval_type 
-        valueFrom: "date"
+        source: "#determine_annotator_type/annotator_type"
     out:
       - id: results
 
@@ -408,6 +420,8 @@ steps:
     in:
       - id: score_json
         source: "#scoring/results"
+      - id: annotator_type
+        source: "#determine_annotator_type/annotator_type"
     out:
       - id: results
       
