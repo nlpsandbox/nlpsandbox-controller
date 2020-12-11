@@ -87,7 +87,6 @@ def main(syn, args):
 
     with open(data_notes, 'r') as notes_f:
         data_notes_dict = json.load(notes_f)
-    # TODO: This will have to map to evaluation queue
     api_url_map = {
         'date': "textDateAnnotations",
         'person': "textPersonNameAnnotations",

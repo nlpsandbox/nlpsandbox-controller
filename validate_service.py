@@ -42,7 +42,6 @@ def main(args):
         'Networks'
     ]['submission']['IPAddress']
     print(container_ip)
-    # TODO: This will have to map to evaluation queue
     api_url_map = {
         'date': "textDateAnnotations",
         'person': "textPersonNameAnnotations",
@@ -85,9 +84,10 @@ def main(args):
         json.dump(example_note, example_f)
 
     # TODO: need to support other annotators once implemented
-    exec_cmd = ["evaluate", "text-date-annotate", '--date_annotator_host',
+    exec_cmd = ["evaluate", "annotate-note", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1", '--note_json',
-                '/example_note.json']
+                '/example_note.json', '--annotator_type',
+                args.annotator_type]
 
     volumes = {
         os.path.abspath("example_note.json"): {
@@ -109,7 +109,7 @@ def main(args):
         print(example_dict)
     except Exception as err:
         invalid_reasons.append(
-            f"API /{api_url_map['date']} endpoint not implemented "
+            f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
             "object is annotated."
         )
