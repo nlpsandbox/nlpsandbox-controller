@@ -211,14 +211,45 @@ steps:
       - id: status
       - id: invalid_reasons
 
-# Add annotation and emailing
+  service_validation_email:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/validate_email.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: status
+        source: "#validate_service/status"
+      - id: invalid_reasons
+        source: "#validate_service/invalid_reasons"
+      - id: errors_only
+        default: true
+    out: [finished]
+
+  annotate_service_validation_with_output:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/annotate_submission.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: annotation_values
+        source: "#validate_service/results"
+      - id: to_public
+        default: true
+      - id: force_change_annotation_acl
+        default: true
+      - id: synapse_config
+        source: "#synapseConfig"
+    out: [finished]
+
   check_status_validate_service:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/check_status.cwl
     in:
       - id: status
         source: "#validate_service/status"
       - id: previous_annotation_finished
-        source: "#validate_service/finished"
+        source: "#annotate_service_validation_with_output/finished"
+      - id: previous_email_finished
+        source: "service_validation_email/finished"
     out: [finished]
 
   annotate_note:
@@ -310,7 +341,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
-        source: "#annotate_docker_validation_with_output/finished"
+        source: "#annotate_service_validation_with_output/finished"
     out: [finished]
 
   download_goldstandard:
