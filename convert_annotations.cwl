@@ -14,14 +14,17 @@ inputs:
 
   - id: annotation_json
     type: File
+  - id: annotator_type
+    type: string
 
 arguments:
   - valueFrom: convert_annotations.py
   - valueFrom: $(inputs.annotation_json)
-    prefix: -a
+    prefix: -j
   - valueFrom: results.json
     prefix: -r
-
+  - valueFrom: $(inputs.annotator_type)
+    prefix: -a
 
 requirements:
   - class: InlineJavascriptRequirement
@@ -35,15 +38,23 @@ requirements:
           import os
 
           parser = argparse.ArgumentParser()
-          parser.add_argument("-a", "--annotation_json", required=True, help="Annotation json file")
+          parser.add_argument("-j", "--annotation_json", required=True, help="Annotation json file")
           parser.add_argument("-r", "--results", required=True, help="Results file")
+          parser.add_argument("-a", "--annotator_type", required=True, help="Annotator type")
           args = parser.parse_args()
 
           with open(args.annotation_json, "r") as annote_f:
               annotations = json.load(annote_f)
 
-          annotation_key = "date_annotations"
-          post_path = "textDateAnnotations"
+          if args.annotator_type == "date":
+            annotation_key = "date_annotations"
+            post_path = "textDateAnnotations"
+          elif args.annotator_type == "person":
+            annotation_key = "person_name_annotations"
+            post_path = "textPersonNameAnnotations"
+          else:
+            annotation_key = "physical_location_annotations"
+            post_path = "textPhysicalAddressAnnotations"
 
           all_annotations = []
           for annotation in annotations:
