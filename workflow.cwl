@@ -43,6 +43,28 @@ outputs: []
 
 steps:
 
+  create_dataset_version_json:
+    run: create_dataset_annotation.cwl
+    in:
+      - id: dataset_version
+        source: "#dataset_id"
+    out: [json_out]
+
+  annotate_dataset_version:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.7/annotate_submission.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: annotation_values
+        source: "#create_dataset_version_json/json_out"
+      - id: to_public
+        default: true
+      - id: force_change_annotation_acl
+        default: true
+      - id: synapse_config
+        source: "#synapseConfig"
+    out: [finished]
+
   set_submitter_folder_permissions:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/set_permissions.cwl
     in:
@@ -134,6 +156,8 @@ steps:
         default: true
       - id: synapse_config
         source: "#synapseConfig"
+      - id: previous_annotation_finished
+        source: "#annotate_dataset_version/finished"
     out: [finished]
 
   check_docker_status:
