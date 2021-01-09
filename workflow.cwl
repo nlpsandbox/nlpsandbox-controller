@@ -392,6 +392,8 @@ steps:
     in:
       - id: annotation_json
         source: "#annotate_note/predictions"
+      - id: annotator_type
+        source: "#determine_annotator_type/annotator_type"
     out: [results]
 
   convert_goldstandard_annotation:
@@ -399,6 +401,8 @@ steps:
     in:
       - id: annotation_json
         source: "#download_goldstandard/annotations"
+      - id: annotator_type
+        source: "#determine_annotator_type/annotator_type"
     out: [results]
 
 #   validation:
