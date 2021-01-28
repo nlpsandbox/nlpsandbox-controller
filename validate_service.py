@@ -67,8 +67,8 @@ def main(args):
     except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
-            "API /service endpoint not implemented or implemented incorrectly. "
-            "Make sure correct service object is returned."
+            "API /tool endpoint not implemented or implemented incorrectly. "
+            "Make sure correct tool object is returned."
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
 
@@ -77,7 +77,7 @@ def main(args):
         "id": "foo",
         "noteType": "loinc:LP29684-5",
         "patientId": "507f1f77bcf86cd799439011",
-        "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott.",
+        "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott in Seattle.",
         "note_name": "testing"
     }]
     with open("example_note.json", "w") as example_f:

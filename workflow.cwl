@@ -175,7 +175,7 @@ steps:
     run: list_notes.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
@@ -327,7 +327,7 @@ steps:
     run: get_annotation_store.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
         source: "#dataset_id"
       - id: annotation_store_id
@@ -340,7 +340,7 @@ steps:
     run: store_annotations.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
         source: "#dataset_id"
       - id: annotation_store_id
@@ -372,7 +372,7 @@ steps:
     run: list_annotations.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: output
         valueFrom: "goldstandard.json"
       - id: dataset_id
@@ -387,23 +387,23 @@ steps:
     out:
       - id: annotations
 
-  convert_submission_annotation:
-    run: convert_annotations.cwl
-    in:
-      - id: annotation_json
-        source: "#annotate_note/predictions"
-      - id: annotator_type
-        source: "#determine_annotator_type/annotator_type"
-    out: [results]
+  # convert_submission_annotation:
+  #   run: convert_annotations.cwl
+  #   in:
+  #     - id: annotation_json
+  #       source: "#annotate_note/predictions"
+  #     - id: annotator_type
+  #       source: "#determine_annotator_type/annotator_type"
+  #   out: [results]
 
-  convert_goldstandard_annotation:
-    run: convert_annotations.cwl
-    in:
-      - id: annotation_json
-        source: "#download_goldstandard/annotations"
-      - id: annotator_type
-        source: "#determine_annotator_type/annotator_type"
-    out: [results]
+  # convert_goldstandard_annotation:
+  #   run: convert_annotations.cwl
+  #   in:
+  #     - id: annotation_json
+  #       source: "#download_goldstandard/annotations"
+  #     - id: annotator_type
+  #       source: "#determine_annotator_type/annotator_type"
+  #   out: [results]
 
 #   validation:
 #     run: validate.cwl
@@ -464,9 +464,9 @@ steps:
     run: score.cwl
     in:
       - id: pred_filepath
-        source: "#convert_submission_annotation/results"
+        source: "#annotate_note/predictions"
       - id: gold_filepath
-        source: "#convert_goldstandard_annotation/results"
+        source: "#download_goldstandard/annotations"
       - id: output
         valueFrom: "result.json"
       - id: eval_type 
