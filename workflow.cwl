@@ -175,7 +175,7 @@ steps:
     run: list_notes.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
@@ -327,7 +327,7 @@ steps:
     run: get_annotation_store.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
         source: "#dataset_id"
       - id: annotation_store_id
@@ -340,7 +340,7 @@ steps:
     run: store_annotations.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
         source: "#dataset_id"
       - id: annotation_store_id
@@ -372,7 +372,7 @@ steps:
     run: list_annotations.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.23.55.45:8080/api/v1"
+        valueFrom: "http://10.23.54.142/api/v1/"
       - id: output
         valueFrom: "goldstandard.json"
       - id: dataset_id
