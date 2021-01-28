@@ -387,23 +387,23 @@ steps:
     out:
       - id: annotations
 
-  convert_submission_annotation:
-    run: convert_annotations.cwl
-    in:
-      - id: annotation_json
-        source: "#annotate_note/predictions"
-      - id: annotator_type
-        source: "#determine_annotator_type/annotator_type"
-    out: [results]
+  # convert_submission_annotation:
+  #   run: convert_annotations.cwl
+  #   in:
+  #     - id: annotation_json
+  #       source: "#annotate_note/predictions"
+  #     - id: annotator_type
+  #       source: "#determine_annotator_type/annotator_type"
+  #   out: [results]
 
-  convert_goldstandard_annotation:
-    run: convert_annotations.cwl
-    in:
-      - id: annotation_json
-        source: "#download_goldstandard/annotations"
-      - id: annotator_type
-        source: "#determine_annotator_type/annotator_type"
-    out: [results]
+  # convert_goldstandard_annotation:
+  #   run: convert_annotations.cwl
+  #   in:
+  #     - id: annotation_json
+  #       source: "#download_goldstandard/annotations"
+  #     - id: annotator_type
+  #       source: "#determine_annotator_type/annotator_type"
+  #   out: [results]
 
 #   validation:
 #     run: validate.cwl
@@ -464,9 +464,9 @@ steps:
     run: score.cwl
     in:
       - id: pred_filepath
-        source: "#convert_submission_annotation/results"
+        source: "#annotate_note/predictions"
       - id: gold_filepath
-        source: "#convert_goldstandard_annotation/results"
+        source: "#download_goldstandard/annotations"
       - id: output
         valueFrom: "result.json"
       - id: eval_type 
