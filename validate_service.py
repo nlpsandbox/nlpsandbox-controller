@@ -67,8 +67,8 @@ def main(args):
     except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
-            "API /service endpoint not implemented or implemented incorrectly. "
-            "Make sure correct service object is returned."
+            "API /tool endpoint not implemented or implemented incorrectly. "
+            "Make sure correct tool object is returned."
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
 
