@@ -54,9 +54,9 @@ requirements:
                              ): location['value']
                              for location in scores[key]}
           
-          # key = f"{annotator_type}_type"
-          # for types in scores[key]:
-          #     new_scores_dict[f"type_{types['metric']}"] = types['value']
+          key = f"{annotator_type}_type"
+          for types in scores[key]:
+              new_scores_dict[f"type_{types['metric']}"] = types['value']
           new_scores_dict['submission_status'] = 'SCORED'
 
           with open(args.results, "w") as results_f:
