@@ -35,6 +35,7 @@ requirements:
           #!/usr/bin/env python
           import argparse
           import json
+          import math
 
           parser = argparse.ArgumentParser()
           parser.add_argument("-s", "--score_json", required=True, help="Score json file")
@@ -56,7 +57,8 @@ requirements:
           
           key = f"{annotator_type}_type"
           for types in scores[key]:
-              new_scores_dict[f"type_{types['metric']}"] = types['value']
+              if not math.isnan(types['value']):
+                  new_scores_dict[f"type_{types['metric']}"] = types['value']
           new_scores_dict['submission_status'] = 'SCORED'
 
           with open(args.results, "w") as results_f:
