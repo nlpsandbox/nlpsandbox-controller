@@ -74,11 +74,11 @@ def main(args):
 
     # validate that the note can be annotated by particular annotator
     example_note = [{
-        "id": "foo",
+        "identifier": "awesome-note",
         "noteType": "loinc:LP29684-5",
-        "patientId": "507f1f77bcf86cd799439011",
-        "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott in Seattle.",
-        "note_name": "testing"
+        "patientId": "awesome-patient",
+        "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott in \
+            Seattle."
     }]
     with open("example_note.json", "w") as example_f:
         json.dump(example_note, example_f)

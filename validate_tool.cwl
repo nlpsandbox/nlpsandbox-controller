@@ -18,7 +18,7 @@ inputs:
   - id: annotator_type
     type: string
 
-arguments: 
+arguments:
   - valueFrom: $(inputs.docker_script.path)
   - valueFrom: $(inputs.submissionid)
     prefix: -s
@@ -44,7 +44,7 @@ outputs:
   results:
     type: File
     outputBinding:
-      glob: results.json   
+      glob: results.json
 
   status:
     type: string
