@@ -117,7 +117,7 @@ def main(syn, args):
     for note in data_notes_dict:
         # Check that runtime is less than 2 hours (7200 seconds)
         check_runtime(start, container, container.image, 7200)
-        noteid = note.pop("identifier")
+        # noteid = note.pop("identifier")
         exec_cmd = [
             #"curl", "-o", "/output/annotations.json", "-X", "POST",
             "curl", "-s", "-X", "POST",
