@@ -323,19 +323,6 @@ steps:
         source: "#submissionId"
     out: [annotation_store_id]
 
-  get_annotation_store:
-    run: get_annotation_store.cwl
-    in:
-      - id: data_endpoint
-        valueFrom: "http://10.23.54.142/api/v1/"
-      - id: dataset_id
-        source: "#dataset_id"
-      - id: annotation_store_id
-        source: "#make_store_name/annotation_store_id"
-      - id: create_if_missing
-        default: true
-    out: [finished]
-
   store_annotations:
     run: store_annotations.cwl
     in:
@@ -347,8 +334,6 @@ steps:
         source: "#make_store_name/annotation_store_id"
       - id: annotation_json
         source: "#annotate_note/predictions"
-      - id: previous_step
-        source: "#get_annotation_store/finished"
     out: []
 
   annotate_docker_upload_results:
