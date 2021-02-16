@@ -92,15 +92,15 @@ def main(args):
     remove_docker_container(f"{args.submissionid}_curl_2")
 
     # validate that the note can be annotated by particular annotator
-    example_note = [{
-        "identifier": "awesome-note",
-        "noteType": "loinc:LP29684-5",
-        "patientId": "awesome-patient",
-        "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott in \
-            Seattle."
-    }]
-    with open("example_note.json", "w") as example_f:
-        json.dump(example_note, example_f)
+    # example_note = [{
+    #     "identifier": "awesome-note",
+    #     "noteType": "loinc:LP29684-5",
+    #     "patientId": "awesome-patient",
+    #     "text": "On 12/26/2020, Ms. Chloe Price met with Dr. Prescott in \
+    #         Seattle."
+    # }]
+    # with open("example_note.json", "w") as example_f:
+    #     json.dump(example_note, example_f)
 
     # TODO: need to support other annotators once implemented
     exec_cmd = ["evaluate", "annotate-note", '--annotator_host',
@@ -109,16 +109,17 @@ def main(args):
                 args.annotator_type]
 
     volumes = {
-        os.path.abspath("example_note.json"): {
+        os.path.abspath(args.subset_data): {
             'bind': '/example_note.json',
             'mode': 'rw'
         }
     }
+    # Run first time
     try:
         example_post = client.containers.run(
             annotator_client, exec_cmd,
             volumes=volumes,
-            name=f"{args.submissionid}_curl_2",
+            name=f"{args.submissionid}_curl_3",
             network="submission", stderr=True,
             # auto_remove=True
         )
@@ -132,8 +133,33 @@ def main(args):
             "or implemented incorrectly.  Make sure correct Annotation "
             "object is annotated."
         )
-    remove_docker_container(f"{args.submissionid}_curl_2")
+    remove_docker_container(f"{args.submissionid}_curl_3")
 
+    # Run second time
+    try:
+        example_post_2 = client.containers.run(
+            annotator_client, exec_cmd,
+            volumes=volumes,
+            name=f"{args.submissionid}_curl_4",
+            network="submission", stderr=True,
+            # auto_remove=True
+        )
+        example_dict_2 = json.loads(
+            example_post_2.decode("utf-8").replace("\n", "").replace("'", '"')
+        )
+        print(example_dict_2)
+    except Exception as err:
+        invalid_reasons.append(
+            f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
+            "or implemented incorrectly.  Make sure correct Annotation "
+            "object is annotated."
+        )
+    remove_docker_container(f"{args.submissionid}_curl_4")
+    if example_dict != example_dict_2:
+        invalid_reasons.append(
+            "Annotated results must be the same after running the annotator"
+            "twice on the same dataset/"
+        )
     print("finished")
     print(invalid_reasons)
     # If there are no invalid reasons -> Validated
