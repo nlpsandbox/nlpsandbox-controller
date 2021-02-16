@@ -67,10 +67,29 @@ def main(args):
     except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
-            "API /tool endpoint not implemented or implemented incorrectly. "
-            "Make sure correct tool object is returned."
+            "API api/v1/tool endpoint not implemented or implemented "
+            "incorrectly. Make sure correct tool object is returned."
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
+    # Check that tool api version is correct
+    if tool_info['tool_api_version'] != args.schema_version:
+        invalid_reasons.append(
+            f"API api/v1/tool toolApiVersion is not {args.schema_version}"
+        )
+    # Check UI
+    exec_cmd = ["evaluate", "check-url", '--url',
+                f"http://{container_ip}:8080/api/v1/ui"]
+    try:
+        # auto_remove doesn't work when being run with the orchestrator
+        client.containers.run(annotator_client, exec_cmd,
+                              name=f"{args.submissionid}_curl_2",
+                              network="submission", stderr=True)
+                              # auto_remove=True)
+    except Exception as err:
+        invalid_reasons.append(
+            ".../api/v1/ui not implemented or implemented incorrectly."
+        )
+    remove_docker_container(f"{args.submissionid}_curl_2")
 
     # validate that the note can be annotated by particular annotator
     example_note = [{
@@ -142,5 +161,13 @@ if __name__ == '__main__':
                         help="results file")
     parser.add_argument("-a", "--annotator_type", required=True,
                         help="Annotation Type")
+    parser.add_argument(
+        "--subset_data", required=True,
+        help="The subset of data to validate reproducibility of notes."
+    )
+    parser.add_argument(
+        "--schema_version", required=True,
+        help="The API verison of the data node and annotator schemas."
+    )
     args = parser.parse_args()
     main(args)

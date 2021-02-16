@@ -185,6 +185,20 @@ steps:
     out:
       - id: notes
 
+  list_subset_clinical_notes:
+    run: list_notes.cwl
+    in:
+      - id: data_endpoint
+        valueFrom: "http://10.23.54.142/api/v1/"
+      - id: output
+        valueFrom: "notes.json"
+      - id: dataset_id
+        valueFrom: "2014-i2b2-20201203-subset"
+      - id: fhir_store_id
+        source: "#fhir_store_id"
+    out:
+      - id: notes
+
   start_service:
     run: start_service.cwl
     in:
@@ -219,6 +233,10 @@ steps:
     in:
       - id: submissionid
         source: "#submissionId"
+      - id: schema_version
+        valueFrom: "1.0.0"
+      - id: subset_data
+        source: "#list_subset_clinical_notes/notes"
       - id: status
         source: "#start_service/finished"
       - id: synapse_config
