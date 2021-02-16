@@ -112,7 +112,7 @@ steps:
     in:
       - id: synapse_config
         source: "#synapseConfig"
-    out: 
+    out:
       - id: docker_registry
       - id: docker_authentication
 
@@ -185,6 +185,20 @@ steps:
     out:
       - id: notes
 
+  list_subset_clinical_notes:
+    run: list_notes.cwl
+    in:
+      - id: data_endpoint
+        valueFrom: "http://10.23.54.142/api/v1/"
+      - id: output
+        valueFrom: "notes.json"
+      - id: dataset_id
+        valueFrom: "2014-i2b2-20201203-subset"
+      - id: fhir_store_id
+        source: "#fhir_store_id"
+    out:
+      - id: notes
+
   start_service:
     run: start_service.cwl
     in:
@@ -214,11 +228,15 @@ steps:
         source: "#get_docker_submission/evaluation_id"
     out: [annotator_type]
 
-  validate_service:
-    run: validate_service.cwl
+  validate_tool:
+    run: validate_tool.cwl
     in:
       - id: submissionid
         source: "#submissionId"
+      - id: schema_version
+        valueFrom: "1.0.0"
+      - id: subset_data
+        source: "#list_subset_clinical_notes/notes"
       - id: status
         source: "#start_service/finished"
       - id: synapse_config
@@ -228,7 +246,7 @@ steps:
       - id: docker_script
         default:
           class: File
-          location: "validate_service.py"
+          location: "validate_tool.py"
     out:
       - id: finished
       - id: results
@@ -243,9 +261,9 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: status
-        source: "#validate_service/status"
+        source: "#validate_tool/status"
       - id: invalid_reasons
-        source: "#validate_service/invalid_reasons"
+        source: "#validate_tool/invalid_reasons"
       - id: errors_only
         default: true
     out: [finished]
@@ -256,7 +274,7 @@ steps:
       - id: submissionid
         source: "#submissionId"
       - id: annotation_values
-        source: "#validate_service/results"
+        source: "#validate_tool/results"
       - id: to_public
         default: true
       - id: force_change_annotation_acl
@@ -265,11 +283,11 @@ steps:
         source: "#synapseConfig"
     out: [finished]
 
-  check_status_validate_service:
+  check_status_validate_tool:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/check_status.cwl
     in:
       - id: status
-        source: "#validate_service/status"
+        source: "#validate_tool/status"
       - id: previous_annotation_finished
         source: "#annotate_service_validation_with_output/finished"
       - id: previous_email_finished
@@ -284,7 +302,7 @@ steps:
       - id: parentid
         source: "#submitterUploadSynId"
       - id: status
-        source: "#check_status_validate_service/finished"
+        source: "#check_status_validate_tool/finished"
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
@@ -323,19 +341,6 @@ steps:
         source: "#submissionId"
     out: [annotation_store_id]
 
-  get_annotation_store:
-    run: get_annotation_store.cwl
-    in:
-      - id: data_endpoint
-        valueFrom: "http://10.23.54.142/api/v1/"
-      - id: dataset_id
-        source: "#dataset_id"
-      - id: annotation_store_id
-        source: "#make_store_name/annotation_store_id"
-      - id: create_if_missing
-        default: true
-    out: [finished]
-
   store_annotations:
     run: store_annotations.cwl
     in:
@@ -347,8 +352,6 @@ steps:
         source: "#make_store_name/annotation_store_id"
       - id: annotation_json
         source: "#annotate_note/predictions"
-      - id: previous_step
-        source: "#get_annotation_store/finished"
     out: []
 
   annotate_docker_upload_results:
@@ -416,7 +419,7 @@ steps:
 #       - id: results
 #       - id: status
 #       - id: invalid_reasons
-  
+
 #   validation_email:
 #     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/validate_email.cwl
 #     in:
@@ -469,7 +472,7 @@ steps:
         source: "#download_goldstandard/annotations"
       - id: output
         valueFrom: "result.json"
-      - id: eval_type 
+      - id: eval_type
         source: "#determine_annotator_type/annotator_type"
     out:
       - id: results
@@ -483,7 +486,7 @@ steps:
         source: "#determine_annotator_type/annotator_type"
     out:
       - id: results
-      
+
   score_email:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.0/cwl/score_email.cwl
     in:

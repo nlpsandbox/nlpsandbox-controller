@@ -17,8 +17,12 @@ inputs:
     type: File
   - id: annotator_type
     type: string
+  - id: subset_data
+    type: File
+  - id: schema_version
+    type: string
 
-arguments: 
+arguments:
   - valueFrom: $(inputs.docker_script.path)
   - valueFrom: $(inputs.submissionid)
     prefix: -s
@@ -28,6 +32,10 @@ arguments:
     prefix: -r
   - valueFrom: $(inputs.annotator_type)
     prefix: -a
+  - valueFrom: $(inputs.subset_data)
+    prefix: --subset_data
+  - valueFrom: $(inputs.schema_version)
+    prefix: --schema_version
 
 requirements:
   - class: InitialWorkDirRequirement
@@ -44,7 +52,7 @@ outputs:
   results:
     type: File
     outputBinding:
-      glob: results.json   
+      glob: results.json
 
   status:
     type: string

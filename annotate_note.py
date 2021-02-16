@@ -4,6 +4,7 @@ import getpass
 import json
 import os
 import random
+import time
 
 import docker
 import synapseclient
@@ -53,6 +54,23 @@ def remove_docker_image(image_name):
         print("Unable to remove image")
 
 
+def check_runtime(start, container, docker_image, quota):
+    """Check runtime quota
+
+    Args:
+        start: Start time
+        container: Running container
+        docker_image: Docker image name
+        quota: Time quota in seconds
+    """
+    timestamp = time.time()
+    if timestamp - start > quota:
+        container.stop()
+        container.remove()
+        remove_docker_image(docker_image)
+        raise Exception(f"Your model has exceeded {quota/60} minutes")
+
+
 def main(syn, args):
     """Run docker model"""
     client = docker.from_env()
@@ -94,8 +112,12 @@ def main(syn, args):
     }
 
     all_annotations = []
+    # Get annotation start time
+    start = time.time()
     for note in data_notes_dict:
-        noteid = note.pop("id")
+        # Check that runtime is less than 2 hours (7200 seconds)
+        check_runtime(start, container, container.image, 7200)
+        # noteid = note.pop("identifier")
         exec_cmd = [
             #"curl", "-o", "/output/annotations.json", "-X", "POST",
             "curl", "-s", "-X", "POST",
