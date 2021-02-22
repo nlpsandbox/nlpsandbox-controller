@@ -243,7 +243,7 @@ steps:
       - id: submissionid
         source: "#submissionId"
       - id: schema_version
-        valueFrom: "1.0.0"
+        source: "#api_version"
       - id: subset_data
         source: "#list_subset_clinical_notes/notes"
       - id: status
