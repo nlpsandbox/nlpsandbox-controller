@@ -8,7 +8,11 @@ class: CommandLineTool
 baseCommand: echo
 
 inputs:
+  - id: dataset_name
+    type: string
   - id: dataset_version
+    type: string
+  - id: api_version
     type: string
 
 requirements:
@@ -17,7 +21,9 @@ requirements:
     listing:
       - entryname: update_status.json
         entry: |
-          {"dataset_version": \"$(inputs.dataset_version)\"}
+          {"dataset_version": \"$(inputs.dataset_version)\",
+           "dataset_name": \"$(inputs.dataset_name)\",
+           "api_version": \"$(inputs.api_version)\"}
 
 outputs:
   - id: json_out
