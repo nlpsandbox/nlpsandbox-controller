@@ -33,10 +33,6 @@ inputs:
   - id: api_version
     type: string
     default: "1.0.0"
-  - id: dataset_id
-    type: string
-    #default: "awesome-dataset"
-    default: "2014-i2b2-20201203"
   - id: fhir_store_id
     type: string
     #default: "awesome-fhir-store"
@@ -61,7 +57,7 @@ steps:
         source: "#dataset_version"
       - id: api_version
         source: "#api_version"
-    out: [json_out]
+    out: [json_out, dataset_id]
 
   annotate_dataset_version:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.7/annotate_submission.cwl
@@ -192,7 +188,7 @@ steps:
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
-        source: "#dataset_id"
+        source: "#create_annotations_json/dataset_id"
       - id: fhir_store_id
         source: "#fhir_store_id"
     out:
@@ -360,7 +356,7 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
-        source: "#dataset_id"
+        source: "#create_annotations_json/dataset_id"
       - id: annotation_store_id
         source: "#make_store_name/annotation_store_id"
       - id: annotation_json
@@ -392,7 +388,7 @@ steps:
       - id: output
         valueFrom: "goldstandard.json"
       - id: dataset_id
-        source: "#dataset_id"
+        source: "#create_annotations_json/dataset_id"
       - id: annotation_store_id
         valueFrom: "goldstandard"
     out:

@@ -1,6 +1,6 @@
 #!/usr/bin/env cwl-runner
 #
-# Create an annotation json with the admin synid folder
+# Create an annotation json with dataset name, dataset version and api version
 #
 cwlVersion: v1.0
 class: CommandLineTool
@@ -30,3 +30,7 @@ outputs:
     type: File
     outputBinding:
       glob: update_status.json
+  - id: dataset_id
+    type: string
+    outputBinding:
+      outputEval: $(inputs.dataset_name)-$(inputs.dataset_version)
