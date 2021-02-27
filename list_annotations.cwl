@@ -8,7 +8,7 @@ baseCommand: [community, list-annotations]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:edge
+    dockerPull: nlpsandbox/cli:0.4.1
 
 requirements:
   - class: InlineJavascriptRequirement
