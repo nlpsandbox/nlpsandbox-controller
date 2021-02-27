@@ -116,9 +116,9 @@ docker-compose up -d
 ```
 
 
-## Orchestrator workflow template
+## Orchestrator workflow
 
-This repository will serve as a template for the `CWL` workflow and tools required to set up a `model-to-data` challenge infrastructure.
+This repository will host the `CWL` workflow and tools required to set up the `model-to-data` challenge infrastructure for `NLP Sandbox`
 
 For more information about the tools, please head to [ChallengeWorkflowTemplates](https://github.com/Sage-Bionetworks/ChallengeWorkflowTemplates)
 
