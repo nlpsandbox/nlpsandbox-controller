@@ -10,8 +10,6 @@ from datanode.rest import ApiException
 import nlpsandboxclient.utils
 
 syn = synapseclient.login()
-# Defining the host is optional and defaults to http://example.com/api/v1
-# See configuration.py for a list of all supported configuration parameters.
 host = ""
 if host == "":
     raise ValueError("Must set host to be data node URL")
