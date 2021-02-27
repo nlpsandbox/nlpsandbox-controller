@@ -68,27 +68,15 @@ with datanode.ApiClient(configuration) as api_client:
     patient_api = datanode.apis.PatientApi(api_client)
     note_api = datanode.apis.NoteApi(api_client)
     annotation_api = datanode.apis.AnnotationApi(api_client)
-    
-    # an example of how to create or get a dataset
-    # This logic is abstracted in the `get_or_create_resource`
-    # function above.
-    try:
-        # get the dataset
-        dataset = dataset_api.get_dataset(dataset_id)
-    except ApiException as e:
-        if e.status == 404:
-            # create dataset if not found
-            try:
-                dataset = dataset_api.create_dataset(
-                    dataset_id,
-                    body={}
-                )
-            except ApiException as e:
-                print("Exception when calling DatasetApi->create_dataset: %s\n" % e)
-                sys.exit(-1)
-        else:
-            print("Exception when calling DatasetApi->get_dataset: %s\n" % e)
-            sys.exit(-1)
+
+    # Get or create Dataset
+    dataset = get_or_create_resource(
+        dataset_api.get_dataset,
+        dataset_api.create_dataset,
+        dataset_id,
+        body={}
+    )
+
     # Get or create FHIR store
     fhir_store = get_or_create_resource(
         fhir_store_api.get_fhir_store,
