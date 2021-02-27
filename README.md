@@ -58,10 +58,12 @@ The submission workflow is composed of these steps:
     docker-compose up -d
     ```
 2. Push data into the data-node.
-    ```
+    ```bash
     # set up conda or pipenv environment
     pip install nlpsandbox-client
+    # Pushes challenge data
     python scripts/push_challenge_data.py
+    # Pushes small subset of data
     python scripts/push_small_dataset.py
     ```
 
@@ -96,8 +98,10 @@ The submission workflow is composed of these steps:
 
 
 
-### Start the example Data Annotator
+### Start the example Date Annotator
 
+Clone and start the date annotator.
+This should also be done by the cloudformation template.
 ```bash
 git clone https://github.com/nlpsandbox/date-annotator-example.git
 cd date-annotator-example
@@ -121,19 +125,19 @@ For more information about the tools, please head to [ChallengeWorkflowTemplates
 ## What to edit
 
 * **workflow.cwl**
-  - update L53 (`valueFrom: "syn18081597"`) to the Synapse ID where your workflow is located - **required**
-  - remove L82-83 (`id: errors_only...`) if sending a "Submission valid!" email is also wanted (default action is to only send an email if invalid reasons are found) - optional
-  - update L135 (`default: []`) with score annotations that are meant to remain prviate from the participant - optional
-
-*  **validate.cwl**
-   - update L11 (`dockerPull: python:3.7`) if you are not using a Python script to validate
-   - update the lines of code after `entry: |` with your own validation code
-      - NOTE: expected annotations to write out are `prediction_file_status` and `prediction_file_errors` (see [ChallengeWorkflowTemplates](https://github.com/Sage-Bionetworks/ChallengeWorkflowTemplates#validation-validatecwl) for more information.)
-
-* **score.cwl**
-  - update L11 (`dockerPull: python:3.7`) if you are not using a Python script to score
-  - update the lines of code after `entry: |` with your own scoring code
-
+    If there are updates to the api version or dataset version, the workflow inputs
+    have to be editted
+    ```yaml
+    - id: dataset_name
+        type: string
+        default: "2014-i2b2"  # change this
+    - id: dataset_version
+        type: string
+        default: "20201203" # change this
+    - id: api_version
+        type: string
+        default: "1.0.1" # change this
+    ```
 
 ## Testing the workflow locally
 
