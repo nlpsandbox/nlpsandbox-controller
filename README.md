@@ -32,18 +32,21 @@ The submission workflow is composed of these steps:
     only query submissions that it can evaluate based on the type of data stored
     in the Data Node(s) available (XXX: clarify the case where there are multiple
     Data Nodes).
-3.  The Orchestrator starts the NLP Tool (web service) to evaluate
-4.  The Orchestrator queries N clinical notes from the Data Node.
-5.  The Orchestrator sends the N clinical notes to the NLP Tool and receives the
-    predictions.
-6.  The Orchestrator repeats Steps 4 and 5 until all the clinical notes included
-    in a given dataset have been processed by the NLP Tool.
-7.  The Orchestrator stops the NLP Tool.
-8.  The Orchestrator queries the gold standard from the Data Node.
-9.  The Orchestrator evaluates the performance of the predictions by comparing
-    them to the gold standard.
-10. Sends the performance measured to the NLP Sandbox backend server.
-11. The NLP Developer and the community review the performance of the NLP Tool.
+3.  If there is a `RECEIVED` submission, the Orchestrator will start running a
+    workflow with the submission as its input.  The steps to the workflow is outlined
+    in [workflow.cwl](workflow.cwl).
+    1.  Starts the NLP Tool (web service) to evaluate
+    1.  Queries N clinical notes from the Data Node.
+    1.  Sends the N clinical notes to the NLP Tool and receives the
+        predictions.
+    1.  Repeats Steps 4 and 5 until all the clinical notes included
+        in a given dataset have been processed by the NLP Tool.
+    1.  Stops the NLP Tool.
+    1.  Queries the gold standard from the Data Node.
+    1.  Evaluates the performance of the predictions by comparing
+        them to the gold standard.
+    1.  Sends the performance measured to the NLP Sandbox backend server.
+4. The NLP Developer and the community review the performance of the NLP Tool.
 
 ## Deploy the infrastructure on Sage Data Hosting Site
 
@@ -113,9 +116,9 @@ docker-compose up -d
 ```
 
 
-## Orchestrator workflow template
+## Orchestrator workflow
 
-This repository will serve as a template for the `CWL` workflow and tools required to set up a `model-to-data` challenge infrastructure.
+This repository will host the `CWL` workflow and tools required to set up the `model-to-data` challenge infrastructure for `NLP Sandbox`
 
 For more information about the tools, please head to [ChallengeWorkflowTemplates](https://github.com/Sage-Bionetworks/ChallengeWorkflowTemplates)
 
