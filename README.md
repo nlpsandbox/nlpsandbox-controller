@@ -34,7 +34,7 @@ The submission workflow is composed of these steps:
     Data Nodes).
 3.  If there is a `RECEIVED` submission, the Orchestrator will start running a
     workflow with the submission as its input.  The steps to the workflow is outlined
-    in workflow.cwl.
+    in [workflow.cwl](workflow.cwl).
     1.  Starts the NLP Tool (web service) to evaluate
     1.  Queries N clinical notes from the Data Node.
     1.  Sends the N clinical notes to the NLP Tool and receives the
