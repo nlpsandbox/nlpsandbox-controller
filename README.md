@@ -49,15 +49,69 @@ The submission workflow is composed of these steps:
 
 ### Start the 2014 i2b2 Data Node
 
-TBA
+1. Clone and start the data node.  This step should already be done by the
+   cloudformation script.
+    ```bash
+    git clone https://github.com/nlpsandbox/data-node.git
+    cd data-node
+    cp .env.example .env
+    docker-compose up -d
+    ```
+2. Push data into the data-node.
+    ```bash
+    # set up conda or pipenv environment
+    pip install nlpsandbox-client
+    # Pushes challenge data
+    python scripts/push_challenge_data.py
+    # Pushes small subset of data
+    python scripts/push_small_dataset.py
+    ```
 
 ### Start the Orchestrator
 
-TBA
+1. Clone the repository
+    ```bash
+    git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
+    cd SynapseWorkflowOrchestrator
+    ```
+2. Add to the `docker-compose.yaml`:
+    ```yaml
+    logspout:
+      image: bekt/logspout-logstash
+      restart: on-failure
+      environment:
+        - ROUTE_URIS=logstash://10.23.60.253:5000
+        - LOGSTASH_TAGS=docker-elk
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    ```
+3. Copy the example template `cp .envTemplate .env` and configure
+    ```text
+    SYNAPSE_USERNAME=nlp-sandbox-bot
+    SYNAPSE_PASSWORD=
+    EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}
+    ```
+4. Start the orchestrator
+    ```
+    docker-compose up -d
+    ```
+5. Start [portainerer](https://documentation.portainer.io/v2.0/deploy/ceinstalldocker/)
+    ```
+    docker volume create portainer_data
+    docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+    ```
 
-### Start the example Data Annotator
+### Start the example Date Annotator
 
-TBA
+Clone and start the date annotator.
+This should also be done by the cloudformation template.
+```bash
+git clone https://github.com/nlpsandbox/date-annotator-example.git
+cd date-annotator-example
+cp .env.example .env
+docker-compose up -d
+```
+
 
 ## Orchestrator workflow template
 
@@ -74,19 +128,19 @@ For more information about the tools, please head to [ChallengeWorkflowTemplates
 ## What to edit
 
 * **workflow.cwl**
-  - update L53 (`valueFrom: "syn18081597"`) to the Synapse ID where your workflow is located - **required**
-  - remove L82-83 (`id: errors_only...`) if sending a "Submission valid!" email is also wanted (default action is to only send an email if invalid reasons are found) - optional
-  - update L135 (`default: []`) with score annotations that are meant to remain prviate from the participant - optional
-
-*  **validate.cwl**
-   - update L11 (`dockerPull: python:3.7`) if you are not using a Python script to validate
-   - update the lines of code after `entry: |` with your own validation code
-      - NOTE: expected annotations to write out are `prediction_file_status` and `prediction_file_errors` (see [ChallengeWorkflowTemplates](https://github.com/Sage-Bionetworks/ChallengeWorkflowTemplates#validation-validatecwl) for more information.)
-
-* **score.cwl**
-  - update L11 (`dockerPull: python:3.7`) if you are not using a Python script to score
-  - update the lines of code after `entry: |` with your own scoring code
-
+    If there are updates to the api version or dataset version, the workflow inputs
+    have to be editted
+    ```yaml
+    - id: dataset_name
+        type: string
+        default: "2014-i2b2"  # change this
+    - id: dataset_version
+        type: string
+        default: "20201203" # change this
+    - id: api_version
+        type: string
+        default: "1.0.1" # change this
+    ```
 
 ## Testing the workflow locally
 
