@@ -49,15 +49,31 @@ The submission workflow is composed of these steps:
 
 ### Start the 2014 i2b2 Data Node
 
-TBA
+```bash
+git clone https://github.com/nlpsandbox/data-node.git
+cd data-node
+cp .env.example .env
+docker-compose up -d
+```
 
 ### Start the Orchestrator
 
-TBA
+```bash
+git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
+cd SynapseWorkflowOrchestrator
+cp .envTemplate .env
+docker-compose up -d
+```
 
 ### Start the example Data Annotator
 
-TBA
+```bash
+git clone https://github.com/nlpsandbox/date-annotator-example.git
+cd date-annotator-example
+cp .env.example .env
+docker-compose up -d
+```
+
 
 ## Orchestrator workflow template
 
