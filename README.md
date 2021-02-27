@@ -49,21 +49,52 @@ The submission workflow is composed of these steps:
 
 ### Start the 2014 i2b2 Data Node
 
-```bash
-git clone https://github.com/nlpsandbox/data-node.git
-cd data-node
-cp .env.example .env
-docker-compose up -d
-```
+1. Clone and start the data node.  This step should already be done by the
+   cloudformation script.
+    ```bash
+    git clone https://github.com/nlpsandbox/data-node.git
+    cd data-node
+    cp .env.example .env
+    docker-compose up -d
+    ```
+2. Push data into the data-node.
+    ```
+    # set up conda or pipenv environment
+    pip install nlpsandbox-client
+    python scripts/push_challenge_data.py
+    python scripts/push_small_dataset.py
+    ```
 
 ### Start the Orchestrator
 
-```bash
-git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
-cd SynapseWorkflowOrchestrator
-cp .envTemplate .env
-docker-compose up -d
-```
+1. Clone the repository
+    ```bash
+    git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
+    cd SynapseWorkflowOrchestrator
+    ```
+2. Add to the `docker-compose.yaml`:
+    ```yaml
+    logspout:
+      image: bekt/logspout-logstash
+      restart: on-failure
+      environment:
+        - ROUTE_URIS=logstash://10.23.60.253:5000
+        - LOGSTASH_TAGS=docker-elk
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    ```
+3. Copy the example template `cp .envTemplate .env` and configure
+    ```text
+    SYNAPSE_USERNAME=nlp-sandbox-bot
+    SYNAPSE_PASSWORD=
+    EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}
+    ```
+4. Start the orchestrator
+    ```
+    docker-compose up -d
+    ```
+
+
 
 ### Start the example Data Annotator
 
