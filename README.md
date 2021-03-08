@@ -48,12 +48,17 @@ The submission workflow is composed of these steps:
     1.  Sends the performance measured to the NLP Sandbox backend server.
 4. The NLP Developer and the community review the performance of the NLP Tool.
 
-## Deploy the infrastructure on Sage Data Hosting Site
+## Deploy the infrastructure on Data Hosting Site
 
-### Start the 2014 i2b2 Data Node
+To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker.
+- Data Node
+- SynapseWorkflowOrchestrator
+- ELK (Elasticsearch, Logstash, Kibana)
+- NLP Tools (E.g. Date-Annotators)
 
-1. Clone and start the data node.  This step should already be done by the
-   cloudformation script.
+### Data Node
+
+1. Clone and start the data node.  This step should already be done by the cloudformation script for Sage Bionetworks.
     ```bash
     git clone https://github.com/nlpsandbox/data-node.git
     cd data-node
@@ -70,29 +75,30 @@ The submission workflow is composed of these steps:
     python scripts/push_small_dataset.py
     ```
 
-### Start the Orchestrator
+### SynapseWorkflowOrchestrator
+
 
 1. Clone the repository
     ```bash
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
     cd SynapseWorkflowOrchestrator
     ```
-2. Add to the `docker-compose.yaml`:
+2. Add to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
     ```yaml
     logspout:
       image: bekt/logspout-logstash
       restart: on-failure
       environment:
-        - ROUTE_URIS=logstash://10.23.60.253:5000
+        - ROUTE_URIS=logstash://10.23.60.253:5000  # Only for Sage Bionetworks
         - LOGSTASH_TAGS=docker-elk
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     ```
-3. Copy the example template `cp .envTemplate .env` and configure
+3. Copy the example template `cp .envTemplate .env` and configure. Sage Bionetworks uses the service account `nlp-sandbox-bot` and these `EVALUTION_TEMPLATES`, but these will be different per data hosting site.
     ```text
-    SYNAPSE_USERNAME=nlp-sandbox-bot
+    SYNAPSE_USERNAME=nlp-sandbox-bot  # Only for Sage Bionetworks
     SYNAPSE_PASSWORD=
-    EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}
+    EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}  # Only for Sage Bionetworks
     ```
 4. Start the orchestrator
     ```
@@ -104,7 +110,22 @@ The submission workflow is composed of these steps:
     docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
     ```
 
-### Start the example Date Annotator
+### ELK
+
+1. Clone the repository
+    ```
+    git clone https://github.com/nlpsandbox/docker-elk.git
+    cd docker-elk
+    docker-compose up -d
+    ```
+1. Only use the free version of ELK. This can be configured [here](https://www.elastic.co/guide/en/kibana/7.11/managing-licenses.html)
+1. Change the `elastic passwords` in each of these locations:
+    - `docker-compose.yml`
+    - `kibana/config/kibana.yml`
+    - `logstash/config/logstash.yml`
+    - `elasticsearch/config/elasticsearch.yml`
+
+### Example Date Annotator
 
 Clone and start the date annotator.
 This should also be done by the cloudformation template.
@@ -115,20 +136,21 @@ cp .env.example .env
 docker-compose up -d
 ```
 
+## SAGE BIONETWORKS ONLY
 
-## Orchestrator workflow
+### Orchestrator workflow
 
 This repository will host the `CWL` workflow and tools required to set up the `model-to-data` challenge infrastructure for `NLP Sandbox`
 
 For more information about the tools, please head to [ChallengeWorkflowTemplates](https://github.com/Sage-Bionetworks/ChallengeWorkflowTemplates)
 
 
-## Requirements
+### Requirements
 * `pip3 install cwltool`
 * A synapse account / configuration file.  Learn more [here](https://docs.synapse.org/articles/client_configuration.html#for-developers)
 * A Synapse submission to a queue.  Learn more [here](https://docs.synapse.org/articles/evaluation_queues.html#submissions)
 
-## What to edit
+### What to edit
 
 * **workflow.cwl**
     If there are updates to the api version or dataset version, the workflow inputs
@@ -145,7 +167,7 @@ For more information about the tools, please head to [ChallengeWorkflowTemplates
         default: "1.0.1" # change this
     ```
 
-## Testing the workflow locally
+### Testing the workflow locally
 
 ```bash
 cwltool workflow.cwl --submissionId 12345 \
