@@ -77,7 +77,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 
 ### SynapseWorkflowOrchestrator
 
-
+0. Obtain a Service Accout from the NLPSandbox Team 
 1. Clone the repository
     ```bash
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
@@ -94,6 +94,8 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     ```
+    Where 10.23.60.253 is the IP Address of your host 
+    
 3. Copy the example template `cp .envTemplate .env` and configure. Sage Bionetworks uses the service account `nlp-sandbox-bot` and these `EVALUTION_TEMPLATES`, but these will be different per data hosting site.
     ```text
     SYNAPSE_USERNAME=nlp-sandbox-bot  # Only for Sage Bionetworks
