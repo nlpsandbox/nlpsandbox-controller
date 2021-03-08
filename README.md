@@ -83,7 +83,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
     cd SynapseWorkflowOrchestrator
     ```
-2. Add to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
+2. Add the following section to the `docker-compose.yaml`ONLY if you run an ELK Logging server.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
     ```yaml
     logspout:
       image: bekt/logspout-logstash
@@ -94,7 +94,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     ```
-    Where 10.23.60.253 is the IP Address of your host 
+    Where 10.23.60.253 is the IP Address of your ELK Server 
     
 3. Copy the example template `cp .envTemplate .env` and configure. Sage Bionetworks uses the service account `nlp-sandbox-bot` and these `EVALUTION_TEMPLATES`, but these will be different per data hosting site.
     ```text
