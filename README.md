@@ -50,7 +50,10 @@ The submission workflow is composed of these steps:
 
 ## Deploy the infrastructure on Data Hosting Site
 
-To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker.
+To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements : 
+
+- Docker : ver 
+- Docker-compose : ver 1.28.5 or higher
 - Data Node
 - SynapseWorkflowOrchestrator
 - ELK (Elasticsearch, Logstash, Kibana)
@@ -77,13 +80,13 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 
 ### SynapseWorkflowOrchestrator
 
-
+0. Obtain a Service Accout from the NLPSandbox Team 
 1. Clone the repository
     ```bash
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
     cd SynapseWorkflowOrchestrator
     ```
-2. Add to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
+2. Add the following section to the `docker-compose.yaml`ONLY if you run an ELK Logging server.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
     ```yaml
     logspout:
       image: bekt/logspout-logstash
@@ -94,6 +97,8 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     ```
+    Where 10.23.60.253 is the IP Address of your ELK Server 
+    
 3. Copy the example template `cp .envTemplate .env` and configure. Sage Bionetworks uses the service account `nlp-sandbox-bot` and these `EVALUTION_TEMPLATES`, but these will be different per data hosting site.
     ```text
     SYNAPSE_USERNAME=nlp-sandbox-bot  # Only for Sage Bionetworks
@@ -132,7 +137,6 @@ This should also be done by the cloudformation template.
 ```bash
 git clone https://github.com/nlpsandbox/date-annotator-example.git
 cd date-annotator-example
-cp .env.example .env
 docker-compose up -d
 ```
 
