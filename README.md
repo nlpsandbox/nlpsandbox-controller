@@ -82,6 +82,8 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 
 ### Synapse Workflow Orchestrator
 
+View [Submission workflow](#submission-workflow) for what this tool does.
+
 1. Obtain/Create a Service Account (TBD)
 1. Clone the repository
     ```bash
