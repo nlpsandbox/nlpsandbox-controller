@@ -52,8 +52,8 @@ The submission workflow is composed of these steps:
 
 To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements : 
 
-- Docker : ver 
-- Docker-compose : ver 1.28.5 or higher
+- Docker: ver 19.03.0+ or higher
+- Docker-compose: ver 1.25.5 or higher
 - Data Node
 - SynapseWorkflowOrchestrator
 - ELK (Elasticsearch, Logstash, Kibana)
