@@ -93,11 +93,11 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}  # Only for Sage Bionetworks
     ```
 1. Start the orchestrator
-    ```
+    ```bash
     docker-compose up -d
     ```
 1. _Optional_: Start [portainerer](https://documentation.portainer.io/v2.0/deploy/ceinstalldocker/)  This is an open source tool for managing container-based software applications (e.g. provides a GUI to view Docker images and running containers).
-    ```
+    ```bash
     docker volume create portainer_data
     docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
     ```
@@ -120,7 +120,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 A solution to track Docker container logs are a **requirement** to be a data hosting site.  The reason for this is because the tool services submitted by participants are hosted as Docker containers and if there are issues with the service, the logs will have to be returned to participants.  We suggest using ELK stack (instructions below), but there are plenty of other methods you can use to [capture Docker logs](https://docs.docker.com/config/containers/logging/configure/).
 
 1. Clone the repository
-    ```
+    ```bash
     git clone https://github.com/nlpsandbox/docker-elk.git
     cd docker-elk
     docker-compose up -d
@@ -131,22 +131,35 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     - `kibana/config/kibana.yml`
     - `logstash/config/logstash.yml`
     - `elasticsearch/config/elasticsearch.yml`
-1. _Running everything all the compoenents on one machine_:  If you are running everything on one machine, you can do:
-    ```
-    docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up
-    ```
-    This will automatically start logspout for you and you won't have to add it to the `SynapseWorkflowOrchestrator`
+1. _Running all the services on one machine_:
+    - Make sure to update the `kibana` port in the `docker-compose.yml` or else there is a chance that you will run into `port already allocated` error.
+        ```yaml
+        ports:
+            - "80:5601"  # Change 80 to an open port
+        ```
+    - Use the logspout extension to capture Docker container logs.
+        ```bash
+        docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up
+        ```
+        This will automatically start logspout for you and you won't have to add it to the `SynapseWorkflowOrchestrator`
 
 
 ### Example Date Annotator
 
-Clone and start the date annotator.
-This should also be done by the cloudformation template.
-```bash
-git clone https://github.com/nlpsandbox/date-annotator-example.git
-cd date-annotator-example
-docker-compose up -d
-```
+1. Clone and start the date annotator. This step should already be done by the cloudformation script for Sage Bionetworks.
+    ```bash
+    git clone https://github.com/nlpsandbox/date-annotator-example.git
+    cd date-annotator-example
+    ```
+    _If running all services on one machine:_ must make sure `port` is changed to avoid `port already allocated` error.
+    ```yaml
+    ports:
+      - "80:80"  # Change the first 80 to an open port
+    ```
+    Start the service
+    ```bash
+    docker-compose up -d
+    ```
 
 ## SAGE BIONETWORKS ONLY
 
