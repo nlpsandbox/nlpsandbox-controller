@@ -50,14 +50,16 @@ The submission workflow is composed of these steps:
 
 ## Deploy the infrastructure on Data Hosting Site
 
-To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements : 
+To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements: 
 
 - Docker: ver 19.03.0+ or higher
 - Docker-compose: ver 1.25.5 or higher
 - Data Node
-- SynapseWorkflowOrchestrator
+- Synapse Workflow Orchestrator
 - ELK (Elasticsearch, Logstash, Kibana)
 - NLP Tools (E.g. Date-Annotators)
+
+> Ideally for performance, the Data Node, Synapse Workflow Orchestrator and ELK are hosted on different servers (e.g. ec2 instances), but these can technically be deployed on one server/machine.
 
 ### Data Node
 
@@ -78,7 +80,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     python scripts/push_small_dataset.py
     ```
 
-### SynapseWorkflowOrchestrator
+### Synapse Workflow Orchestrator
 
 1. Obtain/Create a Service Account (TBD)
 1. Clone the repository
