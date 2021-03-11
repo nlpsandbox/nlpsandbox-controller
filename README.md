@@ -27,12 +27,12 @@ The submission workflow is composed of these steps:
     web client or command line interface (CLI). The submission is added to one of
     the submission queues of the NLP Sandbox depending on the NLP Task selected
     by the NLP Developer.
-2.  The *NLP Sandbox Workflow Orchestrator* query one or more submissions queues
+1.  The *NLP Sandbox Workflow Orchestrator* query one or more submissions queues
     for submissions to process. The Orchestrator that runs on a Data Hosting Site
     only query submissions that it can evaluate based on the type of data stored
     in the Data Node(s) available (XXX: clarify the case where there are multiple
     Data Nodes).
-3.  If there is a `RECEIVED` submission, the Orchestrator will start running a
+1.  If there is a `RECEIVED` submission, the Orchestrator will start running a
     workflow with the submission as its input.  The steps to the workflow is outlined
     in [workflow.cwl](workflow.cwl).
     1.  Starts the NLP Tool (web service) to evaluate
@@ -46,7 +46,7 @@ The submission workflow is composed of these steps:
     1.  Evaluates the performance of the predictions by comparing
         them to the gold standard.
     1.  Sends the performance measured to the NLP Sandbox backend server.
-4. The NLP Developer and the community review the performance of the NLP Tool.
+1. The NLP Developer and the community review the performance of the NLP Tool.
 
 ## Deploy the infrastructure on Data Hosting Site
 
@@ -68,7 +68,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     cp .env.example .env
     docker-compose up -d
     ```
-2. Push data into the data-node.
+1. Push data into the data-node.
     ```bash
     # set up conda or pipenv environment
     pip install nlpsandbox-client
@@ -80,13 +80,28 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 
 ### SynapseWorkflowOrchestrator
 
-0. Obtain a Service Accout from the NLPSandbox Team 
+1. Obtain/Create a Service Account (TBD)
 1. Clone the repository
     ```bash
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
     cd SynapseWorkflowOrchestrator
     ```
-2. Add the following section to the `docker-compose.yaml`ONLY if you run an ELK Logging server.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
+1. Copy the example template `cp .envTemplate .env` and configure. Sage Bionetworks uses the service account `nlp-sandbox-bot` and these `EVALUTION_TEMPLATES`, but these will be different per data hosting site.
+    ```text
+    SYNAPSE_USERNAME=nlp-sandbox-bot  # Only for Sage Bionetworks
+    SYNAPSE_PASSWORD=
+    EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}  # Only for Sage Bionetworks
+    ```
+1. Start the orchestrator
+    ```
+    docker-compose up -d
+    ```
+1. _Optional_: Start [portainerer](https://documentation.portainer.io/v2.0/deploy/ceinstalldocker/)  This is an open source tool for managing container-based software applications (e.g. provides a GUI to view Docker images and running containers).
+    ```
+    docker volume create portainer_data
+    docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+    ```
+1. _If hosting ELK on a different instance from running submissions_:  Add the following section to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
     ```yaml
     logspout:
       image: bekt/logspout-logstash
@@ -97,25 +112,12 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     ```
-    Where 10.23.60.253 is the IP Address of your ELK Server 
-    
-3. Copy the example template `cp .envTemplate .env` and configure. Sage Bionetworks uses the service account `nlp-sandbox-bot` and these `EVALUTION_TEMPLATES`, but these will be different per data hosting site.
-    ```text
-    SYNAPSE_USERNAME=nlp-sandbox-bot  # Only for Sage Bionetworks
-    SYNAPSE_PASSWORD=
-    EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}  # Only for Sage Bionetworks
-    ```
-4. Start the orchestrator
-    ```
-    docker-compose up -d
-    ```
-5. Start [portainerer](https://documentation.portainer.io/v2.0/deploy/ceinstalldocker/)
-    ```
-    docker volume create portainer_data
-    docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
-    ```
+    Where `10.23.60.253` is the IP Address of your external ELK Server
 
-### ELK
+
+### Capturing Docker Logs
+
+A solution to track Docker container logs are a **requirement** to be a data hosting site.  The reason for this is because the tool services submitted by participants are hosted as Docker containers and if there are issues with the service, the logs will have to be returned to participants.  We suggest using ELK stack (instructions below), but there are plenty of other methods you can use to [capture Docker logs](https://docs.docker.com/config/containers/logging/configure/).
 
 1. Clone the repository
     ```
@@ -129,6 +131,12 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     - `kibana/config/kibana.yml`
     - `logstash/config/logstash.yml`
     - `elasticsearch/config/elasticsearch.yml`
+1. _Running everything all the compoenents on one machine_:  If you are running everything on one machine, you can do:
+    ```
+    docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up
+    ```
+    This will automatically start logspout for you and you won't have to add it to the `SynapseWorkflowOrchestrator`
+
 
 ### Example Date Annotator
 
