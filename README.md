@@ -27,7 +27,7 @@ The submission workflow is composed of these steps:
     web client or command line interface (CLI). The submission is added to one of
     the submission queues of the NLP Sandbox depending on the NLP Task selected
     by the NLP Developer.
-1.  The *NLP Sandbox Workflow Orchestrator* query one or more submissions queues
+1.  The *Synapse Workflow Orchestrator* query one or more submissions queues
     for submissions to process. The Orchestrator that runs on a Data Hosting Site
     only query submissions that it can evaluate based on the type of data stored
     in the Data Node(s) available (XXX: clarify the case where there are multiple
