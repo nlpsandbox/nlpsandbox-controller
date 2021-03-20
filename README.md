@@ -88,9 +88,11 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     ```
 1. Copy the example template `cp .envTemplate .env` and configure. Sage Bionetworks uses the service account `nlp-sandbox-bot` and these `EVALUTION_TEMPLATES`, but these will be different per data hosting site.
     ```text
-    SYNAPSE_USERNAME=nlp-sandbox-bot  # Only for Sage Bionetworks
+    SYNAPSE_USERNAME=nlp-sandbox-bot  # The data hosting site will have to created their own synapse service account.
     SYNAPSE_PASSWORD=
-    EVALUATION_TEMPLATES={"9614654": "syn23626300", "9614684": "syn23626300", "9614685": "syn23626300", "9614658": "syn23633112", "9614652": "syn23633112", "9614657": "syn23633112"}  # Only for Sage Bionetworks
+    EVALUATION_TEMPLATES={"queueid": "synid"}  # This mapping will be provided to the site by Sage Bionetworks.
+    WORKFLOW_OUTPUT_ROOT_ENTITY_ID=synid  # This value will be provided to the site by Sage Bionetworks.
+    # WES_ENDPOINT=http://localhost:8082/ga4gh/wes/v1  # This needs to be commented
     ```
 1. Start the orchestrator
     ```
