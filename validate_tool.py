@@ -51,7 +51,7 @@ def main(args):
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
-    exec_cmd = ["evaluate", "get-tool", '--annotator_host',
+    exec_cmd = ["tool", "get-tool", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
