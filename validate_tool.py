@@ -54,7 +54,7 @@ def main(args):
     exec_cmd = ["evaluate", "get-tool", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
     # Incase getting tool info fails, add empty dict
-    tool_info = {}
+    new_tool_info = {}
     try:
         # auto_remove doesn't work when being run with the orchestrator
         tool = client.containers.run(annotator_client, exec_cmd,
@@ -71,7 +71,15 @@ def main(args):
             invalid_reasons.append(
                 f"API api/v1/tool toolApiVersion is not {args.schema_version}"
             )
-        tool_info['tool_name'] = tool_info.pop("name")
+        # Create new dict key names
+        for key, value in tool_info.items():
+            # TODO: This won't be necessary later
+            if key.startswith('tool_'):
+                new_key = key.replace("tool_", "tool__")
+            else:
+                new_key = f"tool__{key}"
+            new_tool_info[new_key] = value
+        # tool_info['tool_name'] = tool_info.pop("name")
     except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
@@ -177,7 +185,7 @@ def main(args):
 
     result = {'submission_errors': "\n".join(invalid_reasons),
               'submission_status': prediction_file_status}
-    result.update(tool_info)
+    result.update(new_tool_info)
     with open(args.results, 'w') as file_o:
         file_o.write(json.dumps(result))
 
