@@ -43,9 +43,9 @@ def main(args):
     ]['submission']['IPAddress']
     print(container_ip)
     api_url_map = {
-        'date': "textDateAnnotations",
-        'person': "textPersonNameAnnotations",
-        'address': "textPhysicalAddressAnnotations"
+        'nlpsandbox:date-annotator': "textDateAnnotations",
+        'nlpsandbox:person-name-annotator': "textPersonNameAnnotations",
+        'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations"
     }
     annotator_client = "nlpsandbox/cli:0.4.1"
     # validate that the root URL redirects to the service API endpoint
@@ -74,10 +74,10 @@ def main(args):
         # Create new dict key names
         for key, value in tool_info.items():
             # TODO: This won't be necessary later
-            if key.startswith('tool_'):
-                new_key = key.replace("tool_", "tool__")
-            else:
-                new_key = f"tool__{key}"
+            # if key.startswith('tool_'):
+            #     new_key = key.replace("tool_", "tool__")
+            # else:
+            new_key = f"tool__{key}"
             new_tool_info[new_key] = value
         # tool_info['tool_name'] = tool_info.pop("name")
     except Exception as err:
