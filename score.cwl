@@ -4,7 +4,7 @@
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [evaluate, prediction]
+baseCommand: [evaluate-prediction]
 
 hints:
   DockerRequirement:

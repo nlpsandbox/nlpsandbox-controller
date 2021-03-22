@@ -4,7 +4,7 @@
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [community,  get-annotation-store]
+baseCommand: [datanode,  get-annotation-store]
 
 hints:
   DockerRequirement:
