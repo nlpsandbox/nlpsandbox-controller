@@ -89,7 +89,7 @@ def main(args):
     remove_docker_container(f"{args.submissionid}_curl_1")
 
     # Check UI
-    exec_cmd = ["evaluate", "check-url", '--url',
+    exec_cmd = ["tool", "check-url", '--url',
                 f"http://{container_ip}:8080/api/v1/ui"]
     try:
         # auto_remove doesn't work when being run with the orchestrator
@@ -117,7 +117,7 @@ def main(args):
     # TODO: need to support other annotators once implemented
     exec_cmd = ["tool", "annotate-note", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1", '--note_json',
-                '/example_note.json', '--annotator_type',
+                '/example_note.json', '--tool_type',
                 args.annotator_type]
 
     volumes = {
@@ -140,6 +140,7 @@ def main(args):
         )
         print(example_dict)
     except Exception as err:
+        print(err)
         invalid_reasons.append(
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
