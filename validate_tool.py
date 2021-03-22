@@ -47,7 +47,7 @@ def main(args):
         'nlpsandbox:person-name-annotator': "textPersonNameAnnotations",
         'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations"
     }
-    annotator_client = "nlpsandbox/cli:0.4.1"
+    annotator_client = "nlpsandbox/cli:edge"
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
