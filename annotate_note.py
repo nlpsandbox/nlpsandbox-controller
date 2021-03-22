@@ -106,9 +106,9 @@ def main(syn, args):
     with open(data_notes, 'r') as notes_f:
         data_notes_dict = json.load(notes_f)
     api_url_map = {
-        'date': "textDateAnnotations",
-        'person': "textPersonNameAnnotations",
-        'address': "textPhysicalAddressAnnotations"
+        'nlpsandbox:date-annotator': "textDateAnnotations",
+        'nlpsandbox:person-name-annotator': "textPersonNameAnnotations",
+        'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations"
     }
 
     all_annotations = []
