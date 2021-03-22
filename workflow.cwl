@@ -32,7 +32,7 @@ inputs:
     default: "20201203"
   - id: api_version
     type: string
-    default: "1.0.1"
+    default: "1.0.2"
   - id: fhir_store_id
     type: string
     #default: "awesome-fhir-store"
