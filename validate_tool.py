@@ -67,7 +67,7 @@ def main(args):
         )
         print(tool_info)
         # Check that tool api version is correct
-        if tool_info.get('tool_api_version') != args.schema_version:
+        if tool_info.get('api_version') != args.schema_version:
             invalid_reasons.append(
                 f"API api/v1/tool toolApiVersion is not {args.schema_version}"
             )
