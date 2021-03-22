@@ -115,7 +115,7 @@ def main(args):
     #     json.dump(example_note, example_f)
 
     # TODO: need to support other annotators once implemented
-    exec_cmd = ["evaluate", "annotate-note", '--annotator_host',
+    exec_cmd = ["tool", "annotate-note", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1", '--note_json',
                 '/example_note.json', '--annotator_type',
                 args.annotator_type]
