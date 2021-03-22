@@ -53,6 +53,8 @@ def main(args):
     #             f"http://{container_ip}:8080"]
     exec_cmd = ["evaluate", "get-tool", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
+    # Incase getting tool info fails, add empty dict
+    new_tool_info = {}
     try:
         # auto_remove doesn't work when being run with the orchestrator
         tool = client.containers.run(annotator_client, exec_cmd,
@@ -64,6 +66,20 @@ def main(args):
             tool.decode("utf-8").replace("\n", "").replace("'", '"')
         )
         print(tool_info)
+        # Check that tool api version is correct
+        if tool_info.get('tool_api_version') != args.schema_version:
+            invalid_reasons.append(
+                f"API api/v1/tool toolApiVersion is not {args.schema_version}"
+            )
+        # Create new dict key names
+        for key, value in tool_info.items():
+            # TODO: This won't be necessary later
+            if key.startswith('tool_'):
+                new_key = key.replace("tool_", "tool__")
+            else:
+                new_key = f"tool__{key}"
+            new_tool_info[new_key] = value
+        # tool_info['tool_name'] = tool_info.pop("name")
     except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
@@ -71,11 +87,7 @@ def main(args):
             "incorrectly. Make sure correct tool object is returned."
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
-    # Check that tool api version is correct
-    if tool_info['tool_api_version'] != args.schema_version:
-        invalid_reasons.append(
-            f"API api/v1/tool toolApiVersion is not {args.schema_version}"
-        )
+
     # Check UI
     exec_cmd = ["evaluate", "check-url", '--url',
                 f"http://{container_ip}:8080/api/v1/ui"]
@@ -173,6 +185,7 @@ def main(args):
 
     result = {'submission_errors': "\n".join(invalid_reasons),
               'submission_status': prediction_file_status}
+    result.update(new_tool_info)
     with open(args.results, 'w') as file_o:
         file_o.write(json.dumps(result))
 
