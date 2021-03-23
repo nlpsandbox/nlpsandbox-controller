@@ -4,11 +4,11 @@
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [community, store-annotations]
+baseCommand: [datanode, store-annotations]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:0.4.1
+    dockerPull: nlpsandbox/cli:1.0.0
 
 inputs:
   - id: data_endpoint

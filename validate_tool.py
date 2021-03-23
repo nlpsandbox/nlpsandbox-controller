@@ -43,15 +43,15 @@ def main(args):
     ]['submission']['IPAddress']
     print(container_ip)
     api_url_map = {
-        'date': "textDateAnnotations",
-        'person': "textPersonNameAnnotations",
-        'address': "textPhysicalAddressAnnotations"
+        'nlpsandbox:date-annotator': "textDateAnnotations",
+        'nlpsandbox:person-name-annotator': "textPersonNameAnnotations",
+        'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations"
     }
-    annotator_client = "nlpsandbox/cli:0.4.1"
+    annotator_client = "nlpsandbox/cli:1.0.0"
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
-    exec_cmd = ["evaluate", "get-tool", '--annotator_host',
+    exec_cmd = ["tool", "get-tool", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
@@ -67,19 +67,14 @@ def main(args):
         )
         print(tool_info)
         # Check that tool api version is correct
-        if tool_info.get('tool_api_version') != args.schema_version:
+        if tool_info.get('api_version') != args.schema_version:
             invalid_reasons.append(
-                f"API api/v1/tool toolApiVersion is not {args.schema_version}"
+                f"API api/v1/tool apiVersion is not {args.schema_version}"
             )
         # Create new dict key names
         for key, value in tool_info.items():
-            # TODO: This won't be necessary later
-            if key.startswith('tool_'):
-                new_key = key.replace("tool_", "tool__")
-            else:
-                new_key = f"tool__{key}"
+            new_key = f"tool__{key}"
             new_tool_info[new_key] = value
-        # tool_info['tool_name'] = tool_info.pop("name")
     except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
@@ -89,7 +84,7 @@ def main(args):
     remove_docker_container(f"{args.submissionid}_curl_1")
 
     # Check UI
-    exec_cmd = ["evaluate", "check-url", '--url',
+    exec_cmd = ["tool", "check-url", '--url',
                 f"http://{container_ip}:8080/api/v1/ui"]
     try:
         # auto_remove doesn't work when being run with the orchestrator
@@ -115,9 +110,9 @@ def main(args):
     #     json.dump(example_note, example_f)
 
     # TODO: need to support other annotators once implemented
-    exec_cmd = ["evaluate", "annotate-note", '--annotator_host',
+    exec_cmd = ["tool", "annotate-note", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1", '--note_json',
-                '/example_note.json', '--annotator_type',
+                '/example_note.json', '--tool_type',
                 args.annotator_type]
 
     volumes = {
@@ -127,6 +122,7 @@ def main(args):
         }
     }
     # Run first time
+    example_dict = {}
     try:
         example_post = client.containers.run(
             annotator_client, exec_cmd,
@@ -148,6 +144,7 @@ def main(args):
     remove_docker_container(f"{args.submissionid}_curl_3")
 
     # Run second time
+    example_dict_2 = {}
     try:
         example_post_2 = client.containers.run(
             annotator_client, exec_cmd,

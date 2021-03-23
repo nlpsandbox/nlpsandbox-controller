@@ -46,8 +46,12 @@ requirements:
         
           with open(args.score_json, "r") as score_f:
               scores = json.load(score_f)
-          
-          annotator_type = args.annotator_type
+          api_url_map = {
+            'nlpsandbox:date-annotator': "date",
+            'nlpsandbox:person-name-annotator': "person",
+            'nlpsandbox:physical-address-annotator': "address"
+          }
+          annotator_type = api_url_map[args.annotator_type]
           key = f"{annotator_type}_location"
           new_scores_dict = {"location_{metric}_{type}_{mode}".format(
                                  metric=location['metric'],

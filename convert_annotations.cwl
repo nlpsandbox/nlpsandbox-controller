@@ -46,13 +46,13 @@ requirements:
           with open(args.annotation_json, "r") as annote_f:
               annotations = json.load(annote_f)
 
-          if args.annotator_type == "date":
+          if args.annotator_type == "nlpsandbox:date-annotator":
             annotation_key = "date_annotations"
             post_path = "textDateAnnotations"
-          elif args.annotator_type == "person":
+          elif args.annotator_type == "nlpsandbox:person-name-annotator":
             annotation_key = "person_name_annotations"
             post_path = "textPersonNameAnnotations"
-          else:
+          elif args.annotator_type == "nlpsandbox:physical-address-annotator":
             annotation_key = "physical_location_annotations"
             post_path = "textPhysicalAddressAnnotations"
 

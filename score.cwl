@@ -4,11 +4,11 @@
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [evaluate, prediction]
+baseCommand: [evaluate-prediction]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:0.4.1
+    dockerPull: nlpsandbox/cli:1.0.0
 
 inputs:
 
@@ -30,7 +30,7 @@ inputs:
   - id: eval_type
     type: string
     inputBinding:
-      prefix: --eval_type
+      prefix: --tool_type
 
 outputs:
   - id: results

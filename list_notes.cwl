@@ -4,11 +4,11 @@
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: [community, list-notes]
+baseCommand: [datanode, list-notes]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:0.4.1
+    dockerPull: nlpsandbox/cli:1.0.0
 
 requirements:
   - class: InlineJavascriptRequirement

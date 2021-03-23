@@ -27,7 +27,7 @@ The submission workflow is composed of these steps:
     web client or command line interface (CLI). The submission is added to one of
     the submission queues of the NLP Sandbox depending on the NLP Task selected
     by the NLP Developer.
-1.  The *NLP Sandbox Workflow Orchestrator* query one or more submissions queues
+1.  The *Synapse Workflow Orchestrator* query one or more submissions queues
     for submissions to process. The Orchestrator that runs on a Data Hosting Site
     only query submissions that it can evaluate based on the type of data stored
     in the Data Node(s) available (XXX: clarify the case where there are multiple
@@ -50,14 +50,16 @@ The submission workflow is composed of these steps:
 
 ## Deploy the infrastructure on Data Hosting Site
 
-To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements : 
+To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements: 
 
-- Docker : ver 
-- Docker-compose : ver 1.28.5 or higher
+- Docker: ver 19.03.0+ or higher
+- Docker-compose: ver 1.25.5 or higher
 - Data Node
-- SynapseWorkflowOrchestrator
+- Synapse Workflow Orchestrator
 - ELK (Elasticsearch, Logstash, Kibana)
 - NLP Tools (E.g. Date-Annotators)
+
+> Ideally for performance, the Data Node, Synapse Workflow Orchestrator and ELK are hosted on different servers (e.g. ec2 instances), but these can technically be deployed on one server/machine.
 
 ### Data Node
 
@@ -78,7 +80,9 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     python scripts/push_small_dataset.py
     ```
 
-### SynapseWorkflowOrchestrator
+### Synapse Workflow Orchestrator
+
+View [Submission workflow](#submission-workflow) for what this tool does.
 
 1. Obtain/Create a Service Account (TBD)
 1. Clone the repository
@@ -95,11 +99,11 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     # WES_ENDPOINT=http://localhost:8082/ga4gh/wes/v1  # This needs to be commented
     ```
 1. Start the orchestrator
-    ```
+    ```bash
     docker-compose up -d
     ```
 1. _Optional_: Start [portainerer](https://documentation.portainer.io/v2.0/deploy/ceinstalldocker/)  This is an open source tool for managing container-based software applications (e.g. provides a GUI to view Docker images and running containers).
-    ```
+    ```bash
     docker volume create portainer_data
     docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
     ```
@@ -122,7 +126,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 A solution to track Docker container logs are a **requirement** to be a data hosting site.  The reason for this is because the tool services submitted by participants are hosted as Docker containers and if there are issues with the service, the logs will have to be returned to participants.  We suggest using ELK stack (instructions below), but there are plenty of other methods you can use to [capture Docker logs](https://docs.docker.com/config/containers/logging/configure/).
 
 1. Clone the repository
-    ```
+    ```bash
     git clone https://github.com/nlpsandbox/docker-elk.git
     cd docker-elk
     docker-compose up -d
@@ -133,22 +137,35 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     - `kibana/config/kibana.yml`
     - `logstash/config/logstash.yml`
     - `elasticsearch/config/elasticsearch.yml`
-1. _Running everything all the compoenents on one machine_:  If you are running everything on one machine, you can do:
-    ```
-    docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up
-    ```
-    This will automatically start logspout for you and you won't have to add it to the `SynapseWorkflowOrchestrator`
+1. _Running all the services on one machine_:
+    - Make sure to update the `kibana` port in the `docker-compose.yml` or else there is a chance that you will run into `port already allocated` error.
+        ```yaml
+        ports:
+            - "80:5601"  # Change 80 to an open port
+        ```
+    - Use the logspout extension to capture Docker container logs.
+        ```bash
+        docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up
+        ```
+        This will automatically start logspout for you and you won't have to add it to the `SynapseWorkflowOrchestrator`
 
 
 ### Example Date Annotator
 
-Clone and start the date annotator.
-This should also be done by the cloudformation template.
-```bash
-git clone https://github.com/nlpsandbox/date-annotator-example.git
-cd date-annotator-example
-docker-compose up -d
-```
+1. Clone and start the date annotator. This step should already be done by the cloudformation script for Sage Bionetworks.
+    ```bash
+    git clone https://github.com/nlpsandbox/date-annotator-example.git
+    cd date-annotator-example
+    ```
+    _If running all services on one machine:_ must make sure `port` is changed to avoid `port already allocated` error.
+    ```yaml
+    ports:
+      - "80:80"  # Change the first 80 to an open port
+    ```
+    Start the service
+    ```bash
+    docker-compose up -d
+    ```
 
 ## SAGE BIONETWORKS ONLY
 
