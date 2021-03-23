@@ -73,13 +73,8 @@ def main(args):
             )
         # Create new dict key names
         for key, value in tool_info.items():
-            # TODO: This won't be necessary later
-            # if key.startswith('tool_'):
-            #     new_key = key.replace("tool_", "tool__")
-            # else:
             new_key = f"tool__{key}"
             new_tool_info[new_key] = value
-        # tool_info['tool_name'] = tool_info.pop("name")
     except Exception as err:
         # TODO: Potentially add in more info
         invalid_reasons.append(
@@ -127,6 +122,7 @@ def main(args):
         }
     }
     # Run first time
+    example_dict = {}
     try:
         example_post = client.containers.run(
             annotator_client, exec_cmd,
@@ -149,6 +145,7 @@ def main(args):
     remove_docker_container(f"{args.submissionid}_curl_3")
 
     # Run second time
+    example_dict_2 = {}
     try:
         example_post_2 = client.containers.run(
             annotator_client, exec_cmd,
