@@ -30,7 +30,7 @@ inputs:
   - id: eval_type
     type: string
     inputBinding:
-      prefix: --eval_type
+      prefix: --tool_type
 
 outputs:
   - id: results
