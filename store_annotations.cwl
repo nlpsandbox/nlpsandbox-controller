@@ -8,7 +8,7 @@ baseCommand: [datanode, store-annotations]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:edge
+    dockerPull: nlpsandbox/cli:1.0.0
 
 inputs:
   - id: data_endpoint
