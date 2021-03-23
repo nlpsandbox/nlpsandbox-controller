@@ -136,7 +136,6 @@ def main(args):
         )
         print(example_dict)
     except Exception as err:
-        print(err)
         invalid_reasons.append(
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
