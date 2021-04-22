@@ -25,12 +25,6 @@ inputs:
     type: string
   - id: synapseConfig
     type: File
-  - id: dataset_name
-    type: string
-    default: "2014-i2b2"
-  - id: dataset_version
-    type: string
-    default: "20201203"
   - id: api_version
     type: string
     default: "1.0.2"
