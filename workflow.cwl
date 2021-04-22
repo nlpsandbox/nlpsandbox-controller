@@ -83,7 +83,6 @@ steps:
           class: File
           location: "config.yml"
     out:
-      - id: question
       - id: submit_to_queue
       - id: config
       - id: dataset_id
