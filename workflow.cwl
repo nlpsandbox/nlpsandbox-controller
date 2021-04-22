@@ -194,7 +194,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
-        source: "#annotate_dataset_version/finished"
+        source: "#annotate_evaluation_config/finished"
     out: [finished]
 
   check_docker_status:
