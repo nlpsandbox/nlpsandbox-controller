@@ -57,7 +57,7 @@ inputs:
 outputs:
 
   - id: submit_to_queue
-    type: string[]
+    type: string[]?
     outputBinding:
       glob: $(inputs.results)
       loadContents: true
