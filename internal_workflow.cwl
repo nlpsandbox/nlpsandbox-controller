@@ -193,7 +193,7 @@ steps:
     run: start_service.cwl
     in:
       - id: submissionid
-        source: "#get_submissionid/submissionid"
+        source: "#submissionId"
       - id: docker_repository
         source: "#get_docker_submission/docker_repository"
       - id: docker_digest
