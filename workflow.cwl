@@ -384,7 +384,7 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
-        source: "#create_annotations_json/dataset_id"
+        source: "#get_evaluation_config/dataset_id"
       - id: annotation_store_id
         source: "#make_store_name/annotation_store_id"
       - id: annotation_json
