@@ -56,15 +56,8 @@ inputs:
 
 outputs:
 
-#  - id: submit_to_queue
-#    type: string[]?
-#    outputBinding:
-#      glob: $(inputs.results)
-#      loadContents: true
-#      outputEval: $(JSON.parse(self[0].contents)['submit_to'])
-
   - id: submit_to_queue
-    type: string
+    type: string[]?
     outputBinding:
       glob: $(inputs.results)
       loadContents: true
