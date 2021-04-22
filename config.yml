@@ -5,7 +5,7 @@
   # question: Date Annotator
   submit_to:
     - "9614719"  # MCW
-  center: sage_bionetworks
+  center: SAGEBIO
   # test: false
   # goldstandard: null
 9614654:  # Date Annotator - Test
@@ -15,8 +15,8 @@
   # question: Date Annotator
   submit_to:
     - "9614719"  # MCW
-    - "9614757"  # SAGE Test
-  center: sage_bionetworks
+    - "9614757"  # SAGEBIO Test
+  center: SAGEBIO
   # test: true
   # goldstandard: null
 9614657:  # Person Name Annotator
@@ -26,7 +26,7 @@
   # question: Person Name Annotator
   submit_to:
     - "9614720"  # MCW
-  center: sage_bionetworks
+  center: SAGEBIO
   # test: false
   # goldstandard: null
 9614685:  # Person Name Annotator - Test
@@ -36,7 +36,7 @@
   # question: Person Name Annotator
   submit_to:
     - "9614720"  # MCW
-  center: sage_bionetworks
+  center: SAGEBIO
   # test: true
   # goldstandard: null
 9614658:  # Physical Address Annotator
@@ -46,7 +46,7 @@
   # question: Physical Address Annotator
   submit_to:
     - "9614721"  # MCW
-  center: sage_bionetworks
+  center: SAGEBIO
   # test: false
   # goldstandard: null
 9614684: # Physical Address Annotator - Test
@@ -56,7 +56,7 @@
   # question: Physical Address Annotator
   submit_to:
     - "9614721"  # MCW
-  center: sage_bionetworks
+  center: SAGEBIO
   # test: true
   # goldstandard: null
 9614719: # MCW - Date Annotator
@@ -65,7 +65,16 @@
   runtime: 7200
   # question: Date Annotator
   submit_to: null
-  center: sage_bionetworks
+  center: SAGEBIO
+  # test: false
+  # goldstandard: null
+9614757: # SAGEBIO - Date Annotator Test
+  dataset_name: 2014-i2b2
+  dataset_version: "20201203"
+  runtime: 7200
+  # question: Date Annotator
+  submit_to: null
+  center: SAGEBIO
   # test: false
   # goldstandard: null
 9614720: # MCW - Person Name Annotator
