@@ -24,12 +24,6 @@ inputs:
     type: string
   - id: synapseConfig
     type: File
-  - id: dataset_name
-    type: string
-    default: "2014-i2b2"
-  - id: dataset_version
-    type: string
-    default: "20201203"
   - id: api_version
     type: string
     default: "1.0.2"
@@ -175,7 +169,7 @@ steps:
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
-        source: "#create_annotations_json/dataset_id"
+        source: "#get_evaluation_config/dataset_id"
       - id: fhir_store_id
         source: "#fhir_store_id"
     out:
@@ -208,8 +202,8 @@ steps:
         source: "#get_docker_config/docker_registry"
       - id: docker_authentication
         source: "#get_docker_config/docker_authentication"
-      - id: status
-        source: "#check_docker_status/finished"
+      # - id: status
+      #   source: "#check_docker_status/finished"
       - id: docker_script
         default:
           class: File
@@ -259,7 +253,7 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
-        source: "#create_annotations_json/dataset_id"
+        source: "#get_evaluation_config/dataset_id"
       - id: annotation_store_id
         source: "#make_store_name/annotation_store_id"
       - id: annotation_json
@@ -274,7 +268,7 @@ steps:
       - id: output
         valueFrom: "goldstandard.json"
       - id: dataset_id
-        source: "#create_annotations_json/dataset_id"
+        source: "#get_evaluation_config/dataset_id"
       - id: annotation_store_id
         valueFrom: "goldstandard"
     out:
@@ -338,7 +332,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
-        source: "#annotate_docker_upload_results/finished"
+        source: "#annotate_submission_main_submitter/finished"
     out: [finished]
 
   annotate_main_submission_with_output:
