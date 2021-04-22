@@ -94,7 +94,7 @@ View [Submission workflow](#submission-workflow) for what this tool does.
     ```text
     SYNAPSE_USERNAME=nlp-sandbox-bot  # The data hosting site will have to created their own synapse service account.
     SYNAPSE_PASSWORD=
-    EVALUATION_TEMPLATES={"queueid": "synid"}  # This mapping will be provided to the site by Sage Bionetworks.
+    EVALUATION_TEMPLATES={"queueid": "syn25582656"}  # The queueid will be provided to the site by Sage Bionetworks.  syn25582656 is the internal workflow synapse id.
     WORKFLOW_OUTPUT_ROOT_ENTITY_ID=synid  # This value will be provided to the site by Sage Bionetworks.
     # WES_ENDPOINT=http://localhost:8082/ga4gh/wes/v1  # This needs to be commented
     ```
