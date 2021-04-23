@@ -51,9 +51,7 @@ requirements:
 
           if sub.entity.concreteType!='org.sagebionetworks.repo.model.docker.DockerRepository':
             raise Exception('Expected DockerRepository type but found '+sub.entity.concreteType)
-          result = {'docker_repository': sub.get("dockerRepositoryName",""),
-                    'docker_digest': sub.get("dockerDigest",""),
-                    'entityid': sub.entity.id}
+          result = {'entityid': sub.entity.id}
           status = syn.getSubmissionStatus(args.submissionid)
           get_values = filter(lambda x: x.get('key') in ['admin_folder', 'orgSagebionetworksSynapseWorkflowOrchestratorSubmissionFolder'],
                               status.annotations['stringAnnos'])
@@ -70,7 +68,9 @@ requirements:
             o.write(json.dumps(result))
 
           submitterid = sub['userId'] if sub.get("teamId") is None else sub['teamId'] 
-          userids = {'main_userid': sub.userId, 'main_submitterId': submitterid}
+          userids = {'main_userid': sub.userId, 'main_submitterId': submitterid,
+                     'docker_repository': sub.get("dockerRepositoryName",""),
+                     'docker_digest': sub.get("dockerDigest","")}
           with open(args.output, 'w') as o:
             o.write(json.dumps(userids))
 
@@ -78,13 +78,13 @@ outputs:
   - id: docker_repository
     type: string
     outputBinding:
-      glob: results.json
+      glob: output.json
       loadContents: true
       outputEval: $(JSON.parse(self[0].contents)['docker_repository'])
   - id: docker_digest
     type: string
     outputBinding:
-      glob: results.json
+      glob: output.json
       loadContents: true
       outputEval: $(JSON.parse(self[0].contents)['docker_digest'])
   - id: entity_id
