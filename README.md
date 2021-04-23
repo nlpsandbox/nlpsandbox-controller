@@ -94,7 +94,7 @@ View [Submission workflow](#submission-workflow) for what this tool does.
     ```text
     SYNAPSE_USERNAME=nlp-sandbox-bot  # The data hosting site will have to created their own synapse service account.
     SYNAPSE_PASSWORD=
-    EVALUATION_TEMPLATES={"queueid": "synid"}  # This mapping will be provided to the site by Sage Bionetworks.
+    EVALUATION_TEMPLATES={"queueid": "syn25585023"}  # The queueid will be provided to the site by Sage Bionetworks.  syn25585023 is the internal workflow synapse id.
     WORKFLOW_OUTPUT_ROOT_ENTITY_ID=synid  # This value will be provided to the site by Sage Bionetworks.
     # WES_ENDPOINT=http://localhost:8082/ga4gh/wes/v1  # This needs to be commented
     ```
@@ -119,7 +119,8 @@ View [Submission workflow](#submission-workflow) for what this tool does.
         - /var/run/docker.sock:/var/run/docker.sock
     ```
     Where `10.23.60.253` is the IP Address of your external ELK Server
-
+1. Load example data in the data node.
+1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
 
 ### Capturing Docker Logs
 

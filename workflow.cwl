@@ -12,6 +12,7 @@ class: Workflow
 
 requirements:
   - class: StepInputExpressionRequirement
+  - class: ScatterFeatureRequirement
 
 inputs:
   - id: submissionId
@@ -24,12 +25,6 @@ inputs:
     type: string
   - id: synapseConfig
     type: File
-  - id: dataset_name
-    type: string
-    default: "2014-i2b2"
-  - id: dataset_version
-    type: string
-    default: "20201203"
   - id: api_version
     type: string
     default: "1.0.2"
@@ -48,24 +43,51 @@ outputs: []
 
 steps:
 
-  create_annotations_json:
-    run: create_dataset_annotation.cwl
+  create_initial_annotations_json:
+    run: create_annotations.cwl
     in:
-      - id: dataset_name
-        source: "#dataset_name"
-      - id: dataset_version
-        source: "#dataset_version"
+      - id: admin_synid
+        source: "#adminUploadSynId"
       - id: api_version
         source: "#api_version"
-    out: [json_out, dataset_id]
+    out: [json_out]
 
-  annotate_dataset_version:
+  annotate_initial:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/annotate_submission.cwl
     in:
       - id: submissionid
         source: "#submissionId"
       - id: annotation_values
-        source: "#create_annotations_json/json_out"
+        source: "#create_initial_annotations_json/json_out"
+      - id: to_public
+        default: true
+      - id: force_change_annotation_acl
+        default: true
+      - id: synapse_config
+        source: "#synapseConfig"
+    out: [finished]
+
+  get_evaluation_config:
+    run: get_config.cwl
+    in:
+      - id: queue_id
+        source: "#get_docker_submission/evaluation_id"
+      - id: configuration
+        default:
+          class: File
+          location: "config.yml"
+    out:
+      - id: submit_to_queue
+      - id: config
+      - id: dataset_id
+
+  annotate_evaluation_config:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/annotate_submission.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: annotation_values
+        source: "#get_evaluation_config/config"
       - id: to_public
         default: true
       - id: force
@@ -166,7 +188,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
-        source: "#annotate_dataset_version/finished"
+        source: "#annotate_evaluation_config/finished"
     out: [finished]
 
   check_docker_status:
@@ -188,7 +210,7 @@ steps:
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
-        source: "#create_annotations_json/dataset_id"
+        source: "#get_evaluation_config/dataset_id"
       - id: fhir_store_id
         source: "#fhir_store_id"
     out:
@@ -356,7 +378,7 @@ steps:
       - id: data_endpoint
         valueFrom: "http://10.23.54.142/api/v1/"
       - id: dataset_id
-        source: "#create_annotations_json/dataset_id"
+        source: "#get_evaluation_config/dataset_id"
       - id: annotation_store_id
         source: "#make_store_name/annotation_store_id"
       - id: annotation_json
@@ -388,7 +410,7 @@ steps:
       - id: output
         valueFrom: "goldstandard.json"
       - id: dataset_id
-        source: "#create_annotations_json/dataset_id"
+        source: "#get_evaluation_config/dataset_id"
       - id: annotation_store_id
         valueFrom: "goldstandard"
     out:
@@ -445,3 +467,45 @@ steps:
       - id: previous_annotation_finished
         source: "#annotate_docker_upload_results/finished"
     out: [finished]
+
+  create_submission_file:
+    run: create_submission_file.cwl
+    in:
+      - id: submissionid
+        source: "#submissionId"
+      - id: previous
+        source: "#annotate_submission_with_output/finished"
+    out: [submission_out]
+
+  upload_submission_file:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/upload_to_synapse.cwl
+    in:
+      - id: infile
+        source: "#create_submission_file/submission_out"
+      - id: parentid
+        source: "#adminUploadSynId"
+      - id: used_entity
+        source: "#get_docker_submission/entity_id"
+      - id: executed_entity
+        source: "#workflowSynapseId"
+      - id: synapse_config
+        source: "#synapseConfig"
+    out:
+      - id: uploaded_fileid
+      - id: uploaded_file_version
+      - id: results
+
+  # Ability to submit to many internal queues
+  submit_to_internal_queues:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/submit_to_challenge.cwl
+    scatter: evaluationid
+    in:
+      - id: submission_file
+        source: "#upload_submission_file/uploaded_fileid"
+      - id: submissionid
+        source: "#submissionId"
+      - id: synapse_config
+        source: "#synapseConfig"
+      - id: evaluationid
+        source: "#get_evaluation_config/submit_to_queue"
+    out: []
