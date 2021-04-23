@@ -135,6 +135,7 @@ steps:
       - id: results
       - id: admin_synid
       - id: submitter_synid
+      - id: evaluation_id
 
   get_docker_config:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/get_docker_config.cwl

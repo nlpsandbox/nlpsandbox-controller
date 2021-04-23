@@ -65,6 +65,7 @@ requirements:
           if add_values.get("orgSagebionetworksSynapseWorkflowOrchestratorSubmissionFolder") is None:
             add_values['orgSagebionetworksSynapseWorkflowOrchestratorSubmissionFolder'] = ''
           result.update(add_values)
+          result['evaluationid'] = sub.evaluationId
           with open(args.results, 'w') as o:
             o.write(json.dumps(result))
 
@@ -92,6 +93,12 @@ outputs:
       glob: results.json
       loadContents: true
       outputEval: $(JSON.parse(self[0].contents)['entityid'])
+  - id: evaluation_id
+    type: string
+    outputBinding:
+      glob: results.json
+      loadContents: true
+      outputEval: $(JSON.parse(self[0].contents)['evaluationid'])
   - id: admin_synid
     type: string
     outputBinding:
