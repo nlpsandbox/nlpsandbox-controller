@@ -26,6 +26,7 @@ outputs:
 requirements:
   - class: InlineJavascriptRequirement
 
+# No need to add in more queues other than the initial main queues
 expression: |
 
   ${
