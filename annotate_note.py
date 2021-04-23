@@ -116,7 +116,7 @@ def main(syn, args):
     start = time.time()
     for note in data_notes_dict:
         # Check that runtime is less than 2 hours (7200 seconds)
-        check_runtime(start, container, container.image, 7200)
+        check_runtime(start, container, container.image, args.quota)
         # noteid = note.pop("identifier")
         exec_cmd = [
             #"curl", "-o", "/output/annotations.json", "-X", "POST",
@@ -198,6 +198,8 @@ if __name__ == '__main__':
                         help="credentials file")
     parser.add_argument("-a", "--annotator_type", required=True,
                         help="Annotation Type")
+    parser.add_argument("-q", "--quota", type=int, default=7200,
+                        help="Max runtime quota in seconds")
     args = parser.parse_args()
     syn = synapseclient.Synapse(configPath=args.synapse_config)
     syn.login()

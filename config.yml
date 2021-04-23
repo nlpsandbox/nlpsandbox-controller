@@ -1,7 +1,7 @@
 9614652:  # Date Annotator
   dataset_name: 2014-i2b2
   dataset_version: "20201203"
-  runtime: 7200
+  runtime: 7200  # in seconds
   # question: Date Annotator
   submit_to:
     - "9614719"  # MCW
