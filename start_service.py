@@ -34,6 +34,7 @@ def main(args):
         # docker run --network submission \
         #            -d nlpsandbox/date-annotator-example:latest
         # Limit to 4 CPU usage (cpu_period=100000, cpu_quota=400000)
+        # TODO: need to parametrize the amount of memory and cpu shares
         container = client.containers.run(docker_image,
                                           detach=True, name=args.submissionid,
                                           # network_disabled=True,
