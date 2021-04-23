@@ -33,11 +33,14 @@ def main(args):
         # docker network create --internal submission
         # docker run --network submission \
         #            -d nlpsandbox/date-annotator-example:latest
+        # Limit to 4 CPU usage (cpu_period=100000, cpu_quota=400000)
         container = client.containers.run(docker_image,
                                           detach=True, name=args.submissionid,
                                           # network_disabled=True,
                                           network="submission",
-                                          mem_limit='6g', stderr=True)
+                                          cpu_period=100000,
+                                          cpu_quota=400000,
+                                          mem_limit='4g', stderr=True)
                                           #ports={'8080': '8081'})
         # sleep for 60 seconds just in case it takes time to start the service
         time.sleep(60)
