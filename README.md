@@ -76,9 +76,9 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     pip install nlpsandbox-client
     
     # Log into synapse with account that has access to the i2b2 2014 data sets 
-    $ synapse  login --rememberMe -u mcw-bot -p xxxxxxxxxxxxxxxx
+    $ synapse  login --rememberMe -u your-bot -p xxxxxxxxxxxxxxxx
     # cd to the ~/nlpsandbox-controller directory 
-    vi scripts/push_challange_data.py and change the line host ="" to point to your host 
+    vi scripts/push_challange_data.py and change the line host ="" to point to your host http://yourhost.com:8080/api/v1/
     # Downloads and pushes challenge data
     python scripts/push_challenge_data.py
     # Pushes small subset of data
