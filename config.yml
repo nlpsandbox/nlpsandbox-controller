@@ -6,6 +6,7 @@
   submit_to:
     - "9614719"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23747126
   # test: false
   # goldstandard: null
 9614654:  # Date Annotator - Test
@@ -17,6 +18,7 @@
     - "9614719"  # MCW
     - "9614757"  # SAGEBIO Test
   center: SAGEBIO
+  submission_viewid: syn23512270
   # test: true
   # goldstandard: null
 9614657:  # Person Name Annotator
@@ -27,6 +29,7 @@
   submit_to:
     - "9614720"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23747126
   # test: false
   # goldstandard: null
 9614685:  # Person Name Annotator - Test
@@ -37,6 +40,7 @@
   submit_to:
     - "9614720"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23512270
   # test: true
   # goldstandard: null
 9614658:  # Physical Address Annotator
@@ -47,6 +51,7 @@
   submit_to:
     - "9614721"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23747126
   # test: false
   # goldstandard: null
 9614684: # Physical Address Annotator - Test
@@ -57,6 +62,7 @@
   submit_to:
     - "9614721"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23512270
   # test: true
   # goldstandard: null
 9614719: # MCW - Date Annotator
@@ -66,6 +72,7 @@
   # question: Date Annotator
   submit_to: null
   center: SAGEBIO
+  submission_viewid: syn25582644
   # test: false
   # goldstandard: null
 9614757: # SAGEBIO - Date Annotator Test
@@ -75,6 +82,7 @@
   # question: Date Annotator
   submit_to: null
   center: SAGEBIO
+  submission_viewid: syn25584929
   # test: false
   # goldstandard: null
 9614720: # MCW - Person Name Annotator
@@ -84,6 +92,7 @@
   # question: Person Name Annotator
   submit_to: null
   center: MCW
+  submission_viewid: syn25582644
   # test: false
   # goldstandard: null
 9614721: # MCW - Physical Address Annotator
@@ -93,5 +102,6 @@
   # question: Physical Address Annotator
   submit_to: null
   center: MCW
+  submission_viewid: syn25582644
   # test: false
   # goldstandard: null
