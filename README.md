@@ -78,7 +78,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     # Log into synapse with account that has access to the i2b2 2014 data sets 
     $ synapse login --rememberMe -u your-bot -p xxxxxxxxxxxxxxxx
     # cd to the ~/nlpsandbox-client directory
-    # change the line `host = "http://localhost:8080/api/v1"` to point to your host http://yourhost.com:8080/api/v1/
+    # change the line `host = "http://localhost:8080/api/v1"` to point to your host http://yourhost.com:8080/api/v1
     vi examples/push_dataset.py
     # Downloads and pushes challenge data
     python examples/push_dataset.py
