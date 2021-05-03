@@ -70,20 +70,18 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     cp .env.example .env
     docker-compose up -d
     ```
-1. Push data into the data-node.
+1. Push example data into the data node.  The scripts found in the `scripts` directory repository is for Sage Bionetworks only.  Please use this [script](https://github.com/nlpsandbox/nlpsandbox-client/blob/develop/examples/push_dataset.py) to push an example dataset.
     ```bash
     # set up conda or pipenv environment
     pip install nlpsandbox-client
-    
-    # Log into synapse with account that has access to the i2b2 2014 data sets 
-    $ synapse  login --rememberMe -u your-bot -p xxxxxxxxxxxxxxxx
-    # cd to the ~/nlpsandbox-controller directory 
-    vi scripts/push_challange_data.py and change the line host ="" to point to your host http://yourhost.com:8080/api/v1/
+    git clone https://github.com/nlpsandbox/nlpsandbox-client.git
+    # cd to the ~/nlpsandbox-client directory
+    # change the line `host = "http://localhost:8080/api/v1"` to point to your host http://yourhost.com:8080/api/v1
+    vi examples/push_dataset.py
     # Downloads and pushes challenge data
-    python scripts/push_challenge_data.py
-    # Pushes small subset of data
-    python scripts/push_small_dataset.py
+    python examples/push_dataset.py
     ```
+1. Following the example above, prepare your site's dataset and push data.
 
 ### Synapse Workflow Orchestrator
 
