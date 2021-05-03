@@ -70,7 +70,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     cp .env.example .env
     docker-compose up -d
     ```
-1. Push example data into the data-node.  The scripts found in the `scripts` directory repository is for Sage Bionetworks only.  Please use this [script](https://github.com/nlpsandbox/nlpsandbox-client/blob/develop/examples/push_dataset.py) to push an example dataset.
+1. Push example data into the data node.  The scripts found in the `scripts` directory repository is for Sage Bionetworks only.  Please use this [script](https://github.com/nlpsandbox/nlpsandbox-client/blob/develop/examples/push_dataset.py) to push an example dataset.
     ```bash
     # set up conda or pipenv environment
     pip install nlpsandbox-client
