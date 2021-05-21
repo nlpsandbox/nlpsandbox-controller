@@ -133,7 +133,6 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     ```bash
     git clone https://github.com/nlpsandbox/docker-elk.git
     cd docker-elk
-    docker-compose up -d
     ```
 1. Change the `elastic passwords` in each of these locations:
     - `docker-compose.yml`
@@ -152,7 +151,7 @@ A solution to track Docker container logs are a **requirement** to be a data hos
                 - "80:5601"  # Change 80 to an open port
             ```
 1. Only use the free version of ELK. This can be configured [here](https://www.elastic.co/guide/en/kibana/7.11/managing-licenses.html)
-1. Creating searchable index.  Click **hamburger menu** on left side, **Stack Management**, under Kibana, click **Index Pattern**, and **create an index pattern anyway**.  If set up correct you should be able to input `logstash-*` as your index pattern and click "I don't want to use the time filter".
+1. Creating searchable index.  Click **hamburger menu** on left side, **Stack Management**, under Kibana, click **Index Pattern**, and **Create Index Pattern**.  If set up correct you should be able to input `logstash-*` as your index pattern and click "I don't want to use the time filter".
 1. View docker logs.  Click **hamburger menu** on left side, click **Discover**.  You should see docker logs now.
 
 ### Example Date Annotator
@@ -218,3 +217,12 @@ where:
 * `submitterUploadSynId` - ID of a Synapse folder accessible to the submitter
 * `workflowSynapseId` - ID of the Synapse entity containing a reference to the workflow file(s)
 * `synapseConfig` - filepath to your Synapse credentials
+
+
+### Loading Sage Data Node
+
+1. ssh into the data node
+1. Start the data node (make sure its the latest version)
+1. Install anaconda
+1. Install nlpsandbox-client
+1. Modify and run `scripts/push_challenge_data.py` and `scripts/push_small_dataset.py`
