@@ -173,6 +173,11 @@ A solution to track Docker container logs are a **requirement** to be a data hos
 
 ## SAGE BIONETWORKS ONLY
 
+### AWS infrastructure
+The infrastructure is created through cloudformation templates.  Important notes:
+
+1. Must create a security group that has network access between the ELK, data node and infrastructure instances.  Only allow inbound access from the 3 different instances, but allow all outbound traffic access.
+
 ### Orchestrator workflow
 
 This repository will host the `CWL` workflow and tools required to set up the `model-to-data` challenge infrastructure for `NLP Sandbox`
