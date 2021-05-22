@@ -88,6 +88,10 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 View [Submission workflow](#submission-workflow) for what this tool does.
 
 1. Obtain/Create a Service Account (TBD)
+1. Create internal Docker submission network
+    ```
+    docker network create --internal submission
+    ```
 1. Clone the repository
     ```bash
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
@@ -177,6 +181,7 @@ A solution to track Docker container logs are a **requirement** to be a data hos
 The infrastructure is created through cloudformation templates.  Important notes:
 
 1. Must create a security group that has network access between the ELK, data node and infrastructure instances.  Only allow inbound access from the 3 different instances, but allow all outbound traffic access.
+
 
 ### Orchestrator workflow
 
