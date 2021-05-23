@@ -171,6 +171,27 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     docker-compose up -d
     ```
 
+## Scoring Submissions Manually
+The scoring is done as part of the workflow, but here are the steps to score submissions manually.
+
+1. Determine which submission that you want to score manually (e.g 111111)
+1. Install `nlpsandbox-client`
+    ```
+    pip install nlpsandbox-client
+    ```
+1. Download goldstandard
+    ```
+    nlp-cli datanode list-annotations --data_node_host http://0.0.0.0/api/v1 --dataset_id 2014-i2b2-20201203 --annotation_store_id goldstandard --output goldstandard.json
+    ```
+1. Download submission
+    ```
+    nlp-cli datanode list-annotations --data_node_host http://0.0.0.0/api/v1 --dataset_id 2014-i2b2-20201203 --annotation_store_id submission-111111 --output sub.json
+    ```
+1. Evaluate submission
+    ```
+    nlp-cli evaluate-prediction --pred_filepath sub.json --gold_filepath goldstandard.json --tool_type nlpsandbox:date-annotator
+    ```
+
 ## SAGE BIONETWORKS ONLY
 
 ### Orchestrator workflow
