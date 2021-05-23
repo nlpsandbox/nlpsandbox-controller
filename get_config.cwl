@@ -102,3 +102,10 @@ outputs:
       glob: $(inputs.results)
       loadContents: true
       outputEval: $(JSON.parse(self[0].contents)['dataset_name'])-$(JSON.parse(self[0].contents)['dataset_version'])
+
+  - id: datanode_endpoint
+    type: string
+    outputBinding:
+      glob: $(inputs.results)
+      loadContents: true
+      outputEval: $(JSON.parse(self[0].contents)['datanode_endpoint'])
