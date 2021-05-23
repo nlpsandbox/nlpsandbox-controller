@@ -207,7 +207,7 @@ steps:
     run: list_notes.cwl
     in:
       - id: data_endpoint
-        source: "#get_evaluation_config/data_endpoint"
+        source: "#get_evaluation_config/datanode_endpoint"
         # valueFrom: "http://10.255.21.50/api/v1/"
       - id: output
         valueFrom: "notes.json"
@@ -222,7 +222,7 @@ steps:
     run: list_notes.cwl
     in:
       - id: data_endpoint
-        source: "#get_evaluation_config/data_endpoint"
+        source: "#get_evaluation_config/datanode_endpoint"
         # valueFrom: "http://10.255.21.50/api/v1/"
       - id: output
         valueFrom: "notes.json"
@@ -379,7 +379,7 @@ steps:
     run: store_annotations.cwl
     in:
       - id: data_endpoint
-        source: "#get_evaluation_config/data_endpoint"
+        source: "#get_evaluation_config/datanode_endpoint"
         # valueFrom: "http://10.255.21.50/api/v1/"
       - id: dataset_id
         source: "#get_evaluation_config/dataset_id"
@@ -410,7 +410,7 @@ steps:
     run: list_annotations.cwl
     in:
       - id: data_endpoint
-        source: "#get_evaluation_config/data_endpoint"
+        source: "#get_evaluation_config/datanode_endpoint"
         # valueFrom: "http://10.255.21.50/api/v1/"
       - id: output
         valueFrom: "goldstandard.json"
