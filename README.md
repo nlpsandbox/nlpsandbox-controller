@@ -82,7 +82,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     python examples/push_dataset.py
     ```
 1. Following the example above, prepare your site's dataset and push data.
-1. Provide the datanode endpoint URL to Sage.
+1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
 
 ### Synapse Workflow Orchestrator
 
@@ -123,8 +123,7 @@ View [Submission workflow](#submission-workflow) for what this tool does.
         - /var/run/docker.sock:/var/run/docker.sock
     ```
     Where `10.23.60.253` is the IP Address of your external ELK Server
-1. Load example data in the data node.
-1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
+1. The orchestrator will only work if the data-node is configured correctly.
 
 ### Capturing Docker Logs
 
