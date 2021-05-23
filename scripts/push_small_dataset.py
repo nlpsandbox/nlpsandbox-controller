@@ -1,4 +1,5 @@
-"""Pushes dataset for validation of reproducibility"""
+"""Pushes dataset for validation of reproducibility
+SAGE BIONETWORKS ONLY"""
 import json
 import sys
 
@@ -11,6 +12,7 @@ from datanode.rest import ApiException
 import nlpsandboxclient.utils
 
 syn = synapseclient.login()
+# TODO: Change this
 host = ""
 if host == "":
     raise ValueError("Must set host to be data node URL")

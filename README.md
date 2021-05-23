@@ -70,21 +70,28 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     cp .env.example .env
     docker-compose up -d
     ```
-1. Push data into the data-node.
+1. Push example data into the data node.  The scripts found in the `scripts` directory repository is for Sage Bionetworks only.  Please use this [script](https://github.com/nlpsandbox/nlpsandbox-client/blob/develop/examples/push_dataset.py) to push an example dataset.
     ```bash
     # set up conda or pipenv environment
     pip install nlpsandbox-client
-    # Pushes challenge data
-    python scripts/push_challenge_data.py
-    # Pushes small subset of data
-    python scripts/push_small_dataset.py
+    git clone https://github.com/nlpsandbox/nlpsandbox-client.git
+    # cd to the ~/nlpsandbox-client directory
+    # change the line `host = "http://localhost:8080/api/v1"` to point to your host http://yourhost.com:8080/api/v1
+    vi examples/push_dataset.py
+    # Downloads and pushes challenge data
+    python examples/push_dataset.py
     ```
+1. Following the example above, prepare your site's dataset and push data.
 
 ### Synapse Workflow Orchestrator
 
 View [Submission workflow](#submission-workflow) for what this tool does.
 
 1. Obtain/Create a Service Account (TBD)
+1. Create internal Docker submission network
+    ```
+    docker network create --internal submission
+    ```
 1. Clone the repository
     ```bash
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
@@ -169,6 +176,12 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     ```
 
 ## SAGE BIONETWORKS ONLY
+
+### AWS infrastructure
+The infrastructure is created through cloudformation templates.  Important notes:
+
+1. Must create a security group that has network access between the ELK, data node and infrastructure instances.  Only allow inbound access from the 3 different instances, but allow all outbound traffic access.
+
 
 ### Orchestrator workflow
 
