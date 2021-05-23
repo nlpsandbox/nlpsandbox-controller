@@ -68,6 +68,7 @@ steps:
       - id: config
       - id: dataset_id
       - id: center
+      - id: data_endpoint
 
   modify_config_annotations:
     run: modify_annotations.cwl
@@ -165,7 +166,8 @@ steps:
     run: list_notes.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.255.21.50/api/v1/"
+        source: "#get_evaluation_config/data_endpoint"
+        # valueFrom: "http://10.255.21.50/api/v1/"
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
@@ -237,7 +239,8 @@ steps:
     run: store_annotations.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.255.21.50/api/v1/"
+        source: "#get_evaluation_config/data_endpoint"
+        # valueFrom: "http://10.255.21.50/api/v1/"
       - id: dataset_id
         source: "#get_evaluation_config/dataset_id"
       - id: annotation_store_id
@@ -250,7 +253,8 @@ steps:
     run: list_annotations.cwl
     in:
       - id: data_endpoint
-        valueFrom: "http://10.255.21.50/api/v1/"
+        source: "#get_evaluation_config/data_endpoint"
+        # valueFrom: "http://10.255.21.50/api/v1/"
       - id: output
         valueFrom: "goldstandard.json"
       - id: dataset_id
