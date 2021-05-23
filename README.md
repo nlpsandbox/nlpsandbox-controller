@@ -82,6 +82,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     python examples/push_dataset.py
     ```
 1. Following the example above, prepare your site's dataset and push data.
+1. Provide the datanode endpoint URL to Sage.
 
 ### Synapse Workflow Orchestrator
 
