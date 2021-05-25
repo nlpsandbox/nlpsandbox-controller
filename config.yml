@@ -66,8 +66,8 @@
   # test: true
   # goldstandard: null
 9614719: # MCW - Date Annotator
-  dataset_name: 2014-i2b2
-  dataset_version: "20201203"
+  dataset_name: mcwdataset
+  dataset_version: "20210525"
   runtime: 7200
   # question: Date Annotator
   submit_to: null
@@ -86,8 +86,8 @@
   # test: false
   # goldstandard: null
 9614720: # MCW - Person Name Annotator
-  dataset_name: 2014-i2b2
-  dataset_version: "20201203"
+  dataset_name: mcwdataset
+  dataset_version: "20210525"
   runtime: 7200
   # question: Person Name Annotator
   submit_to: null
@@ -96,8 +96,8 @@
   # test: false
   # goldstandard: null
 9614721: # MCW - Physical Address Annotator
-  dataset_name: 2014-i2b2
-  dataset_version: "20201203"
+  dataset_name: mcwdataset
+  dataset_version: "20210525"
   runtime: 7200
   # question: Physical Address Annotator
   submit_to: null
