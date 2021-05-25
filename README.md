@@ -83,6 +83,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     ```
 1. Following the example above, prepare your site's dataset and push data.
 1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
+1. When loading data into the data node. The dataset_id should be made up of {dataset_name}-{dataset_version}.  We recommend the dataset_version to be the date that it was created.  An example of this would be sagedataset-20201125.
 
 ### Synapse Workflow Orchestrator
 
