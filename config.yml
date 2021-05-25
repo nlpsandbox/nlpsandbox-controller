@@ -65,16 +65,6 @@
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: true
   # goldstandard: null
-9614719: # MCW - Date Annotator
-  dataset_name: mcwdataset
-  dataset_version: "20210525"
-  runtime: 7200
-  # question: Date Annotator
-  submit_to: null
-  center: SAGEBIO
-  datanode_endpoint: http://10.255.21.50/api/v1/
-  # test: false
-  # goldstandard: null
 9614757: # SAGEBIO - Date Annotator Test Internal
   dataset_name: 2014-i2b2
   dataset_version: "20201203"
@@ -85,6 +75,16 @@
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: false
   # goldstandard: null
+9614719: # MCW - Date Annotator
+  dataset_name: mcwdataset
+  dataset_version: "20210525"
+  runtime: 7200
+  # question: Date Annotator
+  submit_to: null
+  center: SAGEBIO
+  datanode_endpoint: http://141.106.224.48:8080/api/v1/
+  # test: false
+  # goldstandard: null
 9614720: # MCW - Person Name Annotator
   dataset_name: mcwdataset
   dataset_version: "20210525"
@@ -92,7 +92,7 @@
   # question: Person Name Annotator
   submit_to: null
   center: MCW
-  datanode_endpoint: http://10.255.21.50/api/v1/
+  datanode_endpoint: http://141.106.224.48:8080/api/v1/
   # test: false
   # goldstandard: null
 9614721: # MCW - Physical Address Annotator
@@ -102,6 +102,6 @@
   # question: Physical Address Annotator
   submit_to: null
   center: MCW
-  datanode_endpoint: http://10.255.21.50/api/v1/
+  datanode_endpoint: http://141.106.224.48:8080/api/v1/
   # test: false
   # goldstandard: null
