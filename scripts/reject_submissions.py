@@ -75,38 +75,42 @@ def annotate_with_retry(**kwargs):
                verbose=True)
 
 
-def update_status(syn: Synapse, queue_info: pd.Series):
+def update_status(syn: Synapse, main_queue: str, internal_queue: str,
+                  config: dict):
     """If internal submission is invalid, then make update main leaderboard
     with site_submission_status to INVALID
 
     Args:
         syn: Synapse connection
-        queue_info: One row of queue mapping information
-                    {"main": main queue
-                     "internal": internal queue
-                     "site": site}
     """
-    # Get submissions that are processing in internal queues
-    processing_subs = (
-        f"select objectId from evaluation_{queue_info['main']} where "
-        f"{queue_info['site']}_submission_status == 'EVALUATION_IN_PROGRESS'"
+    main_sub_viewid = config[int(main_queue)]['submission_viewid']
+    internal_sub_viewid = config[int(internal_queue)]['submission_viewid']
+    site = config[int(internal_queue)]['center']
+    # Get submissions that are annotated as processing in internal queues
+    # Processing submissions will be annotated with EVALUATION_IN_PROGRESS
+    # in the main queue
+    processing_subs_query_str = (
+        f"select id from {main_sub_viewid} where "
+        f"{site}_submission_status = 'EVALUATION_IN_PROGRESS'"
     )
-    processing_submissions = list(
-        evaluation_queue_query(syn, processing_subs)
-    )
-    # For all the submisisons that are processing, obtain the status in
+    processing_submissions = syn.tableQuery(processing_subs_query_str)
+    processing_submissionsdf = processing_submissions.asDataFrame()
+    print(processing_submissionsdf)
+    # For all the submissions that are processing, obtain the status in
     # the internal queues.  Make main submission invalid.
-    for sub in processing_submissions:
+    for subid in processing_submissionsdf['id']:
         internal_query_str = (
-            f"select name from evaluation_{queue_info['internal']} where "
-            f"status == 'INVALID' and name == '{sub['objectId']}'"
+            f"select name from {internal_sub_viewid} where "
+            f"status = 'INVALID' and name = '{subid}'"
         )
-        internal_subs = list(evaluation_queue_query(syn, internal_query_str))
-        if internal_subs:
+        internal_subs = syn.tableQuery(internal_query_str)
+        internal_subsdf = internal_subs.asDataFrame()
+        print(internal_subsdf)
+        if not internal_subsdf.empty:
             internal_status = {
-                f"{queue_info['site']}_submission_status": "INVALID"
+                f"{site}_submission_status": "INVALID"
             }
-            annotate_with_retry(syn=syn, submissionid=internal_subs[0]['name'],
+            annotate_with_retry(syn=syn, submissionid=internal_subsdf['name'][0],
                                 annotation_dict=internal_status,
                                 is_private=False)
             # TODO: email participant here
@@ -117,14 +121,14 @@ def convert_overall_status(syn: Synapse, main_queueid: str, sites: list,
     """If all internal sites have INVALID status, make main status REJECTED
     """
     # Format site query str
-    site_status_keys = [f"{site}_submission_status == 'INVALID'"
+    site_status_keys = [f"{site}_submission_status = 'INVALID'"
                         for site in sites]
-    site_strs = " and ".join(site_status_keys)
+    site_strs = " or ".join(site_status_keys)
     # Get submissions that have all sites that are invalid
     query_str = (
         f"select id from {submission_viewid} where "
-        f"{site_strs} and status != 'REJECTED' "
-        f"and evaluationId = '{main_queueid}'"
+        f"({site_strs}) and status <> 'REJECTED' "
+        f"and evaluationid = '{main_queueid}'"
     )
     print(query_str)
     invalid_subs = syn.tableQuery(query_str)
@@ -156,17 +160,16 @@ def stop_submission_over_quota(syn, submission_id, quota):
 def main():
     """Invoke REJECTION"""
     parser = argparse.ArgumentParser(description='Reject Submissions')
+    parser.add_argument('config', type=str, help="yaml configuration")
     parser.add_argument('--username', type=str,
                         help='Synapse Username')
-    parser.add_argument('--password', type=str,
-                        help="Synapse Password")
-    parser.add_argument('--config', type=str,
-                        help="yaml configuration")
+    parser.add_argument('--credential', type=str,
+                        help="Synapse api key or personal access token")
     parser.add_argument('--quota', type=int, default=7200,
                         help="Runtime quota in seconds")
     args = parser.parse_args()
     syn = synapseclient.Synapse()
-    syn.login(email=args.username, password=args.password)
+    syn.login(email=args.username, password=args.credential)
     with open(args.config, "r") as config_f:
         configuration = yaml.safe_load(config_f)
 
@@ -178,15 +181,23 @@ def main():
         )
         for running_submission in running_submissions:
             print(running_submission)
-            stop_submission_over_quota(syn, submission_id=running_submission['id'],
-                                       quota=queue_info['runtime'])
-
+            stop_submission_over_quota(
+                syn, submission_id=running_submission['id'],
+                quota=queue_info['runtime']
+            )
+        time.sleep(5)
         if queue_info['submit_to'] is not None:
-            time.sleep(5)
-            internal_sites = [configuration[internal]['center']
+            internal_sites = [configuration[int(internal)]['center']
                               for internal in queue_info['submit_to']]
-            convert_overall_status(syn, main_queueid, internal_sites,
-                                   queue_info['submission_viewid'])
+            for internal_queue in queue_info['submit_to']:
+                update_status(syn=syn, main_queue=main_queueid,
+                              internal_queue=internal_queue,
+                              config=configuration)
+            convert_overall_status(
+                syn=syn, main_queueid=main_queueid,
+                sites=internal_sites,
+                submission_viewid=queue_info['submission_viewid']
+            )
 
 
 if __name__ == "__main__":
