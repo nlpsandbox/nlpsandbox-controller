@@ -88,7 +88,7 @@
   runtime: 7200
   # question: Date Annotator
   submit_to: null
-  center: SAGEBIO
+  center: MCW
   submission_viewid: syn25582644
   datanode_endpoint: http://141.106.224.48:8080/api/v1/
   # test: false
