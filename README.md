@@ -209,7 +209,7 @@ The infrastructure is created through cloudformation templates.  Important notes
 On top of the quota checking system that is built into `annotate_note.py`, there has to be some safeguard for making sure that submissions quota the time quota are stopped.  This is because the submission run time check happens within a for loop, it a docker run command happens to be stuck forever, the submission will never be deemed over the quota.  There is a `stop-submission-over-quota` function in `challengeutils`, unfortunately, this function requires a submission view as input and there is a high likelihood that each queue could have a different runtime.  Therefore, we will not be using this function.
 
 ```
-
+python scripts/reject_submissions.py config.yml
 ```
 
 ### Orchestrator workflow
