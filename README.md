@@ -70,21 +70,30 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     cp .env.example .env
     docker-compose up -d
     ```
-1. Push data into the data-node.
+1. Push example data into the data node.  The scripts found in the `scripts` directory repository is for Sage Bionetworks only.  Please use this [script](https://github.com/nlpsandbox/nlpsandbox-client/blob/develop/examples/push_dataset.py) to push an example dataset.
     ```bash
     # set up conda or pipenv environment
     pip install nlpsandbox-client
-    # Pushes challenge data
-    python scripts/push_challenge_data.py
-    # Pushes small subset of data
-    python scripts/push_small_dataset.py
+    git clone https://github.com/nlpsandbox/nlpsandbox-client.git
+    # cd to the ~/nlpsandbox-client directory
+    # change the line `host = "http://localhost:8080/api/v1"` to point to your host http://yourhost.com:8080/api/v1
+    vi examples/push_dataset.py
+    # Downloads and pushes challenge data
+    python examples/push_dataset.py
     ```
+1. Following the example above, prepare your site's dataset and push data.
+1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
+1. When loading data into the data node. The dataset_id should be made up of {dataset_name}-{dataset_version}.  We recommend the dataset_version to be the date that it was created.  An example of this would be sagedataset-20201125.
 
 ### Synapse Workflow Orchestrator
 
 View [Submission workflow](#submission-workflow) for what this tool does.
 
 1. Obtain/Create a Service Account (TBD)
+1. Create internal Docker submission network
+    ```
+    docker network create --internal submission
+    ```
 1. Clone the repository
     ```bash
     git clone https://github.com/Sage-Bionetworks/SynapseWorkflowOrchestrator.git
@@ -119,8 +128,7 @@ View [Submission workflow](#submission-workflow) for what this tool does.
         - /var/run/docker.sock:/var/run/docker.sock
     ```
     Where `10.23.60.253` is the IP Address of your external ELK Server
-1. Load example data in the data node.
-1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
+1. The orchestrator will only work if the data-node is configured correctly.
 
 ### Capturing Docker Logs
 
@@ -130,26 +138,26 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     ```bash
     git clone https://github.com/nlpsandbox/docker-elk.git
     cd docker-elk
-    docker-compose up -d
     ```
-1. Only use the free version of ELK. This can be configured [here](https://www.elastic.co/guide/en/kibana/7.11/managing-licenses.html)
 1. Change the `elastic passwords` in each of these locations:
     - `docker-compose.yml`
     - `kibana/config/kibana.yml`
     - `logstash/config/logstash.yml`
-    - `elasticsearch/config/elasticsearch.yml`
-1. _Running all the services on one machine_:
-    - Make sure to update the `kibana` port in the `docker-compose.yml` or else there is a chance that you will run into `port already allocated` error.
-        ```yaml
-        ports:
-            - "80:5601"  # Change 80 to an open port
+    - `logstash/pipeline/logstash.conf`
+1. - _Running ELK on its own machine_:
         ```
-    - Use the logspout extension to capture Docker container logs.
-        ```bash
-        docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up
+        docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d --build
         ```
-        This will automatically start logspout for you and you won't have to add it to the `SynapseWorkflowOrchestrator`
-
+        You will have to add logspout to the `SynapseWorkflowOrchestrator` if running the services on different machines.
+    - _Running all the services on one machine_:
+        - Make sure to update the `kibana` port in the `docker-compose.yml` or else there is a chance that you will run into `port already allocated` error.
+            ```yaml
+            ports:
+                - "80:5601"  # Change 80 to an open port
+            ```
+1. Only use the free version of ELK. This can be configured [here](https://www.elastic.co/guide/en/kibana/7.11/managing-licenses.html)
+1. Creating searchable index.  Click **hamburger menu** on left side, **Stack Management**, under Kibana, click **Index Pattern**, and **Create Index Pattern**.  If set up correct you should be able to input `logstash-*` as your index pattern and click "I don't want to use the time filter".
+1. View docker logs.  Click **hamburger menu** on left side, click **Discover**.  You should see docker logs now.
 
 ### Example Date Annotator
 
@@ -168,7 +176,41 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     docker-compose up -d
     ```
 
+## Scoring Submissions Manually
+The scoring is done as part of the workflow, but here are the steps to score submissions manually.
+
+1. Determine which submission that you want to score manually (e.g 111111)
+1. Install `nlpsandbox-client`
+    ```
+    pip install nlpsandbox-client
+    ```
+1. Download goldstandard
+    ```
+    nlp-cli datanode list-annotations --data_node_host http://0.0.0.0/api/v1 --dataset_id 2014-i2b2-20201203 --annotation_store_id goldstandard --output goldstandard.json
+    ```
+1. Download submission
+    ```
+    nlp-cli datanode list-annotations --data_node_host http://0.0.0.0/api/v1 --dataset_id 2014-i2b2-20201203 --annotation_store_id submission-111111 --output sub.json
+    ```
+1. Evaluate submission
+    ```
+    nlp-cli evaluate-prediction --pred_filepath sub.json --gold_filepath goldstandard.json --tool_type nlpsandbox:date-annotator
+    ```
+
 ## SAGE BIONETWORKS ONLY
+
+### AWS infrastructure
+The infrastructure is created through cloudformation templates.  Important notes:
+
+1. Must create a security group that has network access between the ELK, data node and infrastructure instances.  Only allow inbound access from the 3 different instances, but allow all outbound traffic access.
+
+
+### Stopping Submissions that run over the expected quota
+On top of the quota checking system that is built into `annotate_note.py`, there has to be some safeguard for making sure that submissions quota the time quota are stopped.  This is because the submission run time check happens within a for loop, it a docker run command happens to be stuck forever, the submission will never be deemed over the quota.  There is a `stop-submission-over-quota` function in `challengeutils`, unfortunately, this function requires a submission view as input and there is a high likelihood that each queue could have a different runtime.  Therefore, we will not be using this function.
+
+```
+
+```
 
 ### Orchestrator workflow
 
@@ -214,3 +256,12 @@ where:
 * `submitterUploadSynId` - ID of a Synapse folder accessible to the submitter
 * `workflowSynapseId` - ID of the Synapse entity containing a reference to the workflow file(s)
 * `synapseConfig` - filepath to your Synapse credentials
+
+
+### Loading Sage Data Node
+
+1. ssh into the data node
+1. Start the data node (make sure its the latest version)
+1. Install anaconda
+1. Install nlpsandbox-client
+1. Modify and run `scripts/push_challenge_data.py` and `scripts/push_small_dataset.py`
