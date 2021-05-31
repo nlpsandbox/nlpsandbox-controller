@@ -158,15 +158,23 @@ def main():
     """Invoke REJECTION"""
     parser = argparse.ArgumentParser(description='Reject Submissions')
     parser.add_argument('config', type=str, help="yaml configuration")
-    parser.add_argument('--username', type=str,
-                        help='Synapse Username')
+    parser.add_argument(
+        '--username', type=str,
+        help='Synapse Username. Do not specify this when using PAT'
+    )
     parser.add_argument('--credential', type=str,
                         help="Synapse api key or personal access token")
     parser.add_argument('--quota', type=int, default=7200,
                         help="Runtime quota in seconds")
     args = parser.parse_args()
     syn = synapseclient.Synapse()
-    syn.login(email=args.username, password=args.credential)
+    if args.username is None and args.credential is None:
+        syn.login()
+    elif args.username is not None:
+        syn.login(email=args.username, apiKey=args.credential)
+    else:
+        syn.login(authToken=args.credential)
+
     with open(args.config, "r") as config_f:
         configuration = yaml.safe_load(config_f)
 
