@@ -21,6 +21,8 @@ inputs:
     type: File
   - id: annotator_type
     type: string
+  - id: quota
+    type: int
 
 arguments: 
   - valueFrom: $(inputs.docker_script.path)
@@ -32,6 +34,8 @@ arguments:
     prefix: -i
   - valueFrom: $(inputs.annotator_type)
     prefix: -a
+  - valueFrom: $(inputs.quota)
+    prefix: -q
 
 requirements:
   - class: InitialWorkDirRequirement

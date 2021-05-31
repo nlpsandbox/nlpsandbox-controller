@@ -32,9 +32,10 @@ requirements:
 
           with open(args.config) as yaml_file:
             config = yaml.load(yaml_file)
-
+          queue_config = config[args.queue]
+          queue_config['submission_status'] = "EVALUATION_IN_PROGRESS"
           with open(args.results, 'w') as json_file:
-            json_file.write(json.dumps(config[args.queue]))
+            json_file.write(json.dumps(queue_config))
 
 inputs:
   - id: configuration

@@ -1,11 +1,12 @@
 9614652:  # Date Annotator
   dataset_name: 2014-i2b2
   dataset_version: "20201203"
-  runtime: 7200
+  runtime: 7200  # in seconds
   # question: Date Annotator
   submit_to:
     - "9614719"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: false
   # goldstandard: null
@@ -18,6 +19,7 @@
     - "9614719"  # MCW
     - "9614757"  # SAGEBIO Test
   center: SAGEBIO
+  submission_viewid: syn23512270
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: true
   # goldstandard: null
@@ -29,6 +31,7 @@
   submit_to:
     - "9614720"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: false
   # goldstandard: null
@@ -40,6 +43,7 @@
   submit_to:
     - "9614720"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23512270
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: true
   # goldstandard: null
@@ -51,6 +55,7 @@
   submit_to:
     - "9614721"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: false
   # goldstandard: null
@@ -62,6 +67,7 @@
   submit_to:
     - "9614721"  # MCW
   center: SAGEBIO
+  submission_viewid: syn23512270
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: true
   # goldstandard: null
@@ -72,6 +78,7 @@
   # question: Date Annotator
   submit_to: null
   center: SAGEBIO
+  submission_viewid: syn25584929
   datanode_endpoint: http://10.255.21.50/api/v1/
   # test: false
   # goldstandard: null
@@ -81,7 +88,8 @@
   runtime: 7200
   # question: Date Annotator
   submit_to: null
-  center: SAGEBIO
+  center: MCW
+  submission_viewid: syn25582644
   datanode_endpoint: http://141.106.224.48:8080/api/v1/
   # test: false
   # goldstandard: null
@@ -92,6 +100,7 @@
   # question: Person Name Annotator
   submit_to: null
   center: MCW
+  submission_viewid: syn25582644
   datanode_endpoint: http://141.106.224.48:8080/api/v1/
   # test: false
   # goldstandard: null
@@ -102,6 +111,7 @@
   # question: Physical Address Annotator
   submit_to: null
   center: MCW
+  submission_viewid: syn25582644
   datanode_endpoint: http://141.106.224.48:8080/api/v1/
   # test: false
   # goldstandard: null
