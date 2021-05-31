@@ -1,0 +1,29 @@
+# This action is a cronjob that rejects submissions every 30 minutes
+
+name: reject_submission
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  reject:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install challengeutils
+        pip install pyyaml
+
+    - name: Reject Submissions
+      run: |
+        python scripts/reject_submissions.py config.yml --credential ${{ secrets.SYNAPSE_PAT }}

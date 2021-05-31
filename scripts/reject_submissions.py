@@ -4,16 +4,13 @@ Reject submissions that are invalid in internal queues
 import argparse
 import time
 
-import challengeutils
 from challengeutils.submission import (
     WORKFLOW_LAST_UPDATED_KEY,
     WORKFLOW_START_KEY,
     TIME_REMAINING_KEY,
 )
 from challengeutils.annotations import update_submission_status
-from challengeutils.utils import (evaluation_queue_query,
-                                  update_single_submission_status)
-import pandas as pd
+from challengeutils.utils import update_single_submission_status
 import synapseclient
 from synapseclient.core.retry import with_retry
 from synapseclient import Synapse
