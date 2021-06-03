@@ -6,27 +6,29 @@ import sys
 
 import synapseclient
 
-import datanode
-import datanode.apis
-import datanode.models
-from datanode.rest import ApiException
+import nlpsandboxsdk
+import nlpsandboxsdk.apis
+import nlpsandboxsdk.models
+from nlpsandboxsdk.rest import ApiException
 import nlpsandboxclient.utils
 
 syn = synapseclient.login()
-# TODO: Change this
-host = ""
+
+host = "http://0.0.0.0:8080/api/v1"
 if host == "":
     raise ValueError("Must set host to be data node URL")
-configuration = datanode.Configuration(
+configuration = nlpsandboxsdk.Configuration(
     host=host
 )
 
-dataset_id = '2014-i2b2-20201203'
+dataset_id = '2014-i2b2-20210603'
 fhir_store_id = 'evaluation'
 annotation_store_id = 'goldstandard'
 # Get evaluation-patient-bundles.json
-# Version 4 for v1.0.1 schemas
-# Version 5 for v1.0.2 schemas
+# syn23593068 Version 4 for v1.0.1 schemas
+# syn23593068 Version 5 for v1.0.2 schemas
+# syn23593068 Latest version for v1.1.1 schemas
+# v1.1.2 new file: syn25815738
 json_ent = syn.get("syn23593068", version=6)
 json_filename = json_ent.path
 
@@ -64,13 +66,13 @@ def get_or_create_resource(get_func, create_func, *args, **kwargs):
     return resource
 
 
-with datanode.ApiClient(configuration) as api_client:
-    dataset_api = datanode.apis.DatasetApi(api_client)
-    fhir_store_api = datanode.apis.FhirStoreApi(api_client)
-    annotation_store_api = datanode.apis.AnnotationStoreApi(api_client)
-    patient_api = datanode.apis.PatientApi(api_client)
-    note_api = datanode.apis.NoteApi(api_client)
-    annotation_api = datanode.apis.AnnotationApi(api_client)
+with nlpsandboxsdk.ApiClient(configuration) as api_client:
+    dataset_api = nlpsandboxsdk.apis.DatasetApi(api_client)
+    fhir_store_api = nlpsandboxsdk.apis.FhirStoreApi(api_client)
+    annotation_store_api = nlpsandboxsdk.apis.AnnotationStoreApi(api_client)
+    patient_api = nlpsandboxsdk.apis.PatientApi(api_client)
+    note_api = nlpsandboxsdk.apis.NoteApi(api_client)
+    annotation_api = nlpsandboxsdk.apis.AnnotationApi(api_client)
 
     # Get or create Dataset
     dataset = get_or_create_resource(
