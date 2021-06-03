@@ -21,7 +21,7 @@ configuration = nlpsandboxsdk.Configuration(
     host=host
 )
 
-dataset_id = '2014-i2b2-20210603'
+dataset_id = 'i2b2-phi-20210603'
 fhir_store_id = 'evaluation'
 annotation_store_id = 'goldstandard'
 # Get evaluation-patient-bundles.json
@@ -135,6 +135,8 @@ with nlpsandboxsdk.ApiClient(configuration) as api_client:
             annotations_cols = ['textDateAnnotations',
                                 'textPhysicalAddressAnnotations',
                                 'textPersonNameAnnotations']
+                                # 'textIdAnnotations',
+                                # 'textContactAnnotations']
             note_ids = set()
             for col in annotations_cols:
                 for annot in annotation[col]:
