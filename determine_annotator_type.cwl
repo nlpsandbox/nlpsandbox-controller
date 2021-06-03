@@ -30,11 +30,11 @@ requirements:
 expression: |
 
   ${
-    if(inputs.queue == "9614658" || inputs.queue == "9614684" || inputs.queue == "9614721"){
+    if(inputs.queue == "9614658" || inputs.queue == "9614684"){
       return {annotator_type: "nlpsandbox:physical-address-annotator"};
-    } else if (inputs.queue == "9614652" || inputs.queue == "9614654" || inputs.queue == "9614719"){
+    } else if (inputs.queue == "9614652" || inputs.queue == "9614654"){
       return {annotator_type: "nlpsandbox:date-annotator"};
-    } else if (inputs.queue == "9614657" || inputs.queue == "9614685" || inputs.queue == "9614720"){
+    } else if (inputs.queue == "9614657" || inputs.queue == "9614685"){
       return {annotator_type: "nlpsandbox:person-name-annotator"};
     } else {
       throw 'invalid queue';

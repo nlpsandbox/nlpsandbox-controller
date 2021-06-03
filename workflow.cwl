@@ -27,7 +27,7 @@ inputs:
     type: File
   - id: api_version
     type: string
-    default: "1.0.2"
+    default: "1.1.2"
   - id: fhir_store_id
     type: string
     #default: "awesome-fhir-store"
@@ -80,6 +80,7 @@ steps:
       - id: submit_to_queue
       - id: config
       - id: dataset_id
+      - id: runtime
       - id: datanode_endpoint
 
   annotate_evaluation_config:
@@ -343,6 +344,8 @@ steps:
         source: "#list_clinical_notes/notes"
       - id: annotator_type
         source: "#determine_annotator_type/annotator_type"
+      - id: quota
+        source: "#get_evaluation_config/runtime"
       - id: docker_script
         default:
           class: File
