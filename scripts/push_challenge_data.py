@@ -28,8 +28,8 @@ annotation_store_id = 'goldstandard'
 # syn23593068 Version 4 for v1.0.1 schemas
 # syn23593068 Version 5 for v1.0.2 schemas
 # syn23593068 Latest version for v1.1.1 schemas
-# v1.1.2 new file: syn25815738
-json_ent = syn.get("syn23593068", version=6)
+# Can find datasets here: syn25815735
+json_ent = syn.get("syn25836161")
 json_filename = json_ent.path
 
 
