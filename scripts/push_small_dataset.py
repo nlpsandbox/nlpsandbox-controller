@@ -5,29 +5,32 @@ import sys
 
 import synapseclient
 
-import datanode
-import datanode.apis
-import datanode.models
-from datanode.rest import ApiException
+import nlpsandbox
+import nlpsandbox.apis
+import nlpsandbox.models
+from nlpsandbox.rest import ApiException
 import nlpsandboxclient.utils
 
 syn = synapseclient.login()
-# TODO: Change this
-host = ""
-if host == "":
-    raise ValueError("Must set host to be data node URL")
-configuration = datanode.Configuration(
+
+host = "http://0.0.0.0/api/v1"
+configuration = nlpsandbox.Configuration(
     host=host
 )
 
-dataset_id = '2014-i2b2-20201203-subset'
+# Get evaluation-patient-bundles.json
+# syn23593068 Version 4 for v1.0.1 schemas
+# syn23593068 Version 5 for v1.0.2 schemas
+# syn23593068 Latest version for v1.1.1 schemas
+# Can find datasets here: syn25815735
+json_ent = syn.get("syn25836161")
+json_filename = json_ent.path
+# entity.createdOn is in this format 2021-06-06T03:37:01.698Z
+# So take the first
+dataset_version = json_ent.createdOn.split("T")[0].replace("-", "")
+dataset_id = f'i2b2-phi-{dataset_version}'
 fhir_store_id = 'evaluation'
 annotation_store_id = 'goldstandard'
-# Get evaluation-patient-bundles.json
-# Version 4 for v1.0.1 schemas
-# Version 5 for v1.0.2 schemas
-json_ent = syn.get("syn23593068", version=6)
-json_filename = json_ent.path
 
 
 def get_or_create_resource(get_func, create_func, *args, **kwargs):
@@ -63,13 +66,13 @@ def get_or_create_resource(get_func, create_func, *args, **kwargs):
     return resource
 
 
-with datanode.ApiClient(configuration) as api_client:
-    dataset_api = datanode.apis.DatasetApi(api_client)
-    fhir_store_api = datanode.apis.FhirStoreApi(api_client)
-    annotation_store_api = datanode.apis.AnnotationStoreApi(api_client)
-    patient_api = datanode.apis.PatientApi(api_client)
-    note_api = datanode.apis.NoteApi(api_client)
-    annotation_api = datanode.apis.AnnotationApi(api_client)
+with nlpsandbox.ApiClient(configuration) as api_client:
+    dataset_api = nlpsandbox.apis.DatasetApi(api_client)
+    fhir_store_api = nlpsandbox.apis.FhirStoreApi(api_client)
+    annotation_store_api = nlpsandbox.apis.AnnotationStoreApi(api_client)
+    patient_api = nlpsandbox.apis.PatientApi(api_client)
+    note_api = nlpsandbox.apis.NoteApi(api_client)
+    annotation_api = nlpsandbox.apis.AnnotationApi(api_client)
 
     # Get or create Dataset
     dataset = get_or_create_resource(
@@ -138,7 +141,10 @@ with datanode.ApiClient(configuration) as api_client:
             annotation = note_bundle['annotation']
             annotations_cols = ['textDateAnnotations',
                                 'textPhysicalAddressAnnotations',
-                                'textPersonNameAnnotations']
+                                'textPersonNameAnnotations',
+                                'textIdAnnotations',
+                                'textContactAnnotations']
+                                # 'textCovidSymptomAnnotations']
             note_ids = set()
             for col in annotations_cols:
                 for annot in annotation[col]:
