@@ -257,6 +257,17 @@ where:
 * `workflowSynapseId` - ID of the Synapse entity containing a reference to the workflow file(s)
 * `synapseConfig` - filepath to your Synapse credentials
 
+### Adding tools to benchmark
+
+1. Create evaluation queues per new tool
+1. Edit these files by adding the tool
+    - validate_tool.py
+    - config.yml
+    - determine_annotator_type.cwl
+    - annotate_note.py
+    - convert_annotations.cwl
+    - convert_score.cwl
+
 
 ### Loading Sage Data Node
 

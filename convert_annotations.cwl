@@ -55,6 +55,15 @@ requirements:
           elif args.annotator_type == "nlpsandbox:physical-address-annotator":
             annotation_key = "physical_location_annotations"
             post_path = "textPhysicalAddressAnnotations"
+          elif args.annotator_type == "nlpsandbox:id-annotator":
+            annotation_key = "id_annotations"
+            post_path = "textIdAnnotations"
+          elif args.annotator_type == "nlpsandbox:contact-annotator":
+            annotation_key = "contact_annotations"
+            post_path = "textContactAnnotations"
+          elif args.annotator_type == "nlpsandbox:covid-symptom-annotator":
+            annotation_key = "covid_symptom_annotations"
+            post_path = "textCovidSymptomAnnotations"
 
           all_annotations = []
           for annotation in annotations:

@@ -45,9 +45,12 @@ def main(args):
     api_url_map = {
         'nlpsandbox:date-annotator': "textDateAnnotations",
         'nlpsandbox:person-name-annotator': "textPersonNameAnnotations",
-        'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations"
+        'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations",
+        'nlpsandbox:id-annotator': "textIdAnnotations",
+        'nlpsandbox:contact-annotator': "textContactAnnotations",
+        'nlpsandbox:covid-symptom-annotator': "textCovidSymptomAnnotations"
     }
-    annotator_client = "nlpsandbox/cli:1.1.0"
+    annotator_client = "nlpsandbox/cli:3.0.0"
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
