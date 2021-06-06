@@ -14,8 +14,6 @@ import nlpsandboxclient.utils
 syn = synapseclient.login()
 
 host = "http://0.0.0.0/api/v1"
-if host == "":
-    raise ValueError("Must set host to be data node URL")
 configuration = nlpsandbox.Configuration(
     host=host
 )
