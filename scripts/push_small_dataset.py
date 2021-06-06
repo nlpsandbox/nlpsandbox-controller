@@ -141,7 +141,10 @@ with nlpsandbox.ApiClient(configuration) as api_client:
             annotation = note_bundle['annotation']
             annotations_cols = ['textDateAnnotations',
                                 'textPhysicalAddressAnnotations',
-                                'textPersonNameAnnotations']
+                                'textPersonNameAnnotations',
+                                'textIdAnnotations',
+                                'textContactAnnotations']
+                                # 'textCovidSymptomAnnotations']
             note_ids = set()
             for col in annotations_cols:
                 for annot in annotation[col]:
