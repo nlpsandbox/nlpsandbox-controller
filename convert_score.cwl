@@ -49,9 +49,9 @@ requirements:
           api_url_map = {
             'nlpsandbox:date-annotator': "date",
             'nlpsandbox:person-name-annotator': "person",
-            'nlpsandbox:physical-address-annotator': "address"
-            'nlpsandbox:id-annotator': "id"
-            'nlpsandbox:contact-annotator': "contact"
+            'nlpsandbox:physical-address-annotator': "address",
+            'nlpsandbox:id-annotator': "id",
+            'nlpsandbox:contact-annotator': "contact",
             'nlpsandbox:covid-symptom-annotator': "covid"
           }
           annotator_type = api_url_map[args.annotator_type]
