@@ -264,6 +264,9 @@ where:
     - validate_tool.py
     - config.yml
     - determine_annotator_type.cwl
+    - annotate_note.py
+    - convert_annotations.cwl
+    - convert_score.cwl
 
 
 ### Loading Sage Data Node
