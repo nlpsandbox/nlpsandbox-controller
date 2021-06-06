@@ -6,10 +6,10 @@ import sys
 
 import synapseclient
 
-import nlpsandboxsdk
-import nlpsandboxsdk.apis
-import nlpsandboxsdk.models
-from nlpsandboxsdk.rest import ApiException
+import nlpsandbox
+import nlpsandbox.apis
+import nlpsandbox.models
+from nlpsandbox.rest import ApiException
 import nlpsandboxclient.utils
 
 syn = synapseclient.login()
@@ -17,13 +17,10 @@ syn = synapseclient.login()
 host = "http://0.0.0.0:8080/api/v1"
 if host == "":
     raise ValueError("Must set host to be data node URL")
-configuration = nlpsandboxsdk.Configuration(
+configuration = nlpsandbox.Configuration(
     host=host
 )
 
-dataset_id = 'i2b2-phi-20210603'
-fhir_store_id = 'evaluation'
-annotation_store_id = 'goldstandard'
 # Get evaluation-patient-bundles.json
 # syn23593068 Version 4 for v1.0.1 schemas
 # syn23593068 Version 5 for v1.0.2 schemas
@@ -31,6 +28,12 @@ annotation_store_id = 'goldstandard'
 # Can find datasets here: syn25815735
 json_ent = syn.get("syn25836161")
 json_filename = json_ent.path
+# entity.createdOn is in this format 2021-06-06T03:37:01.698Z
+# So take the first
+dataset_version = json_ent.createdOn.split("T")[0].replace("-", "")
+dataset_id = f'i2b2-phi-{dataset_version}'
+fhir_store_id = 'evaluation'
+annotation_store_id = 'goldstandard'
 
 
 def get_or_create_resource(get_func, create_func, *args, **kwargs):
@@ -66,13 +69,13 @@ def get_or_create_resource(get_func, create_func, *args, **kwargs):
     return resource
 
 
-with nlpsandboxsdk.ApiClient(configuration) as api_client:
-    dataset_api = nlpsandboxsdk.apis.DatasetApi(api_client)
-    fhir_store_api = nlpsandboxsdk.apis.FhirStoreApi(api_client)
-    annotation_store_api = nlpsandboxsdk.apis.AnnotationStoreApi(api_client)
-    patient_api = nlpsandboxsdk.apis.PatientApi(api_client)
-    note_api = nlpsandboxsdk.apis.NoteApi(api_client)
-    annotation_api = nlpsandboxsdk.apis.AnnotationApi(api_client)
+with nlpsandbox.ApiClient(configuration) as api_client:
+    dataset_api = nlpsandbox.apis.DatasetApi(api_client)
+    fhir_store_api = nlpsandbox.apis.FhirStoreApi(api_client)
+    annotation_store_api = nlpsandbox.apis.AnnotationStoreApi(api_client)
+    patient_api = nlpsandbox.apis.PatientApi(api_client)
+    note_api = nlpsandbox.apis.NoteApi(api_client)
+    annotation_api = nlpsandbox.apis.AnnotationApi(api_client)
 
     # Get or create Dataset
     dataset = get_or_create_resource(
