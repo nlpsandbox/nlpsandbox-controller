@@ -36,6 +36,10 @@ expression: |
       return {annotator_type: "nlpsandbox:date-annotator"};
     } else if (inputs.queue == "9614657" || inputs.queue == "9614685"){
       return {annotator_type: "nlpsandbox:person-name-annotator"};
+    } else if (inputs.queue == "9614797" || inputs.queue == "9614798"){
+      return {annotator_type: "nlpsandbox:id-annotator"};
+    } else if (inputs.queue == "9614799" || inputs.queue == "9614800"){
+      return {annotator_type: "nlpsandbox:contact-annotator"};
     } else {
       throw 'invalid queue';
     }
