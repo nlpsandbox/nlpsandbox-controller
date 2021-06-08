@@ -108,7 +108,10 @@ def main(syn, args):
     api_url_map = {
         'nlpsandbox:date-annotator': "textDateAnnotations",
         'nlpsandbox:person-name-annotator': "textPersonNameAnnotations",
-        'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations"
+        'nlpsandbox:physical-address-annotator': "textPhysicalAddressAnnotations",
+        'nlpsandbox:id-annotator': "textIdAnnotations",
+        'nlpsandbox:contact-annotator': "textContactAnnotations",
+        'nlpsandbox:covid-symptom-annotator': "textCovidSymptomAnnotations"
     }
 
     all_annotations = []
