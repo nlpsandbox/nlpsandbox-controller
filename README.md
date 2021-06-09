@@ -276,3 +276,15 @@ where:
 1. Install anaconda
 1. Install nlpsandbox-client
 1. Modify and run `scripts/push_challenge_data.py` and `scripts/push_small_dataset.py`
+
+
+### Opening and Closing the queues
+
+For scheduled and unscheduled maintenance, the main queues should be closed so that participants won't be able to submit to them.  To do so, run this script:
+
+```bash
+# This will revoke submit permissions for the NLP sandbox users
+python scripts/toggle_queue.py close
+# This will give submit permissions for the NLP sandbox users
+python scripts/toggle_queue.py open
+```
