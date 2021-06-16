@@ -176,7 +176,23 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     docker-compose up -d
     ```
 
+## Annotating Notes Manually
+
+1. Get example notes:
+
+    ```
+    nlp-cli datanode list-notes --data_node_host http://0.0.0.0/api/v1 --dataset_id 2014-i2b2-20201203-subset --fhir_store_id evaluation --output example_notes.json
+    ```
+
+1. Annotate notes:
+
+    ```
+    nlp-cli tool annotate-note --annotator_host http://0.0.0.0:8080/api/v1 --note_json example_notes.json --tool_type nlpsandbox:date-annotator
+    ```
+
+
 ## Scoring Submissions Manually
+
 The scoring is done as part of the workflow, but here are the steps to score submissions manually.
 
 1. Determine which submission that you want to score manually (e.g 111111)
