@@ -104,7 +104,20 @@ steps:
       - id: entityid
         source: "#submitterUploadSynId"
       - id: principalid
-        valueFrom: "3413389"
+        valueFrom: "3413389"  # admin team
+      - id: permissions
+        valueFrom: "admin"
+      - id: synapse_config
+        source: "#synapseConfig"
+    out: []
+
+  set_team_submitter_folder_permissions:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/set_permissions.cwl
+    in:
+      - id: entityid
+        source: "#submitterUploadSynId"
+      - id: principalid
+        valueFrom: "3413390" # sandbox team
       - id: permissions
         valueFrom: "download"
       - id: synapse_config
@@ -117,7 +130,20 @@ steps:
       - id: entityid
         source: "#adminUploadSynId"
       - id: principalid
-        valueFrom: "3413389"
+        valueFrom: "3413389"  # admin team
+      - id: permissions
+        valueFrom: "download"
+      - id: synapse_config
+        source: "#synapseConfig"
+    out: []
+
+  set_team_admin_folder_permissions:
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/set_permissions.cwl
+    in:
+      - id: entityid
+        source: "#adminUploadSynId"
+      - id: principalid
+        valueFrom: "3413390" # sandbox team
       - id: permissions
         valueFrom: "download"
       - id: synapse_config
