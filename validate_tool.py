@@ -79,6 +79,7 @@ def main(args):
             new_key = f"tool__{key}"
             new_tool_info[new_key] = value
     except Exception as err:
+        print(err)
         # TODO: Potentially add in more info
         invalid_reasons.append(
             "API api/v1/tool endpoint not implemented or implemented "
@@ -96,6 +97,7 @@ def main(args):
                               network="submission", stderr=True)
                               # auto_remove=True)
     except Exception as err:
+        print(err)
         invalid_reasons.append(
             ".../api/v1/ui not implemented or implemented incorrectly."
         )
@@ -139,6 +141,7 @@ def main(args):
         )
         print(example_dict)
     except Exception as err:
+        print(err)
         invalid_reasons.append(
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
@@ -161,6 +164,7 @@ def main(args):
         )
         print(example_dict_2)
     except Exception as err:
+        print(err)
         invalid_reasons.append(
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
