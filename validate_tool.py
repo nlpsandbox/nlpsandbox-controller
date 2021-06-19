@@ -83,7 +83,9 @@ def main(args):
         # TODO: Potentially add in more info
         invalid_reasons.append(
             "API api/v1/tool endpoint not implemented or implemented "
-            "incorrectly. Make sure correct tool object is returned."
+            "incorrectly. Make sure correct tool object is returned.\n"
+            f"Error: {err}"
+
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
 
@@ -99,7 +101,8 @@ def main(args):
     except Exception as err:
         print(err)
         invalid_reasons.append(
-            ".../api/v1/ui not implemented or implemented incorrectly."
+            ".../api/v1/ui not implemented or implemented incorrectly.\n"
+            f"Error: {err}"
         )
     remove_docker_container(f"{args.submissionid}_curl_2")
 
@@ -145,7 +148,8 @@ def main(args):
         invalid_reasons.append(
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
-            "object is annotated."
+            "object is annotated.\n"
+            f"Error: {err}"
         )
     remove_docker_container(f"{args.submissionid}_curl_3")
 
@@ -168,7 +172,8 @@ def main(args):
         invalid_reasons.append(
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
-            "object is annotated."
+            "object is annotated.\n"
+            f"Error: {err}"
         )
     remove_docker_container(f"{args.submissionid}_curl_4")
     if example_dict != example_dict_2:
