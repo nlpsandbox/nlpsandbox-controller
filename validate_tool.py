@@ -63,7 +63,7 @@ def main(args):
 
     volumes = {
         os.path.abspath(output_dir): {
-            'bind': '/output',
+            'bind': '/output/',
             'mode': 'rw'
         }
     }
