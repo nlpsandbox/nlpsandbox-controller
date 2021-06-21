@@ -71,7 +71,8 @@ def main(args):
         # auto_remove doesn't work when being run with the orchestrator
         tool = client.containers.run(annotator_client, exec_cmd,
                                      name=f"{args.submissionid}_curl_1",
-                                     network="submission", stderr=True)
+                                     network="submission", stderr=True,
+                                     volumes=volumes)
                                         # auto_remove=True)
         # Remove \n, and change single quote to double quote
         with open("tool.json") as tool_f:
