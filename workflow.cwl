@@ -475,12 +475,14 @@ steps:
       - id: results
 
   score_email:
-    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
+    run: score_email.cwl
     in:
       - id: submissionid
         source: "#submissionId"
       - id: synapse_config
         source: "#synapseConfig"
+      - id: dataset_id
+        source: get_evaluation_config/dataset_id
       - id: results
         source: "#convert_score/results"
     out: []
