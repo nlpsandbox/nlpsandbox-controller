@@ -66,7 +66,7 @@ requirements:
           parser.add_argument("-c", "--synapse_config", required=True, help="credentials file")
           parser.add_argument("-r", "--results", required=True, help="Resulting scores")
           parser.add_argument("-p", "--private_annotations", nargs="+", default=[], help="annotations to not be sent via e-mail")
-          parser.add_arguemnt("-d", "--dataset_id", required=True, help="Dataset Version")
+          parser.add_argument("-d", "--dataset_id", required=True, help="Dataset Version")
 
           args = parser.parse_args()
           syn = synapseclient.Synapse(configPath=args.synapse_config)
