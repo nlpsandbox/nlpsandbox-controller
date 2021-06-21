@@ -55,9 +55,18 @@ def main(args):
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
     exec_cmd = ["tool", "get-tool", '--annotator_host',
-                f"http://{container_ip}:8080/api/v1"]
+                f"http://{container_ip}:8080/api/v1",
+                "--output", "/output/tool.json"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
+    output_dir = os.getcwd()
+
+    volumes = {
+        os.path.abspath(output_dir): {
+            'bind': '/output',
+            'mode': 'rw'
+        }
+    }
     try:
         # auto_remove doesn't work when being run with the orchestrator
         tool = client.containers.run(annotator_client, exec_cmd,
@@ -65,9 +74,11 @@ def main(args):
                                      network="submission", stderr=True)
                                         # auto_remove=True)
         # Remove \n, and change single quote to double quote
-        tool_info = json.loads(
-            tool.decode("utf-8").replace("\n", "").replace("'", '"')
-        )
+        with open("tool.json") as tool_f:
+            tool_info = json.load(tool_f)
+        # tool_info = json.loads(
+        #     tool.decode("utf-8").replace("\n", "").replace("'", '"')
+        # )
         print(tool_info)
         # Check that tool api version is correct
         if tool_info.get('api_version') != args.schema_version:
