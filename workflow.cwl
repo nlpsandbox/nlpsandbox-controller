@@ -82,6 +82,7 @@ steps:
       - id: dataset_id
       - id: runtime
       - id: datanode_endpoint
+      - id: subset_dataset_id
 
   annotate_evaluation_config:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/annotate_submission.cwl
@@ -250,11 +251,10 @@ steps:
     in:
       - id: data_endpoint
         source: "#get_evaluation_config/datanode_endpoint"
-        # valueFrom: "http://10.255.21.50/api/v1/"
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
-        valueFrom: "2014-i2b2-20201203-subset"
+        source: "#get_evaluation_config/subset_dataset_id"
       - id: fhir_store_id
         source: "#fhir_store_id"
     out:
