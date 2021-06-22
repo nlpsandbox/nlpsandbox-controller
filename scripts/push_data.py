@@ -14,8 +14,6 @@ from nlpsandbox.rest import ApiException
 import nlpsandboxclient.utils
 
 
-
-
 def get_or_create_resource(get_func, create_func, *args, **kwargs):
     """Get or create a data node resource
 
@@ -49,22 +47,18 @@ def get_or_create_resource(get_func, create_func, *args, **kwargs):
     return resource
 
 
-
 def main():
     parser = argparse.ArgumentParser(description='Push NLP sandbox data')
-    parser.add_argument('config', type=str, help="yaml configuration")
-    parser.add_argument(
-        '--username', type=str,
-        help='Synapse Username. Do not specify this when using PAT'
-    )
-    parser.add_argument('--credential', type=str,
-                        help="Synapse api key or personal access token")
-    parser.add_argument('--quota', type=int, default=7200,
-                        help="Runtime quota in seconds")
+    parser.add_argument('dataset_bundle_synid', type=str,
+                        help="Synapse id of dataset")
+    parser.add_argument('--data_node_host', type=str, help="Data node ip",
+                        default="http://0.0.0.0/api/v1")
+
     args = parser.parse_args()
+
     syn = synapseclient.login()
 
-    host = "http://0.0.0.0/api/v1"
+    host = args.data_node_host
     configuration = nlpsandbox.Configuration(
         host=host
     )
@@ -74,7 +68,7 @@ def main():
     # syn23593068 Version 5 for v1.0.2 schemas
     # syn23593068 Latest version for v1.1.1 schemas
     # Can find datasets here: syn25815735
-    json_ent = syn.get("syn25836161")
+    json_ent = syn.get(args.dataset_bundle_synid)
     json_filename = json_ent.path
     # entity.createdOn is in this format 2021-06-06T03:37:01.698Z
     # So take the first
