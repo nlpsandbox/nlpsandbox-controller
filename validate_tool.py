@@ -59,8 +59,8 @@ def main(args):
                 "--output", "/output/tool.json"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
-    output_dir = os.getcwd()
-
+    output_dir = os.path.join(os.getcwd(), "output")
+    os.mkdir(output_dir)
     volumes = {
         os.path.abspath(output_dir): {
             'bind': '/output/',
