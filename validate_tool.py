@@ -50,21 +50,33 @@ def main(args):
         'nlpsandbox:contact-annotator': "textContactAnnotations",
         'nlpsandbox:covid-symptom-annotator': "textCovidSymptomAnnotations"
     }
-    annotator_client = "nlpsandbox/cli:3.1.0"
+    annotator_client = "nlpsandbox/cli:4.0.0"
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
     exec_cmd = ["tool", "get-tool", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
+               # "--output", "/output/tool.json"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
+    output_dir = os.path.join(os.getcwd(), "output")
+    os.mkdir(output_dir)
+    volumes = {
+        os.path.abspath(output_dir): {
+            'bind': '/output/',
+            'mode': 'rw'
+        }
+    }
     try:
         # auto_remove doesn't work when being run with the orchestrator
         tool = client.containers.run(annotator_client, exec_cmd,
                                      name=f"{args.submissionid}_curl_1",
-                                     network="submission", stderr=True)
+                                     network="submission", stderr=True,
+                                     volumes=volumes)
                                         # auto_remove=True)
         # Remove \n, and change single quote to double quote
+        # with open("tool.json") as tool_f:
+        #     tool_info = json.load(tool_f)
         tool_info = json.loads(
             tool.decode("utf-8").replace("\n", "").replace("'", '"')
         )

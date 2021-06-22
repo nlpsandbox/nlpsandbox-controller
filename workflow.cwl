@@ -27,7 +27,7 @@ inputs:
     type: File
   - id: api_version
     type: string
-    default: "1.1.2"
+    default: "1.2.0"
   - id: fhir_store_id
     type: string
     #default: "awesome-fhir-store"
@@ -82,6 +82,7 @@ steps:
       - id: dataset_id
       - id: runtime
       - id: datanode_endpoint
+      - id: subset_dataset_id
 
   annotate_evaluation_config:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/annotate_submission.cwl
@@ -250,11 +251,10 @@ steps:
     in:
       - id: data_endpoint
         source: "#get_evaluation_config/datanode_endpoint"
-        # valueFrom: "http://10.255.21.50/api/v1/"
       - id: output
         valueFrom: "notes.json"
       - id: dataset_id
-        valueFrom: "2014-i2b2-20201203-subset"
+        source: "#get_evaluation_config/subset_dataset_id"
       - id: fhir_store_id
         source: "#fhir_store_id"
     out:
@@ -475,12 +475,14 @@ steps:
       - id: results
 
   score_email:
-    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
+    run: score_email.cwl
     in:
       - id: submissionid
         source: "#submissionId"
       - id: synapse_config
         source: "#synapseConfig"
+      - id: dataset_id
+        source: get_evaluation_config/dataset_id
       - id: results
         source: "#convert_score/results"
     out: []
