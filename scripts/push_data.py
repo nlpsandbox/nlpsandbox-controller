@@ -188,3 +188,7 @@ def main():
                     note_id,
                     annotation_create_request=new_annotation
                 )
+
+
+if __name__ == "__main__":
+    main()
