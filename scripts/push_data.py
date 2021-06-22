@@ -70,10 +70,13 @@ def main():
     # Can find datasets here: syn25815735
     json_ent = syn.get(args.dataset_bundle_synid)
     json_filename = json_ent.path
+
     # entity.createdOn is in this format 2021-06-06T03:37:01.698Z
     # So take the first
     dataset_version = json_ent.createdOn.split("T")[0].replace("-", "")
     dataset_id = f'i2b2-phi-{dataset_version}'
+    if json_filename.endswith("-example.json"):
+        dataset_id = dataset_id + "-subset"
     fhir_store_id = 'evaluation'
     annotation_store_id = 'goldstandard'
     with nlpsandbox.ApiClient(configuration) as api_client:
