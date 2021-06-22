@@ -291,8 +291,15 @@ where:
 1. Start the data node (make sure its the latest version)
 1. Install anaconda
 1. Install nlpsandbox-client
-1. Modify and run `scripts/push_challenge_data.py` and `scripts/push_small_dataset.py`
+1. Look for the latest dataset to load [here](https://www.synapse.org/#!Synapse:syn25815735)
+1. Run `scripts/push_data.py`
 
+    ```
+    # All data
+    python scripts/push_data.py syn25891742
+    # Subsetted data - example
+    python scripts/push_data.py syn25891740
+    ```
 
 ### Opening and Closing the queues
 
