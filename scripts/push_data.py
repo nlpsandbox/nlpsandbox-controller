@@ -152,7 +152,7 @@ def main():
                                     # 'textCovidSymptomAnnotations']
                 note_ids = set()
                 for col in annotations_cols:
-                    for annot in annotation[col]:
+                    for annot in annotation.get(col):
                         note_ids.add(annot['noteId'])
                         annot['confidence'] = 100
                 assert len(note_ids) == 1, "Must only have one noteId"
