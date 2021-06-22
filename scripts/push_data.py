@@ -138,7 +138,6 @@ def main():
             # Create the Note and Annotation objects linked to the patient
             note_bundles = patient_bundle['note_bundles']
             # note_bundles = note_bundles[:1]
-
             for note_bundle in note_bundles:
                 # Determine note Id since noteId isn't part of the 'note'
                 annotation = note_bundle['annotation']
@@ -162,6 +161,10 @@ def main():
                     nlpsandboxclient.utils.camelcase_to_snakecase
                 )
                 note['patient_id'] = patient_id
+                if note.get("type") is None:
+                    note['type'] = note['note_type']
+                    del note['note_type']
+
                 note = get_or_create_resource(
                     note_api.get_note,
                     note_api.create_note,
