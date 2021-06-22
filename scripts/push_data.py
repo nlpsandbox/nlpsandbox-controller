@@ -164,9 +164,9 @@ def main():
                     nlpsandboxclient.utils.camelcase_to_snakecase
                 )
                 note['patient_id'] = patient_id
-                if note.get("type") is None:
-                    note['type'] = note['note_type']
-                    del note['note_type']
+                # if note.get("type") is None:
+                #     note['type'] = note['note_type']
+                #     del note['note_type']
 
                 note = get_or_create_resource(
                     note_api.get_note,
