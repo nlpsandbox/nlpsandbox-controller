@@ -27,7 +27,7 @@ inputs:
     type: File
   - id: api_version
     type: string
-    default: "1.1.2"
+    default: "1.2.0"
   - id: fhir_store_id
     type: string
     #default: "awesome-fhir-store"
