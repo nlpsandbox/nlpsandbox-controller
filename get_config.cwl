@@ -104,6 +104,13 @@ outputs:
       loadContents: true
       outputEval: $(JSON.parse(self[0].contents)['dataset_name'])-$(JSON.parse(self[0].contents)['dataset_version'])
 
+  - id: subset_dataset_id
+    type: string
+    outputBinding:
+      glob: $(inputs.results)
+      loadContents: true
+      outputEval: $(JSON.parse(self[0].contents)['dataset_name'])-$(JSON.parse(self[0].contents)['dataset_version'])-subset
+
   - id: datanode_endpoint
     type: string
     outputBinding:

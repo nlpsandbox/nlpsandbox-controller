@@ -55,8 +55,8 @@ def main(args):
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
     exec_cmd = ["tool", "get-tool", '--annotator_host',
-                f"http://{container_ip}:8080/api/v1",
-                "--output", "/output/tool.json"]
+                f"http://{container_ip}:8080/api/v1"]
+               # "--output", "/output/tool.json"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
     output_dir = os.path.join(os.getcwd(), "output")
@@ -75,11 +75,11 @@ def main(args):
                                      volumes=volumes)
                                         # auto_remove=True)
         # Remove \n, and change single quote to double quote
-        with open("tool.json") as tool_f:
-            tool_info = json.load(tool_f)
-        # tool_info = json.loads(
-        #     tool.decode("utf-8").replace("\n", "").replace("'", '"')
-        # )
+        # with open("tool.json") as tool_f:
+        #     tool_info = json.load(tool_f)
+        tool_info = json.loads(
+            tool.decode("utf-8").replace("\n", "").replace("'", '"')
+        )
         print(tool_info)
         # Check that tool api version is correct
         if tool_info.get('api_version') != args.schema_version:
