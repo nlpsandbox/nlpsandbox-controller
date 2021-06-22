@@ -8,7 +8,7 @@ baseCommand: [datanode,  get-annotation-store]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:3.1.0
+    dockerPull: nlpsandbox/cli:4.0.0
 
 requirements:
   - class: InlineJavascriptRequirement
