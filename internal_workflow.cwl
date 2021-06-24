@@ -118,7 +118,7 @@ steps:
       - id: principalid
         valueFrom: "3413389" # admin team
       - id: permissions
-        valueFrom: "admin"
+        valueFrom: "download"
       - id: synapse_config
         source: "#synapseConfig"
     out: []
