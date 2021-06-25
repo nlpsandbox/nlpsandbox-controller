@@ -314,7 +314,7 @@ steps:
     out: [results]
 
   score_email:
-    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v3.1/cwl/score_email.cwl
+    run: score_email.cwl
     in:
       - id: submissionid
         source: "#get_submissionid/submissionid"
@@ -322,6 +322,8 @@ steps:
         source: "#synapseConfig"
       - id: results
         source: "#modify_score_annotations/results"
+      - id: dataset_id
+        source: get_evaluation_config/dataset_id
     out: []
 
   annotate_submission_with_output:
