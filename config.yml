@@ -4,7 +4,7 @@
   runtime: 7200  # in seconds
   # question: Date Annotator
   submit_to: null
-  #   - "9614719"  # MCW
+    - "9614719"  # MCW
   center: SAGEBIO
   submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
@@ -29,7 +29,7 @@
   runtime: 7200
   # question: Person Name Annotator
   submit_to: null
-  #  - "9614720"  # MCW
+   - "9614720"  # MCW
   center: SAGEBIO
   submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
@@ -53,7 +53,7 @@
   runtime: 7200
   # question: Physical Address Annotator
   submit_to: null
-  #   - "9614721"  # MCW
+    - "9614721"  # MCW
   center: SAGEBIO
   submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
@@ -77,7 +77,7 @@
   runtime: 7200
   # question: Contact Annotator
   submit_to: null
-  #  - "9614804"  # MCW
+   - "9614804"  # MCW
   center: SAGEBIO
   submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
@@ -101,7 +101,7 @@
   runtime: 7200
   # question: Id Annotator
   submit_to: null
-  #  - "9614803"  # MCW
+   - "9614803"  # MCW
   center: SAGEBIO
   submission_viewid: syn23747126
   datanode_endpoint: http://10.255.21.50/api/v1/
