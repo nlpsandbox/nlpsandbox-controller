@@ -52,9 +52,9 @@ requirements:
           elif args.annotator_type == "nlpsandbox:person-name-annotator":
             annotation_key = "person_name_annotations"
             post_path = "textPersonNameAnnotations"
-          elif args.annotator_type == "nlpsandbox:physical-address-annotator":
+          elif args.annotator_type == "nlpsandbox:location-annotator":
             annotation_key = "physical_location_annotations"
-            post_path = "textPhysicalAddressAnnotations"
+            post_path = "textLocationAnnotations"
           elif args.annotator_type == "nlpsandbox:id-annotator":
             annotation_key = "id_annotations"
             post_path = "textIdAnnotations"
