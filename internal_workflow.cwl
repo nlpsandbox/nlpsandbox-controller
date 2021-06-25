@@ -323,7 +323,7 @@ steps:
       - id: results
         source: "#modify_score_annotations/results"
       - id: dataset_id
-        source: get_evaluation_config/dataset_id
+        source: "#get_evaluation_config/dataset_id"
     out: []
 
   annotate_submission_with_output:
