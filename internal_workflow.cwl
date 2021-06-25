@@ -321,7 +321,7 @@ steps:
       - id: synapse_config
         source: "#synapseConfig"
       - id: results
-        source: "#modify_score_annotations/results"
+        source: "#convert_score/results"
       - id: dataset_id
         source: "#get_evaluation_config/dataset_id"
     out: []
