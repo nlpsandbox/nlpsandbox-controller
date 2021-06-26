@@ -8,7 +8,7 @@ baseCommand: [datanode, list-notes]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:4.0.0
+    dockerPull: nlpsandbox/cli:4.1.0
 
 requirements:
   - class: InlineJavascriptRequirement
