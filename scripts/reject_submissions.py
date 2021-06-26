@@ -92,7 +92,6 @@ def update_status(syn: Synapse, main_queue: str, internal_queue: str,
     )
     processing_submissions = syn.tableQuery(processing_subs_query_str)
     processing_submissionsdf = processing_submissions.asDataFrame()
-    print(processing_submissionsdf)
     # For all the submissions that are processing, obtain the status in
     # the internal queues.  Make main submission invalid.
     for subid in processing_submissionsdf['id']:
@@ -102,7 +101,6 @@ def update_status(syn: Synapse, main_queue: str, internal_queue: str,
         )
         internal_subs = syn.tableQuery(internal_query_str)
         internal_subsdf = internal_subs.asDataFrame()
-        print(internal_subsdf)
         if not internal_subsdf.empty:
             internal_status = {
                 f"{site}_submission_status": "INVALID"
@@ -131,7 +129,6 @@ def convert_overall_status(syn: Synapse, main_queueid: str, sites: list,
     invalid_subs = syn.tableQuery(query_str)
     invalid_subsdf = invalid_subs.asDataFrame()
     for _, row in invalid_subsdf.iterrows():
-        print(row['id'])
         annotate_with_retry(syn=syn, submissionid=row['id'],
                             status="REJECTED")
 
@@ -142,8 +139,12 @@ def stop_submission_over_quota(syn, submission_id, quota):
     within the for loop
     """
     status = syn.getSubmissionStatus(submission_id)
-    last_updated = status.submissionAnnotations[WORKFLOW_LAST_UPDATED_KEY]
-    workflow_start = status.submissionAnnotations[WORKFLOW_START_KEY]
+    last_updated = status.submissionAnnotations.get(
+        WORKFLOW_LAST_UPDATED_KEY, 0
+    )
+    workflow_start = status.submissionAnnotations.get(
+        WORKFLOW_START_KEY, 0
+    )
     runtime = last_updated - workflow_start
     # Add 10 minutes to quota for all the initialization and storing
     # prediction steps
@@ -180,7 +181,7 @@ def main():
 
     for main_queueid, queue_info in configuration.items():
         evaluation = syn.getEvaluation(main_queueid)
-        print(f"Checking '{evaluation.name}'")
+        print(f"Checking '{evaluation.name} ({main_queueid})'")
         running_submissions = syn.getSubmissions(
             main_queueid, status="EVALUATION_IN_PROGRESS"
         )

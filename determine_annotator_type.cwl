@@ -31,7 +31,7 @@ expression: |
 
   ${
     if(inputs.queue == "9614658" || inputs.queue == "9614684"){
-      return {annotator_type: "nlpsandbox:physical-address-annotator"};
+      return {annotator_type: "nlpsandbox:location-annotator"};
     } else if (inputs.queue == "9614652" || inputs.queue == "9614654"){
       return {annotator_type: "nlpsandbox:date-annotator"};
     } else if (inputs.queue == "9614657" || inputs.queue == "9614685"){
