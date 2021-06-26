@@ -50,7 +50,7 @@ def main(args):
         'nlpsandbox:contact-annotator': "textContactAnnotations",
         'nlpsandbox:covid-symptom-annotator': "textCovidSymptomAnnotations"
     }
-    annotator_client = "nlpsandbox/cli:4.1.0"
+    annotator_client = "nlpsandbox/cli:4.1.1"
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
