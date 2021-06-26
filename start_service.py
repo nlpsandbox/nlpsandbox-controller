@@ -43,8 +43,14 @@ def main(args):
                                           cpu_quota=400000,
                                           mem_limit='4g', stderr=True)
                                           #ports={'8080': '8081'})
-        # sleep for 60 seconds just in case it takes time to start the service
-        time.sleep(60)
+        # Make sure the service has started
+        container_started = False
+        while not container_started:
+            try:
+                client.containers.get(args.submissionid)
+                container_started = True
+            except docker.errors.NotFound:
+                time.sleep(60)
 
 
 if __name__ == '__main__':
