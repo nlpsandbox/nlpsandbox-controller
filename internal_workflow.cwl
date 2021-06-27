@@ -227,8 +227,8 @@ steps:
         source: "#submissionId"
       - id: parentid
         source: "#submitterUploadSynId"
-      # - id: status
-      #   source: "#check_status_validate_tool/finished"
+      - id: status
+        source: "#start_service/finished"
       - id: synapse_config
         source: "#synapseConfig"
       - id: data_notes
