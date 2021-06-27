@@ -45,7 +45,12 @@ def main(args):
                                           #ports={'8080': '8081'})
         # Make sure the service has started
         container_started = False
+        time_now = time.time()
         while not container_started:
+            if time.time() - time_now > 600:
+                raise ValueError(
+                    "Getting docker image shouldn't take longer than 10 min"
+                )
             try:
                 client.containers.get(args.submissionid)
                 container_started = True
