@@ -62,6 +62,8 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 
 ### Data Node
 
+*We recommend this service to be run on a machine that at least has 2 CPU, 8GB ram and 300GB hard drive space*
+
 1. Clone and start the data node.  This step should already be done by the cloudformation script for Sage Bionetworks.
     ```bash
     git clone https://github.com/nlpsandbox/data-node.git
@@ -86,7 +88,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 
 ### Synapse Workflow Orchestrator
 
-View [Submission workflow](#submission-workflow) for what this tool does.
+*We recommend this service to be run on a machine that at least has 4 CPU, 16GB ram and 300GB hard drive space.* View [Submission workflow](#submission-workflow) for what this tool does.
 
 1. Obtain/Create a Service Account (TBD)
 1. Create internal Docker submission network
@@ -115,7 +117,7 @@ View [Submission workflow](#submission-workflow) for what this tool does.
     docker volume create portainer_data
     docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
     ```
-1. _If hosting ELK on a different instance from running submissions_:  Add the following section to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
+1. _If hosting ELK on a different instance from running submissions_:  Add the following section to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.  *We recommend the ELK service to be run on a machine that at least has 4 CPU, 16GB ram and 300GB hard drive space.*
     ```yaml
     logspout:
       image: bekt/logspout-logstash
