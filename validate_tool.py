@@ -82,13 +82,12 @@ def main(args):
         tool_info = json.loads(
             tool.decode("utf-8")
                 .replace("\n", "")
-                .replace("',", '",')
-                .replace(": '", ': "')
+                .replace("', '", '", "')
+                .replace("': '", '": "')
                 .replace("{'", '{"')
-                .replace("': ", '": ')
-                .replace(", '", ', "')
                 .replace("'}", '"}')
-                .replace("'", '\\"')
+                .replace('", \'', '", "')
+                .replace('\': "', '": "')
         )
         # print(tool_info)
         # Check that tool api version is correct
