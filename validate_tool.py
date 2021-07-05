@@ -61,6 +61,7 @@ def main(args):
     new_tool_info = {}
     output_dir = os.path.join(os.getcwd(), "output")
     os.mkdir(output_dir)
+    print(output_dir)
     volumes = {
         os.path.abspath(output_dir): {
             'bind': '/output',
