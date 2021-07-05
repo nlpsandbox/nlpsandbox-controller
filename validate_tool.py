@@ -2,6 +2,7 @@
 import argparse
 import json
 import os
+import tempfile
 
 import docker
 
@@ -59,11 +60,12 @@ def main(args):
                 "--output", "/output/tool.json"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
-    output_dir = os.path.join(os.getcwd(), "output")
-    os.mkdir(output_dir)
-    print(output_dir)
+    # output_dir = os.path.join(os.getcwd(), "output")
+    tempdir = tempfile.TemporaryDirectory()
+    # os.mkdir(output_dir)
+    # print(output_dir)
     volumes = {
-        os.path.abspath(output_dir): {
+        tempdir.name: {
             'bind': '/output',
             'mode': 'rw'
         }
@@ -75,7 +77,7 @@ def main(args):
                                      network="submission", stderr=True,
                                      volumes=volumes)
                                         # auto_remove=True)
-        with open("tool.json") as tool_f:
+        with open(os.path.join(tempdir, "tool.json")) as tool_f:
             tool_info = json.load(tool_f)
         # Remove \n, and change single quote to double quote
         # tool_info = json.loads(
