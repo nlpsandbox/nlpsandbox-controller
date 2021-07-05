@@ -77,9 +77,18 @@ def main(args):
                                         # auto_remove=True)
         # with open("tool.json") as tool_f:
         #     tool_info = json.load(tool_f)
-        # Remove \n, and change single quote to double quote
+        # Remove \n, and change appropriate single quotes to double quotes
+        # so that the string can be turned into a json
         tool_info = json.loads(
-            tool.decode("utf-8").replace("\n", "").replace("'", '"')
+            tool.decode("utf-8")
+                .replace("\n", "")
+                .replace("',", '",')
+                .replace(": '", ': "')
+                .replace("{'", '{"')
+                .replace("': ", '": ')
+                .replace(", '", ', "')
+                .replace("'}", '"}')
+                .replace("'", '\\"')
         )
         # print(tool_info)
         # Check that tool api version is correct
