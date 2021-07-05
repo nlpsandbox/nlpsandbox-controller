@@ -97,8 +97,7 @@ def main(args):
         invalid_reasons.append(
             "API api/v1/tool endpoint not implemented or implemented "
             "incorrectly. Make sure correct tool object is returned.\n"
-            f"Error: {err}"
-
+            f"Error: {output_dir}"
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
 
