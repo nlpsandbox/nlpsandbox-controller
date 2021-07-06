@@ -105,7 +105,7 @@ def main(args):
         invalid_reasons.append(
             "API api/v1/tool endpoint not implemented or implemented "
             "incorrectly. Make sure correct tool object is returned.\n"
-            f"Error: {err}"
+            f"Error: {err[-75:]}"
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
 
@@ -122,7 +122,7 @@ def main(args):
         print(err)
         invalid_reasons.append(
             ".../api/v1/ui not implemented or implemented incorrectly.\n"
-            f"Error: {err}"
+            f"Error: {err[-75:]}"
         )
     remove_docker_container(f"{args.submissionid}_curl_2")
 
@@ -169,7 +169,7 @@ def main(args):
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
             "object is annotated.\n"
-            f"Error: {err}"
+            f"Error: {err[-75:]}"
         )
     remove_docker_container(f"{args.submissionid}_curl_3")
 
@@ -193,13 +193,13 @@ def main(args):
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
             "object is annotated.\n"
-            f"Error: {err}"
+            f"Error: {err[-75:]}"
         )
     remove_docker_container(f"{args.submissionid}_curl_4")
     if example_dict != example_dict_2:
         invalid_reasons.append(
             "Annotated results must be the same after running the annotator"
-            "twice on the same dataset/"
+            "twice on the same dataset"
         )
     print("finished")
     print(invalid_reasons)
