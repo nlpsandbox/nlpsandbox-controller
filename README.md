@@ -83,7 +83,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     python examples/push_dataset.py
     ```
 1. Following the example above, prepare your site's dataset and push data.
-1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
+1. Inform Sage Bionetworks of data node endpoint ip so the queue configuration synapse table can be modified.
 1. When loading data into the data node. The `dataset_id` should be made up of {dataset_name}-{dataset_version}.  We recommend the dataset_version to be the date that it was created.  An example of this would be `sagedataset-20201125`.  The `fhir_store_id` must be `evaluation` and the `annotation_store_id` must be `goldstandard`
 
 ### Synapse Workflow Orchestrator
@@ -226,7 +226,7 @@ The infrastructure is created through cloudformation templates.  Important notes
 On top of the quota checking system that is built into `annotate_note.py`, there has to be some safeguard for making sure that submissions quota the time quota are stopped.  This is because the submission run time check happens within a for loop, it a docker run command happens to be stuck forever, the submission will never be deemed over the quota.  There is a `stop-submission-over-quota` function in `challengeutils`, unfortunately, this function requires a submission view as input and there is a high likelihood that each queue could have a different runtime.  Therefore, we will not be using this function.
 
 ```
-python scripts/reject_submissions.py config.yml
+python scripts/reject_submissions.py
 ```
 
 ### Orchestrator workflow
@@ -279,12 +279,11 @@ where:
 1. Create evaluation queues per new tool
 1. Edit these files by adding the tool
     - validate_tool.py
-    - config.yml
     - determine_annotator_type.cwl
     - annotate_note.py
     - convert_annotations.cwl
     - convert_score.cwl
-
+    - queue config internal synapse table
 
 ### Loading Sage Data Node
 

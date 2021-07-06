@@ -164,7 +164,7 @@ def stop_submission_over_quota(syn, submission_id, quota):
 def main():
     """Invoke REJECTION"""
     parser = argparse.ArgumentParser(description='Reject Submissions')
-    parser.add_argument('config', type=str, help="yaml configuration")
+    # parser.add_argument('config', type=str, help="yaml configuration")
     parser.add_argument(
         '--username', type=str,
         help='Synapse Username. Do not specify this when using PAT'
@@ -181,9 +181,14 @@ def main():
         syn.login(email=args.username, apiKey=args.credential)
     else:
         syn.login(authToken=args.credential)
-
-    with open(args.config, "r") as config_f:
-        configuration = yaml.safe_load(config_f)
+    # get configuration
+    queue_mapping_table = syn.tableQuery("select * from syn25952454")
+    queue_mappingdf = queue_mapping_table.asDataFrame()
+    queue_mappingdf.index = queue_mappingdf['queue_id']
+    queue_mappingdf['dataset_version'] = queue_mappingdf['dataset_version'].astype(str)
+    configuration = queue_mappingdf.to_dict("index")
+    # with open(args.config, "r") as config_f:
+    #     configuration = yaml.safe_load(config_f)
 
     for main_queueid, queue_info in configuration.items():
         evaluation = syn.getEvaluation(main_queueid)
