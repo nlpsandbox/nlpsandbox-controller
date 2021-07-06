@@ -203,7 +203,7 @@ def main():
                 quota=queue_info['runtime']
             )
         time.sleep(5)
-        if queue_info['submit_to'] is not None:
+        if queue_info['submit_to'] is not None and len(queue_info['submit_to']) != 0:
             internal_sites = [configuration[int(internal)]['center']
                               for internal in queue_info['submit_to']]
             for internal_queue in queue_info['submit_to']:
