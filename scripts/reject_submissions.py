@@ -145,6 +145,12 @@ def stop_submission_over_quota(syn, submission_id, quota):
     workflow_start = status.submissionAnnotations.get(
         WORKFLOW_START_KEY, 0
     )
+    # in case annotations are lists, make sure to return the element
+    if isinstance(last_updated, list):
+        last_updated = last_updated[0]
+    if isinstance(workflow_start, list):
+        workflow_start = workflow_start[0]
+
     runtime = last_updated - workflow_start
     # Add 10 minutes to quota for all the initialization and storing
     # prediction steps
@@ -158,7 +164,7 @@ def stop_submission_over_quota(syn, submission_id, quota):
 def main():
     """Invoke REJECTION"""
     parser = argparse.ArgumentParser(description='Reject Submissions')
-    parser.add_argument('config', type=str, help="yaml configuration")
+    # parser.add_argument('config', type=str, help="yaml configuration")
     parser.add_argument(
         '--username', type=str,
         help='Synapse Username. Do not specify this when using PAT'
@@ -175,9 +181,14 @@ def main():
         syn.login(email=args.username, apiKey=args.credential)
     else:
         syn.login(authToken=args.credential)
-
-    with open(args.config, "r") as config_f:
-        configuration = yaml.safe_load(config_f)
+    # get configuration
+    queue_mapping_table = syn.tableQuery("select * from syn25952454")
+    queue_mappingdf = queue_mapping_table.asDataFrame()
+    queue_mappingdf.index = queue_mappingdf['queue_id']
+    queue_mappingdf['dataset_version'] = queue_mappingdf['dataset_version'].astype(str)
+    configuration = queue_mappingdf.to_dict("index")
+    # with open(args.config, "r") as config_f:
+    #     configuration = yaml.safe_load(config_f)
 
     for main_queueid, queue_info in configuration.items():
         evaluation = syn.getEvaluation(main_queueid)
@@ -192,7 +203,7 @@ def main():
                 quota=queue_info['runtime']
             )
         time.sleep(5)
-        if queue_info['submit_to'] is not None:
+        if queue_info['submit_to'] is not None and len(queue_info['submit_to']) != 0:
             internal_sites = [configuration[int(internal)]['center']
                               for internal in queue_info['submit_to']]
             for internal_queue in queue_info['submit_to']:

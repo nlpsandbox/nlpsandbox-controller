@@ -56,14 +56,15 @@ def main(args):
     #             f"http://{container_ip}:8080"]
     exec_cmd = ["tool", "get-tool", '--annotator_host',
                 f"http://{container_ip}:8080/api/v1"]
-               # "--output", "/output/tool.json"]
+                # "--output", "/output/tool.json"]
     # Incase getting tool info fails, add empty dict
     new_tool_info = {}
     output_dir = os.path.join(os.getcwd(), "output")
     os.mkdir(output_dir)
+    print(output_dir)
     volumes = {
-        os.path.abspath(output_dir): {
-            'bind': '/output/',
+        output_dir: {
+            'bind': '/output',
             'mode': 'rw'
         }
     }
@@ -74,13 +75,21 @@ def main(args):
                                      network="submission", stderr=True,
                                      volumes=volumes)
                                         # auto_remove=True)
-        # Remove \n, and change single quote to double quote
         # with open("tool.json") as tool_f:
         #     tool_info = json.load(tool_f)
+        # Remove \n, and change appropriate single quotes to double quotes
+        # so that the string can be turned into a json
         tool_info = json.loads(
-            tool.decode("utf-8").replace("\n", "").replace("'", '"')
+            tool.decode("utf-8")
+                .replace("\n", "")
+                .replace("', '", '", "')
+                .replace("': '", '": "')
+                .replace("{'", '{"')
+                .replace("'}", '"}')
+                .replace('", \'', '", "')
+                .replace('\': "', '": "')
         )
-        print(tool_info)
+        # print(tool_info)
         # Check that tool api version is correct
         if tool_info.get('api_version') != args.schema_version:
             invalid_reasons.append(
@@ -97,7 +106,6 @@ def main(args):
             "API api/v1/tool endpoint not implemented or implemented "
             "incorrectly. Make sure correct tool object is returned.\n"
             f"Error: {err}"
-
         )
     remove_docker_container(f"{args.submissionid}_curl_1")
 

@@ -52,8 +52,7 @@ The submission workflow is composed of these steps:
 
 To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements: 
 
-- Docker: ver 19.03.0+ or higher
-- Docker-compose: ver 1.25.5 or higher
+- Docker: ver 20.10.6+ or higher (`docker compose` is a built in function)
 - Data Node
 - Synapse Workflow Orchestrator
 - ELK (Elasticsearch, Logstash, Kibana)
@@ -63,12 +62,14 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 
 ### Data Node
 
+*We recommend this service to be run on a machine that at least has 2 CPU, 8GB ram and 300GB hard drive space*
+
 1. Clone and start the data node.  This step should already be done by the cloudformation script for Sage Bionetworks.
     ```bash
     git clone https://github.com/nlpsandbox/data-node.git
     cd data-node
     cp .env.example .env
-    docker-compose up -d
+    docker compose up -d
     ```
 1. Push example data into the data node.  The scripts found in the `scripts` directory repository is for Sage Bionetworks only.  Please use this [script](https://github.com/nlpsandbox/nlpsandbox-client/blob/develop/examples/push_dataset.py) to push an example dataset.
     ```bash
@@ -82,12 +83,12 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     python examples/push_dataset.py
     ```
 1. Following the example above, prepare your site's dataset and push data.
-1. Inform Sage Bionetworks of data node endpoint ip so [config.yml](config.yml) can be modified.
+1. Inform Sage Bionetworks of data node endpoint ip so the queue configuration synapse table can be modified.
 1. When loading data into the data node. The `dataset_id` should be made up of {dataset_name}-{dataset_version}.  We recommend the dataset_version to be the date that it was created.  An example of this would be `sagedataset-20201125`.  The `fhir_store_id` must be `evaluation` and the `annotation_store_id` must be `goldstandard`
 
 ### Synapse Workflow Orchestrator
 
-View [Submission workflow](#submission-workflow) for what this tool does.
+*We recommend this service to be run on a machine that at least has 4 CPU, 16GB ram and 300GB hard drive space.* View [Submission workflow](#submission-workflow) for what this tool does.
 
 1. Obtain/Create a Service Account (TBD)
 1. Create internal Docker submission network
@@ -109,14 +110,14 @@ View [Submission workflow](#submission-workflow) for what this tool does.
     ```
 1. Start the orchestrator
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 1. _Optional_: Start [portainerer](https://documentation.portainer.io/v2.0/deploy/ceinstalldocker/)  This is an open source tool for managing container-based software applications (e.g. provides a GUI to view Docker images and running containers).
     ```bash
     docker volume create portainer_data
     docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
     ```
-1. _If hosting ELK on a different instance from running submissions_:  Add the following section to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.
+1. _If hosting ELK on a different instance from running submissions_:  Add the following section to the `docker-compose.yaml`.  The `ROUTE_URIS` will be different from the `Sage Bionetworks` site.  *We recommend the ELK service to be run on a machine that at least has 4 CPU, 16GB ram and 300GB hard drive space.*
     ```yaml
     logspout:
       image: bekt/logspout-logstash
@@ -146,7 +147,7 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     - `logstash/pipeline/logstash.conf`
 1. - _Running ELK on its own machine_:
         ```
-        docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d --build
+        docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d --build
         ```
         You will have to add logspout to the `SynapseWorkflowOrchestrator` if running the services on different machines.
     - _Running all the services on one machine_:
@@ -173,7 +174,7 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     ```
     Start the service
     ```bash
-    docker-compose up -d
+    docker compose up -d
     ```
 
 ## Annotating Notes Manually
@@ -225,7 +226,7 @@ The infrastructure is created through cloudformation templates.  Important notes
 On top of the quota checking system that is built into `annotate_note.py`, there has to be some safeguard for making sure that submissions quota the time quota are stopped.  This is because the submission run time check happens within a for loop, it a docker run command happens to be stuck forever, the submission will never be deemed over the quota.  There is a `stop-submission-over-quota` function in `challengeutils`, unfortunately, this function requires a submission view as input and there is a high likelihood that each queue could have a different runtime.  Therefore, we will not be using this function.
 
 ```
-python scripts/reject_submissions.py config.yml
+python scripts/reject_submissions.py
 ```
 
 ### Orchestrator workflow
@@ -278,12 +279,11 @@ where:
 1. Create evaluation queues per new tool
 1. Edit these files by adding the tool
     - validate_tool.py
-    - config.yml
     - determine_annotator_type.cwl
     - annotate_note.py
     - convert_annotations.cwl
     - convert_score.cwl
-
+    - queue config internal synapse table
 
 ### Loading Sage Data Node
 

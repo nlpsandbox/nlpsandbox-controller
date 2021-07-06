@@ -54,15 +54,20 @@ steps:
       - id: evaluation_id
       - id: results
 
+  table_to_json:
+    run: table_to_json.cwl
+    in:
+      - id: synapse_config
+        source: "#synapseConfig"
+    out: [results]
+
   get_evaluation_config:
     run: get_config.cwl
     in:
       - id: queue_id
         source: "#get_submissionid/evaluation_id"
       - id: configuration
-        default:
-          class: File
-          location: "config.yml"
+        source: "#table_to_json/results"
     out:
       - id: submit_to_queue
       - id: config
