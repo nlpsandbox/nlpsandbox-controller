@@ -47,11 +47,12 @@ def main():
     args = parser.parse_args()
     # Log into synapse
     syn = synapseclient.login()
-    # Read in configuration yml at root github dir
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(script_dir, "../config.yml"), "r") as config_o:
-        config = yaml.safe_load(config_o)
-    
+    # Get queue configuration and change into dict
+    queue_mapping_table = syn.tableQuery("select * from syn25952454")
+    queue_mappingdf = queue_mapping_table.asDataFrame()
+    queue_mappingdf.index = queue_mappingdf['queue_id']
+    queue_mappingdf['dataset_version'] = queue_mappingdf['dataset_version'].astype(str)
+    config = queue_mappingdf.to_dict("index")
     toggle(syn, config, args.mode)
 
 
