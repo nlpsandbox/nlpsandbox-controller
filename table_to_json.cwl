@@ -43,6 +43,7 @@ requirements:
           queue_mapping_table = syn.tableQuery("select * from syn25952454")
           queue_mappingdf = queue_mapping_table.asDataFrame()
           queue_mappingdf.index = queue_mappingdf['queue_id']
+          queue_mappingdf['dataset_version'] = queue_mappingdf['dataset_version'].astype(str)
           config = queue_mappingdf.to_dict("index")
           with open(args.results, 'w') as o:
             o.write(json.dumps(config))
