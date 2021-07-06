@@ -26,4 +26,4 @@ jobs:
 
     - name: Reject Submissions
       run: |
-        python scripts/reject_submissions.py config.yml --credential ${{ secrets.SYNAPSE_PAT }}
+        python scripts/reject_submissions.py --credential ${{ secrets.SYNAPSE_PAT }}
