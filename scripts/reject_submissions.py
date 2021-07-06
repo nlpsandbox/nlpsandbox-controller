@@ -145,6 +145,12 @@ def stop_submission_over_quota(syn, submission_id, quota):
     workflow_start = status.submissionAnnotations.get(
         WORKFLOW_START_KEY, 0
     )
+    # in case annotations are lists, make sure to return the element
+    if isinstance(last_updated, list):
+        last_updated = last_updated[0]
+    if isinstance(workflow_start, list):
+        workflow_start = workflow_start[0]
+
     runtime = last_updated - workflow_start
     # Add 10 minutes to quota for all the initialization and storing
     # prediction steps
