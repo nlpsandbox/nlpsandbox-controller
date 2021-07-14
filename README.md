@@ -151,7 +151,7 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     - `logstash/pipeline/logstash.conf`
 1. - _Running ELK on its own machine_:
         ```
-        docker compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d --build
+        docker-compose -f docker-compose.yml -f extensions/logspout/logspout-compose.yml up -d --build
         ```
         You will have to add logspout to the `SynapseWorkflowOrchestrator` if running the services on different machines.
     - _Running all the services on one machine_:
