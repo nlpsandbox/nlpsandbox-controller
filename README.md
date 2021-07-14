@@ -85,6 +85,10 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
 1. Following the example above, prepare your site's dataset and push data.
 1. Inform Sage Bionetworks of data node endpoint ip so the queue configuration synapse table can be modified.
 1. When loading data into the data node. The `dataset_id` should be made up of {dataset_name}-{dataset_version}.  We recommend the dataset_version to be the date that it was created.  An example of this would be `sagedataset-20201125`.  The `fhir_store_id` must be `evaluation` and the `annotation_store_id` must be `goldstandard`
+1.  We understand each site will have its own security/networking protocols, but we wanted to make sure that regardless of where/how you decide to host the data node service, this command MUST work as it is a vital part of the submission infrastructure.
+    ```
+    docker run nlpsandbox/cli:4.1.1 datanode list-datasets --data_node_host <your.datanode.ip>/api/v1
+    ```
 
 ### Synapse Workflow Orchestrator
 
