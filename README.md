@@ -52,7 +52,8 @@ The submission workflow is composed of these steps:
 
 To be a NLP sandbox data hosting site, the site must be able to host 4 main technology stacks via Docker. Here are the requirements: 
 
-- Docker: ver 20.10.6+ or higher (`docker compose` is a built in function)
+- Docker: ver 19.03.0+ or higher
+- `docker-compose`: ver 1.25.5 or higher (`docker compose` is a built in function only for environments that have Docker desktop: mac, windows for Docker 20.10.6+)
 - Data Node
 - Synapse Workflow Orchestrator
 - ELK (Elasticsearch, Logstash, Kibana)
@@ -69,7 +70,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     git clone https://github.com/nlpsandbox/data-node.git
     cd data-node
     cp .env.example .env
-    docker compose up -d
+    docker-compose up -d
     ```
 1. Push example data into the data node.  The scripts found in the `scripts` directory repository is for Sage Bionetworks only.  Please use this [script](https://github.com/nlpsandbox/nlpsandbox-client/blob/develop/examples/push_dataset.py) to push an example dataset.
     ```bash
@@ -114,7 +115,7 @@ To be a NLP sandbox data hosting site, the site must be able to host 4 main tech
     ```
 1. Start the orchestrator
     ```bash
-    docker compose up -d
+    docker-compose up -d
     ```
 1. _Optional_: Start [portainerer](https://documentation.portainer.io/v2.0/deploy/ceinstalldocker/)  This is an open source tool for managing container-based software applications (e.g. provides a GUI to view Docker images and running containers).
     ```bash
@@ -178,7 +179,7 @@ A solution to track Docker container logs are a **requirement** to be a data hos
     ```
     Start the service
     ```bash
-    docker compose up -d
+    docker-compose up -d
     ```
 
 ## Annotating Notes Manually
