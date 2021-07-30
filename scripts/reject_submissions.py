@@ -198,10 +198,10 @@ def main():
         )
         for running_submission in running_submissions:
             print(running_submission)
-            stop_submission_over_quota(
-                syn, submission_id=running_submission['id'],
-                quota=queue_info['runtime']
-            )
+            # stop_submission_over_quota(
+            #     syn, submission_id=running_submission['id'],
+            #     quota=queue_info['runtime']
+            # )
         time.sleep(5)
         if queue_info['submit_to'] is not None and len(queue_info['submit_to']) != 0:
             internal_sites = [configuration[int(internal)]['center']
