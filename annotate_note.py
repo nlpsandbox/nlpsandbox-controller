@@ -140,8 +140,7 @@ def main(syn, args):
         annotations = json.loads(annotate_note.decode("utf-8"))
         # If annotation fails, raise an error
         if annotations.get("status") is not None:
-            raise ValueError(note)
-            #raise ValueError(annotations)
+            raise ValueError(annotations)
         remove_docker_container(curl_name)
 
         # with open("annotations.json", "r") as note_f:
