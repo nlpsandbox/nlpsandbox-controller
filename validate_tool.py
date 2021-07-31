@@ -68,6 +68,8 @@ def main(args):
             'mode': 'rw'
         }
     }
+    import time
+    time.sleep(70)
     try:
         # auto_remove doesn't work when being run with the orchestrator
         tool = client.containers.run(annotator_client, exec_cmd,
@@ -106,6 +108,7 @@ def main(args):
             "API api/v1/tool endpoint not implemented or implemented "
             "incorrectly. Make sure correct tool object is returned.\n"
         )
+
     remove_docker_container(f"{args.submissionid}_curl_1")
 
     # Check UI
