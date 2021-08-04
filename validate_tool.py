@@ -68,8 +68,6 @@ def main(args):
             'mode': 'rw'
         }
     }
-    import time
-    time.sleep(70)
     try:
         # auto_remove doesn't work when being run with the orchestrator
         tool = client.containers.run(annotator_client, exec_cmd,
