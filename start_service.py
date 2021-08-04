@@ -56,6 +56,7 @@ def main(args):
                 container_started = True
             except docker.errors.NotFound:
                 time.sleep(60)
+        time.sleep(70)
 
 
 if __name__ == '__main__':
