@@ -50,7 +50,7 @@ def main(args):
         'nlpsandbox:contact-annotator': "textContactAnnotations",
         'nlpsandbox:covid-symptom-annotator': "textCovidSymptomAnnotations"
     }
-    annotator_client = "nlpsandbox/cli:4.1.1"
+    annotator_client = "nlpsandbox/cli:4.2.0"
     # validate that the root URL redirects to the service API endpoint
     # exec_cmd = ["curl", "-s", "-L", "-X", "GET",
     #             f"http://{container_ip}:8080"]
@@ -124,7 +124,6 @@ def main(args):
         print(err)
         invalid_reasons.append(
             ".../api/v1/ui not implemented or implemented incorrectly.\n"
-            f"Error: {err[-75:]}"
         )
     remove_docker_container(f"{args.submissionid}_curl_2")
 
@@ -171,7 +170,6 @@ def main(args):
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
             "object is annotated.\n"
-            f"Error: {err[-75:]}"
         )
     remove_docker_container(f"{args.submissionid}_curl_3")
 
@@ -195,7 +193,6 @@ def main(args):
             f"API /{api_url_map[args.annotator_type]} endpoint not implemented "
             "or implemented incorrectly.  Make sure correct Annotation "
             "object is annotated.\n"
-            f"Error: {err[-75:]}"
         )
     remove_docker_container(f"{args.submissionid}_curl_4")
     if example_dict != example_dict_2:
