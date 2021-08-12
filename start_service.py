@@ -41,7 +41,7 @@ def main(args):
                                           network="submission",
                                           cpu_period=100000,
                                           cpu_quota=400000,
-                                          mem_limit='4g', stderr=True)
+                                          mem_limit='7g', stderr=True)
                                           #ports={'8080': '8081'})
         # Make sure the service has started
         container_started = False
