@@ -4,24 +4,23 @@
 2. Create internal queues
 3. Add to configuration table
 4. Make sure orchestrator configured to accept submissions from
-internal queues {{"9614889": "syn25582656",}
+internal queues {"queue_id": "syn25582656"...}
 5. Add to submission view
 """
+import argparse
+
 import challengeutils
 import pandas as pd
 import synapseclient
-
 
 
 # List of annotator types
 ANNOTATORS = ["Id", "Date", "Covid Symptom", "Contact", "Person Name", "Location"]
 
 
-def main():
-    syn = synapseclient.login()
-    center = "Mayo"
+def create_evaluation_queues(syn, center, annotator_types):
     queue_mapping = {}
-    for annotator_type in ANNOTATORS:
+    for annotator_type in annotator_types:
         queue_name = f"{center} - {annotator_type} Annotator"
         queue_ent = synapseclient.Evaluation(
             name=queue_name,
@@ -35,6 +34,24 @@ def main():
             permission_level="admin"
         )
         queue_mapping[queue_name] = queue_ent.id
+    return queue_mapping
+
+
+def main():
+    # Build cli
+    parser = argparse.ArgumentParser(description='Add center')
+    parser.add_argument('center', type=str, help="Center to add")
+    args = parser.parse_args()
+
+    center = args.center
+    syn = synapseclient.login()
+
+    # Create evaluation queues for internal queue
+    queue_mapping = create_evaluation_queues(
+        syn=syn,
+        center=center,
+        annotator_types=ANNOTATORS
+    )
 
     # Create submission view
     view_columns = list(syn.getTableColumns("syn25582644"))
