@@ -51,6 +51,9 @@ def main():
     parser = argparse.ArgumentParser(description='Push NLP sandbox data')
     parser.add_argument('dataset_bundle_synid', type=str,
                         help="Synapse id of dataset")
+    parser.add_argument('dataset_name', type=str,
+                        choices=['i2b2-phi', 'mayo-clinic'],
+                        help="Name of dataset")
     parser.add_argument('--data_node_host', type=str, help="Data node ip",
                         default="http://0.0.0.0/api/v1")
 
@@ -74,7 +77,7 @@ def main():
     # entity.createdOn is in this format 2021-06-06T03:37:01.698Z
     # So take the first
     dataset_version = json_ent.createdOn.split("T")[0].replace("-", "")
-    dataset_id = f'i2b2-phi-{dataset_version}'
+    dataset_id = f'{args.dataset_name}-{dataset_version}'
     if json_filename.endswith("-example.json"):
         dataset_id = dataset_id + "-subset"
     fhir_store_id = 'evaluation'
