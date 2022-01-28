@@ -8,7 +8,7 @@ baseCommand: [evaluate-prediction]
 
 hints:
   DockerRequirement:
-    dockerPull: nlpsandbox/cli:4.3.0
+    dockerPull: nlpsandbox/cli:4.3.1
 
 inputs:
 
