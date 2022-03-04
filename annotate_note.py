@@ -115,6 +115,27 @@ def main(syn, args):
     }
 
     all_annotations = []
+    # HACK: Run one note annotation first
+    try:
+        exec_cmd = [
+            #"curl", "-o", "/output/annotations.json", "-X", "POST",
+            "curl", "-s", "-X", "POST",
+            f"http://{container_ip}:8080/api/v1/{api_url_map[args.annotator_type]}", "-H",
+            "accept: application/json",
+            "-H", "Content-Type: application/json", "-d",
+            json.dumps({"note": data_notes_dict[0]})
+        ]
+        curl_name = f"{args.submissionid}_curl_{random.randint(10, 10000)}"
+        client.containers.run(
+            "curlimages/curl:7.73.0", exec_cmd,
+            # volumes=volumes,
+            name=curl_name,
+            network="submission", stderr=True
+            # auto_remove=True
+        )
+        remove_docker_container(curl_name)
+    except Exception:
+        pass
     # Get annotation start time
     start = time.time()
     for note in data_notes_dict:
