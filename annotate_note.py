@@ -126,7 +126,7 @@ def main(syn, args):
             json.dumps({"note": data_notes_dict[0]})
         ]
         curl_name = f"{args.submissionid}_curl_{random.randint(10, 1000)}"
-        annotate_note = client.containers.run(
+        client.containers.run(
             "curlimages/curl:7.73.0", exec_cmd,
             # volumes=volumes,
             name=curl_name,
