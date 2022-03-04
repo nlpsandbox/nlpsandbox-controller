@@ -125,7 +125,7 @@ def main(syn, args):
             "-H", "Content-Type: application/json", "-d",
             json.dumps({"note": data_notes_dict[0]})
         ]
-        curl_name = f"{args.submissionid}_curl_{random.randint(10, 1000)}"
+        curl_name = f"{args.submissionid}_curl_{random.randint(10, 10000)}"
         client.containers.run(
             "curlimages/curl:7.73.0", exec_cmd,
             # volumes=volumes,
@@ -133,6 +133,7 @@ def main(syn, args):
             network="submission", stderr=True
             # auto_remove=True
         )
+        remove_docker_container(curl_name)
     except Exception:
         pass
     # Get annotation start time
