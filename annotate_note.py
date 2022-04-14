@@ -180,7 +180,6 @@ def main(syn, args):
         }
         all_annotations.append(annotations)
 
-
     with open("predictions.json", "w") as pred_f:
         json.dump(all_annotations, pred_f)
 
