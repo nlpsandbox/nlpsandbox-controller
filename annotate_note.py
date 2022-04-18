@@ -138,30 +138,36 @@ def main(syn, args):
         pass
     # Get annotation start time
     start = time.time()
-    for note in data_notes_dict:
+    for index, note in enumerate(data_notes_dict):
         # Check that runtime is less than 2 hours (7200 seconds)
         check_runtime(start, container, container.image, args.quota)
         # noteid = note.pop("identifier")
-        exec_cmd = [
-            #"curl", "-o", "/output/annotations.json", "-X", "POST",
-            "curl", "-s", "-X", "POST",
-            f"http://{container_ip}:8080/api/v1/{api_url_map[args.annotator_type]}", "-H",
-            "accept: application/json",
-            "-H", "Content-Type: application/json", "-d",
-            json.dumps({"note": note})
-        ]
-        curl_name = f"{args.submissionid}_curl_{random.randint(10, 1000)}"
-        annotate_note = client.containers.run(
-            "curlimages/curl:7.73.0", exec_cmd,
-            # volumes=volumes,
-            name=curl_name,
-            network="submission", stderr=True
-            # auto_remove=True
-        )
-        annotations = json.loads(annotate_note.decode("utf-8"))
+        try:
+            exec_cmd = [
+                #"curl", "-o", "/output/annotations.json", "-X", "POST",
+                "curl", "-s", "-X", "POST",
+                f"http://{container_ip}:8080/api/v1/{api_url_map[args.annotator_type]}", "-H",
+                "accept: application/json",
+                "-H", "Content-Type: application/json", "-d",
+                json.dumps({"note": note})
+            ]
+            curl_name = f"{args.submissionid}_curl_{random.randint(10, 1000)}"
+            annotate_note = client.containers.run(
+                "curlimages/curl:7.73.0", exec_cmd,
+                # volumes=volumes,
+                name=curl_name,
+                network="submission", stderr=True
+                # auto_remove=True
+            )
+            annotations = json.loads(annotate_note.decode("utf-8"))
+        except Exception:
+            raise ValueError(f"Annotation of note #{index} failed")
+
         # If annotation fails, raise an error
         if annotations.get("status") is not None:
-            raise ValueError(annotations)
+        #    raise ValueError(annotations)
+            raise ValueError(f"Annotation of note #{index} failed")
+
         remove_docker_container(curl_name)
 
         # with open("annotations.json", "r") as note_f:
