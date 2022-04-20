@@ -5,6 +5,7 @@ import json
 import os
 import random
 import time
+import sys
 
 import docker
 import synapseclient
@@ -115,6 +116,8 @@ def main(syn, args):
     }
 
     all_annotations = []
+    # Set traceback to be 0 so nothing is returned
+    sys.trackbacklimit = 0
     # HACK: Run one note annotation first
     try:
         exec_cmd = [
