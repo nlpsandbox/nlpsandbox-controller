@@ -135,7 +135,6 @@ def main(syn, args):
             name=curl_name,
             network="submission", stderr=True
             # auto_remove=True
-            foo
         )
         remove_docker_container(curl_name)
     except Exception:
