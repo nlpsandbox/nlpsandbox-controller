@@ -10,6 +10,8 @@ import sys
 import docker
 import synapseclient
 
+# Set traceback to be 0 so nothing is returned
+sys.trackbacklimit = 0
 
 def create_log_file(log_filename, log_text=None):
     """Create log file"""
@@ -116,8 +118,6 @@ def main(syn, args):
     }
 
     all_annotations = []
-    # Set traceback to be 0 so nothing is returned
-    sys.trackbacklimit = 0
     # HACK: Run one note annotation first
     try:
         exec_cmd = [
