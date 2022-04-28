@@ -145,6 +145,8 @@ def main(syn, args):
         # Check that runtime is less than 2 hours (7200 seconds)
         check_runtime(start, container, container.image, args.quota)
         # noteid = note.pop("identifier")
+        error = False
+        annotations = {}
         try:
             exec_cmd = [
                 #"curl", "-o", "/output/annotations.json", "-X", "POST",
@@ -165,11 +167,9 @@ def main(syn, args):
             )
             annotations = json.loads(annotate_note.decode("utf-8"))
         except Exception:
-            raise ValueError(f"Annotation of note #{index} failed")
+            error = True
 
-        # If annotation fails, raise an error
-        if annotations.get("status") is not None:
-        #    raise ValueError(annotations)
+        if error or annotations.get("status") is not None:
             raise ValueError(f"Annotation of note #{index} failed")
 
         remove_docker_container(curl_name)
