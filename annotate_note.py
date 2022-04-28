@@ -159,7 +159,8 @@ def main(syn, args):
                 "curlimages/curl:7.73.0", exec_cmd,
                 # volumes=volumes,
                 name=curl_name,
-                network="submission", stderr=True
+                network="submission", stderr=True,
+                temp2="foo"
                 # auto_remove=True
             )
             annotations = json.loads(annotate_note.decode("utf-8"))
